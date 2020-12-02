@@ -500,7 +500,7 @@ CAPI_FUNC(I32) capi_Load_ICO_FromMemory(IMAGE* pImage, U32 Alignment, ICO* pIcoF
 		if (BITMAP_Height >= 0)
 		{
 			BITMAP_Height /= 2;
-			p_icAND_mask = (U8*)((size_t)pSource + (Height * Stride) + ((BITMAP_Height - 1) * mask_Stride));
+			p_icAND_mask = (U8*)((size_t)pSource + (Height * Stride) + (((size_t)BITMAP_Height - 1) * mask_Stride));
 			pSource = (void*)((size_t)pSource + (Height - 1) * Stride);
 			Stride = -(ptrdiff_t)Stride;
 			mask_Stride = -(ptrdiff_t)mask_Stride;
@@ -691,7 +691,7 @@ CAPI_FUNC(I32) capi_Create_ICO_ImageToMemory(ICO** ppFilePointer, U64* pFileSize
 		pIcoEntry->BitsPerPixel = 0;
 
 		pIcoEntry->ImageSize = (U32)FileSizeList[I];
-		pIcoEntry->ImageOffset = (size_t)pThisFile - (size_t)pIcoFile;
+		pIcoEntry->ImageOffset = (U32) ((size_t)pThisFile - (size_t)pIcoFile);
 
 		capi_memcopy(pThisFile, pFileList[I], (size_t)FileSizeList[I]);
 		pThisFile = (void*)((size_t)pThisFile + FileSizeList[I]);
