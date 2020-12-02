@@ -11,25 +11,25 @@ zlib-1.2.11
 LICENSE TERMS
 =============
 ```
-  This software is provided 'as-is', without any express or implied  
-  warranty.  In no event will the authors be held liable for any damages  
-  arising from the use of this software.  
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
   
-  Permission is granted to anyone to use this software for any purpose,  
-  including commercial applications, and to alter it and redistribute it  
-  freely, subject to the following restrictions:  
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
   
-  (1) If any part of the source code for this software is distributed, then this  
-      README file must be included, with this copyright and no-warranty notice  
-      unaltered; and any additions, deletions, or changes to the original files  
-      must be clearly indicated in accompanying documentation.  
-  (2) If only executable code is distributed, then the accompanying  
-      documentation must state that "this software is based in part on the work of  
-      the Independent JPEG Group".  
-  (3) Permission for use of this software is granted only if the user accepts  
-      full responsibility for any undesirable consequences; the authors accept  
-      NO LIABILITY for damages of any kind.  
-      Included Librarys:  
+  (1) If any part of the source code for this software is distributed, then this
+      README file must be included, with this copyright and no-warranty notice
+      unaltered; and any additions, deletions, or changes to the original files
+      must be clearly indicated in accompanying documentation.
+  (2) If only executable code is distributed, then the accompanying
+      documentation must state that "this software is based in part on the work of
+      the Independent JPEG Group".
+  (3) Permission for use of this software is granted only if the user accepts
+      full responsibility for any undesirable consequences; the authors accept
+      NO LIABILITY for damages of any kind.
+      Included Librarys:
 ```
 changelog for 3rd party source code:  
   
@@ -54,3 +54,7 @@ zlib-1.2.11
     Including unistd.h in gzguts.h for the gcc compiler prevents "implicit function declaration" -
     warnings/errors for system IO functions like lopen or lseek.
 ```
+The following are things that need fixed or worked on:  
+- capi_DrawLine function ignores its Thickness parameter
+- capi_RenderAlphaPixel / capi_RenderAlphaScanLine / capi_RenderAlphaScanLine32 incorrectly blends pixels
+- capi_DrawImageEx / capi_DrawImageExA has color overflow problem when stretching images beyond a point using the DRAW_RESIZE_BOXSAMP algorithm
