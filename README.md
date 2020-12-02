@@ -29,7 +29,6 @@ LICENSE TERMS
   (3) Permission for use of this software is granted only if the user accepts
       full responsibility for any undesirable consequences; the authors accept
       NO LIABILITY for damages of any kind.
-      Included Librarys:
 ```
 # Changelog for 3rd party source code:
   
