@@ -31,7 +31,7 @@ LICENSE TERMS
       NO LIABILITY for damages of any kind.
       Included Librarys:
 ```
-changelog for 3rd party source code:  
+Changelog for 3rd party source code:  
   
 jpeg-9d  
 ```
@@ -54,6 +54,7 @@ zlib-1.2.11
     Including unistd.h in gzguts.h for the gcc compiler prevents "implicit function declaration" -
     warnings/errors for system IO functions like lopen or lseek.
 ```
+  
 The following are things that need fixed or worked on:  
 - capi_DrawLine function ignores its Thickness parameter
 - capi_RenderAlphaPixel / capi_RenderAlphaScanLine / capi_RenderAlphaScanLine32 incorrectly blends pixels
