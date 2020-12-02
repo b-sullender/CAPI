@@ -235,7 +235,7 @@ Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
 STRUCT(PNG_PARAMETERS)
 {
 	U8 CompressionMethod;
-	I16 Level;
+	int Level;
 	U8 FilterMethod;
 	U8 InterlaceMethod;
 	U32 IDAT_Length;
@@ -251,7 +251,6 @@ extern "C" {
 	* version 0x2A0000 includes:
 	*     zlib-1.2.11
 	*     jpeg-9d
-	*     freetype-2.9
 	*
 	*/
 	CAPI_FUNC(U32) capi_Version();
