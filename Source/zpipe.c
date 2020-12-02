@@ -12,7 +12,7 @@
 
 #include "CAPI.h"
 
-#define Z_CHUNK 0x4000 // 16 KB
+#define Z_CHUNK 0x3000 // 12 KB
 #define Z_DEF_BUFFER_SIZE 0x8000 // 32 KB
 
 uLong z_ReadFromMemory(unsigned char* dest, uLong size, uLong count, unsigned char** src, uLong* srcLen)
