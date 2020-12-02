@@ -193,7 +193,7 @@ CAPI_FUNC(int) z_def_file(FILE* dest, FILE* source, int level)
 
 	do
 	{
-		strm.avail_in = fread(in, 1, Z_CHUNK, source);
+		strm.avail_in = (uInt) fread(in, 1, Z_CHUNK, source);
 
 		if (ferror(source))
 		{
@@ -243,7 +243,7 @@ CAPI_FUNC(int) z_inf_file(FILE* dest, FILE* source)
 
 	do
 	{
-		strm.avail_in = fread(in, 1, Z_CHUNK, source);
+		strm.avail_in = (uInt) fread(in, 1, Z_CHUNK, source);
 
 		if (ferror(source))
 		{
