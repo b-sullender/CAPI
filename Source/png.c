@@ -876,7 +876,8 @@ CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize
 	PNG* pPngFile;
 	PNG_IHDR* pIhdr;
 	PNG_CHUNK* ThisChunk;
-	U32 Width, Height, PaletteLen, Length, BPP, ScanLine, Stride, I, X, Y, zLen, ChunkSize, ret;
+	U32 Width, Height, PaletteLen, Length, BPP, ScanLine, Stride, I, X, Y, ChunkSize, ret;
+	uLong zLen;
 	U8 BitDepth, ColourType, * zOut;
 	PIXEL* pSource, pPalette[256];
 	PIXEL_RGB* pPaletteRGB;
