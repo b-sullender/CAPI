@@ -23,7 +23,7 @@
 *
 */
 
-PACK(1, STRUCT(ICO_ENTRY)
+PACK(STRUCT(ICO_ENTRY)
 {
 	U8 Width;
 	U8 Height;

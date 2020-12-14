@@ -21,7 +21,7 @@
 *
 */
 
-PACK(1, STRUCT(PNG_IHDR)
+PACK(STRUCT(PNG_IHDR)
 {
 	U32 Width;
 	U32 Height;

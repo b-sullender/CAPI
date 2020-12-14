@@ -799,7 +799,7 @@ CAPI_FUNC(PIXEL*) capi_CreateImage(IMAGE* pImage, U32 Width, U32 Height, U32 Col
 
 	if (Pixels != 0)
 	{
-		capi_memset32((U32*)Pixels, Color, ScanLine * Height);
+		capi_memset32(Pixels, Color, ScanLine * Height);
 
 		pImage->Pixels = Pixels;
 		pImage->ScanLine = ScanLine;
@@ -832,7 +832,7 @@ CAPI_FUNC(I32) capi_FillImage(IMAGE* pImage, U32 Color)
 	Pixels = pImage->Pixels;
 	if (Pixels == 0) return CAPI_ERROR_INVALID_PARAMETER;
 
-	capi_memset32((U32*)Pixels, Color, pImage->ScanLine * pImage->Height);
+	capi_memset32(Pixels, Color, pImage->ScanLine * pImage->Height);
 
 	return CAPI_ERROR_NONE;
 }
@@ -889,22 +889,17 @@ CAPI_FUNC(void) capi_RenderAlphaScanLine32(PIXEL* pDestination, U32 Color, U32 W
 	if (Alpha2 < 0) Alpha2 = 0;
 	Remainder = 255 - Alpha2;
 
-	Red = (Color >> (8 * offsetof(PIXEL, Red)));
-	Green = (Color >> (8 * offsetof(PIXEL, Green)));
-	Blue = (Color >> (8 * offsetof(PIXEL, Blue)));
-	Alpha3 = (Color >> (8 * offsetof(PIXEL, Alpha)));
-
-	Red *= Alpha2;
-	Green *= Alpha2;
-	Blue *= Alpha2;
-	Alpha3 *= Alpha2;
+	Red = (U8)(Color >> (8 * offsetof(PIXEL, Red)));
+	Green = (U8)(Color >> (8 * offsetof(PIXEL, Green)));
+	Blue = (U8)(Color >> (8 * offsetof(PIXEL, Blue)));
+	Alpha3 = (U8)(Color >> (8 * offsetof(PIXEL, Alpha)));
 
 	while (Width-- != 0)
 	{
-		pDestination->Red = (U8)(((pDestination->Red * Remainder) + Red) / 255);
-		pDestination->Green = (U8)(((pDestination->Green * Remainder) + Green) / 255);
-		pDestination->Blue = (U8)(((pDestination->Blue * Remainder) + Blue) / 255);
-		pDestination->Alpha = (U8)(((pDestination->Alpha * Remainder) + Alpha3) / 255);
+		pDestination->Red = (U8)(((pDestination->Red * Remainder) + (Red * Alpha2)) / 255);
+		pDestination->Green = (U8)(((pDestination->Green * Remainder) + (Green * Alpha2)) / 255);
+		pDestination->Blue = (U8)(((pDestination->Blue * Remainder) + (Blue * Alpha2)) / 255);
+		pDestination->Alpha = (U8)(((pDestination->Alpha * Remainder) + (Alpha3 * Alpha2)) / 255);
 		pDestination++;
 	}
 }
@@ -1108,7 +1103,7 @@ CAPI_FUNC(I32) capi_DrawRect(IMAGE* pDestination, CRECT* pRect, U32 LineColor, U
 	{
 		for (; Y < HorTop; Y++)
 		{
-			capi_memset32((U32*)pDesPixels, LineColor, Width);
+			capi_memset32(pDesPixels, LineColor, Width);
 			pDesPixels += DesScanLine;
 		}
 
@@ -1117,7 +1112,7 @@ CAPI_FUNC(I32) capi_DrawRect(IMAGE* pDestination, CRECT* pRect, U32 LineColor, U
 			for (; Y < X; Y++)
 			{
 				for (Z = 0; Z < VerLeft; Z++) ((U32*)pDesPixels)[Z] = LineColor;
-				capi_memset32((U32*)pDesPixels + Thickness, FillColor, Width - FullThickness);
+				capi_memset32(pDesPixels + Thickness, FillColor, Width - FullThickness);
 				for (Z = 1; Z < VerRight; Z++) ((U32*)pDesPixels)[Width - Z] = LineColor;
 				pDesPixels += DesScanLine;
 			}
@@ -1125,7 +1120,7 @@ CAPI_FUNC(I32) capi_DrawRect(IMAGE* pDestination, CRECT* pRect, U32 LineColor, U
 
 		for (; Y < Height; Y++)
 		{
-			capi_memset32((U32*)pDesPixels, LineColor, Width);
+			capi_memset32(pDesPixels, LineColor, Width);
 			pDesPixels += DesScanLine;
 		}
 	}
@@ -1428,7 +1423,7 @@ CAPI_FUNC(I32) capi_DrawImageEx(IMAGE* pDestination, IMAGE* pSource, I32 X, I32 
 
 			// Map to same pixel -> we want to interpolate between two pixels!
 			if (bUpsampleY) y1b = y1a + 256;
-			y1b = min(y1b, 256 * pSource->Height - 1);
+			y1b = capi_min(y1b, 256 * pSource->Height - 1);
 			y1c = y1a >> 8;
 			y1d = y1b >> 8;
 			y1a &= 0xFF;
@@ -1445,7 +1440,7 @@ CAPI_FUNC(I32) capi_DrawImageEx(IMAGE* pDestination, IMAGE* pSource, I32 X, I32 
 
 				// Map to same pixel -> we want to interpolate between two pixels!
 				if (bUpsampleX) x1b = x1a + 256;
-				x1b = min(x1b, 256 * pSource->Width - 1);
+				x1b = capi_min(x1b, 256 * pSource->Width - 1);
 				x1c = x1a >> 8;
 				x1d = x1b >> 8;
 				x1a &= 0xFF;
@@ -1679,7 +1674,7 @@ CAPI_FUNC(I32) capi_DrawImageExA(IMAGE* pDestination, IMAGE* pSource, I32 X, I32
 
 			// Map to same pixel -> we want to interpolate between two pixels!
 			if (bUpsampleY) y1b = y1a + 256;
-			y1b = min(y1b, 256 * pSource->Height - 1);
+			y1b = capi_min(y1b, 256 * pSource->Height - 1);
 			y1c = y1a >> 8;
 			y1d = y1b >> 8;
 			y1a &= 0xFF;
@@ -1696,7 +1691,7 @@ CAPI_FUNC(I32) capi_DrawImageExA(IMAGE* pDestination, IMAGE* pSource, I32 X, I32
 
 				// Map to same pixel -> we want to interpolate between two pixels!
 				if (bUpsampleX) x1b = x1a + 256;
-				x1b = min(x1b, 256 * pSource->Width - 1);
+				x1b = capi_min(x1b, 256 * pSource->Width - 1);
 				x1c = x1a >> 8;
 				x1d = x1b >> 8;
 				x1a &= 0xFF;

@@ -21,7 +21,7 @@
 *
 */
 
-PACK(1, STRUCT(BMPV2)
+PACK(STRUCT(BMPV2)
 {
 	U32 HeaderSize;
 	U16 Width;
@@ -30,7 +30,7 @@ PACK(1, STRUCT(BMPV2)
 	U16 BitsPerPixel;
 });
 
-PACK(1, STRUCT(BMPV3)
+PACK(STRUCT(BMPV3)
 {
 	U32 HeaderSize;
 	I32 Width;
@@ -45,7 +45,7 @@ PACK(1, STRUCT(BMPV3)
 	U32 ImportantColors;
 });
 
-PACK(1, STRUCT(BMPV4)
+PACK(STRUCT(BMPV4)
 {
 	U32 HeaderSize;
 	I32 Width;
@@ -77,7 +77,7 @@ PACK(1, STRUCT(BMPV4)
 	U32 GammaBlue;
 });
 
-PACK(1, STRUCT(BMPINFOHEADER)
+PACK(STRUCT(BMPINFOHEADER)
 {
 	U32 HeaderSize;
 	I32 Width;

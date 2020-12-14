@@ -364,7 +364,7 @@ CAPI_FUNC(U32) capi_Get_ICO_DimensionsFromMemory(ICO* pIcoFile, size_t FileSize,
 			pIcoEntry = (ICO_ENTRY*)((size_t)pIcoEntry + sizeof(ICO_ENTRY));
 			EmbeddedFile = (void*)((size_t)pIcoFile + pIcoEntry->ImageOffset);
 
-			if (X = ico_get_embedded_image_dimensions_mem(EmbeddedFile, 0) > Width)
+			if ((X = ico_get_embedded_image_dimensions_mem(EmbeddedFile, 0)) > Width)
 			{
 				Width = X;
 				pDesiredIcoEntry = pIcoEntry;
@@ -409,7 +409,7 @@ CAPI_FUNC(U32) capi_Get_ICO_DimensionsFromFile(FILE* pIcoFile, U32* pHeight, I8 
 			if (fseek(pIcoFile, sizeof(ICO) + (sizeof(ICO_ENTRY) * I), SEEK_SET) != 0) return 0;
 			if (fread(&IcoEntry, 1, sizeof(ICO_ENTRY), pIcoFile) != sizeof(ICO_ENTRY)) return 0;
 
-			if (X = ico_get_embedded_image_dimensions_file(pIcoFile, IcoEntry.ImageOffset, 0) > Width)
+			if ((X = ico_get_embedded_image_dimensions_file(pIcoFile, IcoEntry.ImageOffset, 0)) > Width)
 			{
 				Width = X;
 				capi_memcopy(&DesiredIcoEntry, &IcoEntry, sizeof(ICO_ENTRY));
@@ -453,7 +453,7 @@ CAPI_FUNC(I32) capi_Load_ICO_FromMemory(IMAGE* pImage, U32 Alignment, ICO* pIcoF
 			pIcoEntry = (ICO_ENTRY*)((size_t)pIcoEntry + sizeof(ICO_ENTRY));
 			EmbeddedFile = (void*)((size_t)pIcoFile + pIcoEntry->ImageOffset);
 
-			if (X = ico_get_embedded_image_dimensions_mem(EmbeddedFile, 0) > Width)
+			if ((X = ico_get_embedded_image_dimensions_mem(EmbeddedFile, 0)) > Width)
 			{
 				Width = X;
 				pDesiredIcoEntry = pIcoEntry;
@@ -691,7 +691,7 @@ CAPI_FUNC(I32) capi_Create_ICO_ImageToMemory(ICO** ppFilePointer, U64* pFileSize
 		pIcoEntry->BitsPerPixel = 0;
 
 		pIcoEntry->ImageSize = (U32)FileSizeList[I];
-		pIcoEntry->ImageOffset = (U32) ((size_t)pThisFile - (size_t)pIcoFile);
+		pIcoEntry->ImageOffset = (U32)((size_t)pThisFile - (size_t)pIcoFile);
 
 		capi_memcopy(pThisFile, pFileList[I], (size_t)FileSizeList[I]);
 		pThisFile = (void*)((size_t)pThisFile + FileSizeList[I]);

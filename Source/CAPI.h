@@ -29,6 +29,10 @@
 #include <string.h>
 #endif
 
+#ifndef _MALLOC_H
+#include <malloc.h>
+#endif
+
 #include "zlib-1.2.11/zlib.h"
 #include "jpeg-9d/jpeglib.h"
 
@@ -36,9 +40,15 @@
 #define capi_realloc(addr, newSize) realloc(addr, newSize)
 #define capi_free(addr) free(addr)
 
+#ifdef __GNUC__
+#define capi_aligned_malloc(size, alignment) memalign(alignment, size)
+#define capi_aligned_free(addr) free(addr)
+#endif
+
+#ifdef _MSC_VER
 #define capi_aligned_malloc(size, alignment) _aligned_malloc(size, alignment)
-#define capi_aligned_realloc(addr, newSize, Alignment) _aligned_realloc(addr, newSize, Alignment)
 #define capi_aligned_free(addr) _aligned_free(addr)
+#endif
 
 #define capi_memcopy(dst, src, size) memcpy(dst, src, size)
 #define capi_memset(dst, val, size) memset(dst, val, size)
@@ -47,7 +57,7 @@
 #define STRUCT(StructName) typedef struct _##StructName StructName; struct _##StructName
 
 #ifdef __GNUC__
-#define PACK(nPack, __Declaration__) __Declaration__ __attribute__ ((aligned(nPack)))
+#define PACK(__Declaration__) __Declaration__ __attribute__((packed))
 #ifdef CAPI_EXPORTS
 #define CAPI_EXPORT_API __attribute__((visibility("default")))
 #else
@@ -62,7 +72,7 @@
 #endif
 
 #ifdef _MSC_VER
-#define PACK(nPack, __Declaration__) __pragma(pack(push, nPack)) __Declaration__ __pragma(pack(pop))
+#define PACK(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
 #ifdef CAPI_EXPORTS
 #define CAPI_EXPORT_API __declspec(dllexport)
 #else
@@ -79,6 +89,11 @@
 #define CAPI_SUBFUNC(Type) Type CAPI_PROC
 #define CAPI_FUNC(Type) extern CAPI_EXPORT_API Type CAPI_PROC
 
+/* max and min */
+
+#define capi_max(a,b) (((a) > (b)) ? (a) : (b))
+#define capi_min(a,b) (((a) < (b)) ? (a) : (b))
+
 /* CREATE A COLOR */
 
 #define COLOR(r, g, b, a) ((U32)(r)<<8*offsetof(PIXEL,Red))|((U32)(g)<<8*offsetof(PIXEL,Green))|((U32)(b)<<8*offsetof(PIXEL,Blue))|((U32)(a)<<8*offsetof(PIXEL,Alpha))
@@ -94,27 +109,39 @@ typedef unsigned char U8;
 typedef unsigned short U16;
 typedef unsigned int U32;
 typedef unsigned long long U64;
-PACK(1, STRUCT(U128) { U64 Lo; U64 Hi; });
-PACK(1, STRUCT(U256) { U128 Lo; U128 Hi; });
+PACK(STRUCT(U128) { U64 Lo; U64 Hi; });
+PACK(STRUCT(U256) { U128 Lo; U128 Hi; });
 
 typedef signed char I8;
 typedef signed short I16;
 typedef signed int I32;
 typedef signed long long I64;
-PACK(1, STRUCT(I128) { U64 Lo; I64 Hi; });
-PACK(1, STRUCT(I256) { U128 Lo; I128 Hi; });
+PACK(STRUCT(I128) { U64 Lo; I64 Hi; });
+PACK(STRUCT(I256) { U128 Lo; I128 Hi; });
+
+#ifdef UNICODE
+typedef wchar_t STRING;
+#define STR(String) L##String
+#define capi_Version capi_VersionW
+#define capi_ErrorCodeToString capi_ErrorCodeToStringW
+#else
+typedef char STRING;
+#define STR(String) String
+#define capi_Version capi_VersionA
+#define capi_ErrorCodeToString capi_ErrorCodeToStringA
+#endif
 
 /* MACROS FOR READING BIG ENDIAN & LITTLE ENDIAN */
 
 // Parameter is a pointer to a Big Endian word.
-#define ToLittleEndian_16(X) ((((U8*)X)[0] << 8)|((U8*)X)[1])
+#define ToLittleEndian_16(X) (U16) (((U16)((U8*)(X))[0] << 8)|(U16)((U8*)(X))[1])
 
 // Parameter is a pointer to a Big Endian dword.
-#define ToLittleEndian_32(X) ((((U8*)X)[0] << 24)|(((U8*)X)[1] << 16)|(((U8*)X)[2] << 8)|((U8*)X)[3])
+#define ToLittleEndian_32(X) (U32) (((U32)((U8*)(X))[0] << 24)|((U32)((U8*)(X))[1] << 16)|((U32)((U8*)(X))[2] << 8)|(U32)((U8*)(X))[3])
 
 // Parameter is a pointer to a Big Endian qword.
-#define ToLittleEndian_64(X) ((((U8*)X)[0] << 56)|(((U8*)X)[1] << 48)|(((U8*)X)[2] << 40)|(((U8*)X)[3] << 32)| \
-	(((U8*)X)[4] << 24)|(((U8*)X)[5] << 16)|(((U8*)X)[6] << 8)|((U8*)X)[7])
+#define ToLittleEndian_64(X) (U64) (((U64)((U8*)(X))[0] << 56)|((U64)((U8*)(X))[1] << 48)|((U64)((U8*)(X))[2] << 40)|((U64)((U8*)(X))[3] << 32)| \
+	((U64)((U8*)(X))[4] << 24)|((U64)((U8*)(X))[5] << 16)|((U64)((U8*)(X))[6] << 8)|(U64)((U8*)(X))[7])
 
 /* MACROS FOR CONVERTING LITTLE ENDIAN TO BIG ENDIAN */
 
@@ -172,7 +199,7 @@ STRUCT(CRECT)
 	I32 bottom;
 };
 
-PACK(1, STRUCT(PIXEL)
+PACK(STRUCT(PIXEL)
 {
 	U8 Blue;
 	U8 Green;
@@ -188,7 +215,7 @@ STRUCT(IMAGE)
 	U32 Height;
 };
 
-PACK(1, STRUCT(BMP)
+PACK(STRUCT(BMP)
 {
 	U16 Type;
 	U32 BmpSize;
@@ -197,24 +224,24 @@ PACK(1, STRUCT(BMP)
 	U32 PixelStart;
 });
 
-PACK(1, STRUCT(JPG)
+PACK(STRUCT(JPG)
 {
 	U16 Identifier;
 });
 
-PACK(1, STRUCT(PNG_CHUNK)
+PACK(STRUCT(PNG_CHUNK)
 {
 	U32 Length;
 	U8 ChuckType[4];
 });
 
-PACK(1, STRUCT(PNG)
+PACK(STRUCT(PNG)
 {
 	U64 Signature;
 	PNG_CHUNK FirstChunk;
 });
 
-PACK(1, STRUCT(ICO)
+PACK(STRUCT(ICO)
 {
 	U16 Reserved;
 	U16 Type;
@@ -247,13 +274,39 @@ extern "C" {
 
 	/*
 	*
-	capi_Version - Gets CAPI Version (version.c)
-	* version 0x2A0000 includes:
-	*     zlib-1.2.11
-	*     jpeg-9d
+	capi_VersionA - Gets CAPI Version (version.c)
+	* ppVersion [A pointer to a const char* to receive a pointer to the MULTI-BYTE version string] this can be 0/NULL
+	* returns the version as a U32 data type
 	*
 	*/
-	CAPI_FUNC(U32) capi_Version();
+	CAPI_FUNC(U32) capi_VersionA(const char** ppVersion);
+
+	/*
+	*
+	capi_VersionW - Gets CAPI Version (version.c)
+	* ppVersion [A pointer to a const wchar_t* to receive a pointer to the UNICODE version string] this can be 0/NULL
+	* returns the version as a U32 data type
+	*
+	*/
+	CAPI_FUNC(U32) capi_VersionW(const wchar_t** ppVersion);
+
+	/*
+	*
+	capi_ErrorCodeToStringA - Get a string representation of a error code (error.c)
+	* ErrorCode [The error code to change to a string]
+	* returns the MULTI-BYTE string representation of the error code or 0 if its an invalid error code
+	*
+	*/
+	CAPI_FUNC(const char*) capi_ErrorCodeToStringA(I32 ErrorCode);
+
+	/*
+	*
+	capi_ErrorCodeToStringW - Get a string representation of a error code (error.c)
+	* ErrorCode [The error code to change to a string]
+	* returns the UNICODE string representation of the error code or 0 if its an invalid error code
+	*
+	*/
+	CAPI_FUNC(const wchar_t*) capi_ErrorCodeToStringW(I32 ErrorCode);
 
 	/*
 	*
@@ -309,7 +362,7 @@ extern "C" {
 	* nDwords [Number of 32-Bit values]
 	*
 	*/
-	CAPI_FUNC(void) memset32(U32* pDestination, U32 Value, size_t nDwords);
+	CAPI_FUNC(void) memset32(void* pDestination, U32 Value, size_t nDwords);
 
 	/*
 	*

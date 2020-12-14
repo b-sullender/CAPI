@@ -566,7 +566,7 @@ CAPI_FUNC(I32) capi_Load_BMP_FromMemory(IMAGE* pImage, U32 Alignment, BMP* pBmpF
 			return CAPI_ERROR_OUT_OF_MEMORY;
 		}
 
-		capi_memset32((U32*)pRLE_Image, 0xFFFFFFFF, Width * Height);
+		capi_memset32(pRLE_Image, 0xFFFFFFFF, Width * Height);
 
 		if ((PaletteLen == 0) || (PaletteLen > 256)) PaletteLen = 256;
 		bmp_decode_palette(pPalette, pPaletteBGR, pPaletteBGRA, PaletteLen);
@@ -615,7 +615,7 @@ CAPI_FUNC(I32) capi_Load_BMP_FromMemory(IMAGE* pImage, U32 Alignment, BMP* pBmpF
 			return CAPI_ERROR_OUT_OF_MEMORY;
 		}
 
-		capi_memset32((U32*)pRLE_Image, 0xFFFFFFFF, Width * Height);
+		capi_memset32(pRLE_Image, 0xFFFFFFFF, Width * Height);
 
 		if ((PaletteLen == 0) || (PaletteLen > 16)) PaletteLen = 16;
 		bmp_decode_palette(pPalette, pPaletteBGR, pPaletteBGRA, PaletteLen);
