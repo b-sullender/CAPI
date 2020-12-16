@@ -30,14 +30,20 @@ LICENSE TERMS
       full responsibility for any undesirable consequences; the authors accept
       NO LIABILITY for damages of any kind.
 ```
+
 # Compiling CAPI
-Use cmake to build a project for your desired IDE (cmake-gui is tested and recommended)  
-This project has been tested on the following:  
+Use cmake to build a solution/project for your desired IDE (cmake-gui is tested and recommended)  
+This project has been tested with the following:  
 ```
   Visual Studio 2019 (Windows 10)
   Visual Studio 2010 (Windows XP)
   CodeBlocks - Unix Makefiles (Fedora 32)
 ```
+
+# Using CAPI
+You can include CAPI.h and link to CAPI.lib/libCAPI.o in your C/C++ projects  
+After building the project files, run the included TestApp program to test CAPI.  
+TestApp has several commands for testing the CAPI library (see HELP.txt).  
 
 # Changelog for 3rd party source code:
   
