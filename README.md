@@ -35,8 +35,8 @@ LICENSE TERMS
 Use cmake to build a solution/project for your desired IDE (cmake-gui is tested and recommended)  
 This project has been tested with the following:  
 ```
-  Visual Studio 2019 (Windows 10)
-  Visual Studio 2010 (Windows XP)
+  Visual Studio 2019 (Windows 10) (x86 and x64)
+  Visual Studio 2010 (Windows XP) (x86 and x64)
   CodeBlocks - Unix Makefiles (Fedora 32)
 ```
 
