@@ -12,7 +12,7 @@
 
 #include "CAPI.h"
 
-CAPI_FUNC(void) memset32(void* pDestination, U32 Value, size_t nDwords)
+CAPI_FUNC(void) capi_memset32(void* pDestination, U32 Value, size_t nDwords)
 {
 	size_t I;
 

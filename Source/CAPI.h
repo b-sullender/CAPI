@@ -52,7 +52,6 @@
 
 #define capi_memcopy(dst, src, size) memcpy(dst, src, size)
 #define capi_memset(dst, val, size) memset(dst, val, size)
-#define capi_memset32(dst, val, ndwords) memset32(dst, val, ndwords)
 
 #define STRUCT(StructName) typedef struct _##StructName StructName; struct _##StructName
 
@@ -362,7 +361,7 @@ extern "C" {
 	* nDwords [Number of 32-Bit values]
 	*
 	*/
-	CAPI_FUNC(void) memset32(void* pDestination, U32 Value, size_t nDwords);
+	CAPI_FUNC(void) capi_memset32(void* pDestination, U32 Value, size_t nDwords);
 
 	/*
 	*
