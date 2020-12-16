@@ -54,9 +54,3 @@ zlib-1.2.11
     warnings/errors for system IO functions like lopen or lseek.
 ```
   
-# The following are things that need fixed or worked on:  
-- capi_DrawLine ignores its Thickness parameter
-- capi_RenderAlphaPixel / capi_RenderAlphaScanLine / capi_RenderAlphaScanLine32 incorrectly blends pixels
-- capi_DrawImageEx / capi_DrawImageExA has color overflow problem when stretching images beyond a point using the DRAW_RESIZE_BOXSAMP algorithm
-- capi_Create_PNG_ImageToMemory returns CAPI_ERROR_UNIMPLEMENTED_FEATURE when InterlaceMethod is set to 1 (Adam7 Method)
-- capi_Create_PNG_ImageToMemory always uses filter type 0 (None) for filter method 0
