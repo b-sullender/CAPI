@@ -31,11 +31,11 @@ LICENSE TERMS
       NO LIABILITY for damages of any kind.
 ```
 # Compiling CAPI
-Use cmake to build a project for your desired IDE (cmake-gui is tested and recommended)
-This project has been tested on the following:
-  Visual Studio 2019 (Windows 10)
-  Visual Studio 2010 (Windows XP)
-  CodeBlocks - Unix Makefiles (Fedora 32)
+Use cmake to build a project for your desired IDE (cmake-gui is tested and recommended)  
+This project has been tested on the following:  
+  Visual Studio 2019 (Windows 10)  
+  Visual Studio 2010 (Windows XP)  
+  CodeBlocks - Unix Makefiles (Fedora 32)  
 
 # Changelog for 3rd party source code:
   
