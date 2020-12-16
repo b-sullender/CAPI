@@ -41,9 +41,9 @@ This project has been tested with the following:
 ```
 
 # Using CAPI
-You can include CAPI.h and link to CAPI.lib/libCAPI.o in your C/C++ projects  
 After building the project files, run the included TestApp program to test CAPI.  
-TestApp has several commands for testing the CAPI library (see HELP.txt).  
+TestApp has several commands for testing the CAPI library (see HELP.txt for details).  
+You can include CAPI.h and link to CAPI.lib (Linux, libCAPI.o) in your C/C++ projects.  
 
 # Changelog for 3rd party source code:
   
