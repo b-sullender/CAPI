@@ -699,7 +699,7 @@ extern "C" {
 
 	/*
 	*
-	capi_Create_BMP_ImageToMemory - Create a BMP (bitmap) formatted image to memory (bmp.c)
+	capi_Create_BMP_ToMemory - Create a BMP (bitmap) formatted image to memory (bmp.c)
 	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
 	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
 	* pImage [Pointer to a IMAGE structure to create the new BMP image from]
@@ -710,7 +710,7 @@ extern "C" {
 
 	/*
 	*
-	capi_Create_JPG_ImageToMemory - Create a JPG (jpeg) formatted image to memory (jpg.c)
+	capi_Create_JPG_ToMemory - Create a JPG (jpeg) formatted image to memory (jpg.c)
 	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
 	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
 	* pImage [Pointer to a IMAGE structure to create the new JPG image from]
@@ -722,7 +722,7 @@ extern "C" {
 
 	/*
 	*
-	capi_Create_PNG_ImageToMemory - Create a PNG (Portable Network Graphics) formatted image to memory (png.c)
+	capi_Create_PNG_ToMemory - Create a PNG (Portable Network Graphics) formatted image to memory (png.c)
 	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
 	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
 	* pImage [Pointer to a IMAGE structure to create the new PNG image from]
@@ -734,7 +734,7 @@ extern "C" {
 
 	/*
 	*
-	capi_Create_ICO_ImageToMemory - Create a ICO (icon) formatted image to memory (ico.c)
+	capi_Create_ICO_ToMemory - Create a ICO (icon) formatted image to memory (ico.c)
 	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
 	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
 	* pImageList [Pointer to an array of IMAGE structures to create the new ICO images from]
