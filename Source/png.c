@@ -516,10 +516,10 @@ CAPI_FUNC(I32) capi_Load_PNG_FromMemory(IMAGE* pImage, U32 Alignment, PNG* pPngF
 	PNG_IHDR* pIhdr;
 	PNG_CHUNK* NextChunk, * ThisChunk;
 	I32 ErrorCode;
-	U32 Width, Height, BPP, ChunkSize, PaletteLen, tRNSLen, ByteLength, zLibSize, Stride, i;
+	U32 Width, Height, BPP, ChunkSize, PaletteLen, tRNSLen, SourceSize, zLibSize, Stride, i;
 	U32 Passw[7], Passh[7], FilterPassStart[7], PaddedPassStart[7], PassStart[7];
 	U8* IDATS, * UncompressedData, * pUnfilteredImage, Color, Alpha;
-	uLong DataLength;
+	uLong UncompressedSize;
 	PIXEL* pDestination, pPalette[256];
 	PIXEL_RGB* pPaletteRGB;
 	void* pSource, * ptRNS;
@@ -585,7 +585,7 @@ CAPI_FUNC(I32) capi_Load_PNG_FromMemory(IMAGE* pImage, U32 Alignment, PNG* pPngF
 		ThisChunk = NextChunk;
 	} while (!png_IsChunk(ThisChunk->ChuckType, (U8*)"IEND"));
 
-	ErrorCode = z_inf_mem((void**)&UncompressedData, &DataLength, IDATS, zLibSize);
+	ErrorCode = z_inf_mem((void**)&UncompressedData, &UncompressedSize, IDATS, zLibSize);
 	capi_free(IDATS);
 
 	if (ErrorCode != Z_OK)
@@ -593,10 +593,10 @@ CAPI_FUNC(I32) capi_Load_PNG_FromMemory(IMAGE* pImage, U32 Alignment, PNG* pPngF
 		return CAPI_ERROR_ZLIB_FAILED;
 	}
 
-	if (BPP <= 32) ByteLength = (Width * Height) * 4;
-	else ByteLength = (Width * (BPP / 8)) * Height;
+	if (BPP <= 32) SourceSize = (Width * Height) * 4;
+	else SourceSize = (Width * (BPP / 8)) * Height;
 
-	pUnfilteredImage = (U8*)capi_malloc(ByteLength);
+	pUnfilteredImage = (U8*)capi_malloc(SourceSize);
 
 	if (pUnfilteredImage == 0)
 	{
@@ -871,12 +871,12 @@ png_decoding_done:
 	return CAPI_ERROR_NONE;
 }
 
-CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize, IMAGE* pImage, PNG_PARAMETERS* pParameters)
+CAPI_FUNC(I32) capi_Create_PNG_ToMemory(PNG** ppFilePointer, U64* pFileSize, IMAGE* pImage, PNG_PARAMETERS* pParameters)
 {
 	PNG* pPngFile;
 	PNG_IHDR* pIhdr;
 	PNG_CHUNK* ThisChunk;
-	U32 Width, Height, PaletteLen, Length, BPP, ScanLine, Stride, I, X, Y, ChunkSize, ret;
+	U32 Width, Height, PaletteLen, Size, BPP, ScanLine, Stride, I, X, Y, ChunkSize, ret;
 	uLong zLen;
 	U8 BitDepth, ColourType, * zOut;
 	PIXEL* pSource, pPalette[256];
@@ -934,8 +934,8 @@ CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize
 		return CAPI_ERROR_UNIMPLEMENTED_FEATURE;
 	}
 
-	Length = (U32)Stride * Height;
-	pData = capi_malloc(Length);
+	Size = (U32)Stride * Height;
+	pData = capi_malloc(Size);
 
 	if (pData == 0) return CAPI_ERROR_OUT_OF_MEMORY;
 
@@ -1020,7 +1020,7 @@ CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize
 	if (pParameters->FilterMethod == 0) png_encode_filter_type_0((U8*)pData, Stride, Height);
 	// if (InterlaceMethod == 1) TODO!!!
 
-	ret = z_def_mem((void**)&zOut, &zLen, pData, Length, pParameters->Level);
+	ret = z_def_mem((void**)&zOut, &zLen, pData, Size, pParameters->Level);
 	capi_free(pData);
 
 	if (ret != Z_OK) return CAPI_ERROR_ZLIB_FAILED;
@@ -1029,26 +1029,26 @@ CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize
 	// ****  Here we calculate how much memory is needed!  **** //
 	// **                                                    ** //
 
-	Length = sizeof(PNG) + sizeof(PNG_IHDR) + 4; // PNG Header and the IHDR chunk
-	Length += sizeof(PNG_CHUNK) + 4; // For the IEND chunk
+	Size = sizeof(PNG) + sizeof(PNG_IHDR) + 4; // PNG Header and the IHDR chunk
+	Size += sizeof(PNG_CHUNK) + 4; // For the IEND chunk
 
-	//Length += sizeof(PNG_CHUNK) + 1 + 4; // For the sRGB chunk
+	//Size += sizeof(PNG_CHUNK) + 1 + 4; // For the sRGB chunk
 
 	if (PaletteLen != 0)
 	{
-		Length += sizeof(PNG_CHUNK) + (sizeof(PIXEL_RGB) * PaletteLen) + 4; // For the PLTE chunk
+		Size += sizeof(PNG_CHUNK) + (sizeof(PIXEL_RGB) * PaletteLen) + 4; // For the PLTE chunk
 	}
 
-	X = zLen / pParameters->IDAT_Length;
+	X = zLen / pParameters->IDAT_Size;
 
-	Length += (sizeof(PNG_CHUNK) + pParameters->IDAT_Length + 4) * X;
-	if ((zLen % pParameters->IDAT_Length) != 0)
+	Size += (sizeof(PNG_CHUNK) + pParameters->IDAT_Size + 4) * X;
+	if ((zLen % pParameters->IDAT_Size) != 0)
 	{
-		Length += sizeof(PNG_CHUNK) + (zLen % pParameters->IDAT_Length) + 4;
+		Size += sizeof(PNG_CHUNK) + (zLen % pParameters->IDAT_Size) + 4;
 		X++;
 	}
 
-	pPngFile = (PNG*)capi_malloc(Length);
+	pPngFile = (PNG*)capi_malloc(Size);
 	if (pPngFile == 0)
 	{
 		capi_free(zOut);
@@ -1128,15 +1128,15 @@ CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize
 
 	for (I = 0; I < X; I++)
 	{
-		ChunkSize = (zLen > pParameters->IDAT_Length) ? pParameters->IDAT_Length : zLen;
+		ChunkSize = (zLen > pParameters->IDAT_Size) ? pParameters->IDAT_Size : zLen;
 		ThisChunk->Length = ToBigEndian_32(&ChunkSize);
 		ThisChunk->ChuckType[0] = 'I';
 		ThisChunk->ChuckType[1] = 'D';
 		ThisChunk->ChuckType[2] = 'A';
 		ThisChunk->ChuckType[3] = 'T';
 
-		capi_memcopy((U8*)((size_t)ThisChunk + 8), &zOut[I * pParameters->IDAT_Length], ChunkSize);
-		zLen -= pParameters->IDAT_Length;
+		capi_memcopy((U8*)((size_t)ThisChunk + 8), &zOut[I * pParameters->IDAT_Size], ChunkSize);
+		zLen -= pParameters->IDAT_Size;
 
 		crc32var = crc32(0, ThisChunk->ChuckType, ChunkSize + 4);
 		*(U32*)((size_t)(ThisChunk + 1) + ChunkSize) = ToBigEndian_32(&crc32var);
@@ -1159,7 +1159,7 @@ CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize
 	capi_free(zOut);
 
 	*ppFilePointer = pPngFile;
-	*pFileSize = Length;
+	*pFileSize = Size;
 
 	return CAPI_ERROR_NONE;
 }

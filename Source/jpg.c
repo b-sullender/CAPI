@@ -202,9 +202,9 @@ jpeg_fatal_error:
 	return ErrorCode;
 }
 
-CAPI_FUNC(I32) capi_Create_JPG_ImageToMemory(JPG** ppFilePointer, U64* pFileSize, IMAGE* pImage, U8 Quality)
+CAPI_FUNC(I32) capi_Create_JPG_ToMemory(JPG** ppFilePointer, U64* pFileSize, IMAGE* pImage, U8 Quality)
 {
-	size_t Length;
+	size_t Size;
 	U32 Width, Height, ScanLine, I;
 	JSAMPROW row_pointer[1];
 	PIXEL_RGB* pImageBuffer;
@@ -232,9 +232,9 @@ CAPI_FUNC(I32) capi_Create_JPG_ImageToMemory(JPG** ppFilePointer, U64* pFileSize
 	jpeg_create_compress(&cinfo);
 
 	pJPG = 0;
-	Length = 0;
+	Size = 0;
 
-	jpeg_mem_dest(&cinfo, (U8**)&pJPG, (size_t*)&Length);
+	jpeg_mem_dest(&cinfo, (U8**)&pJPG, (size_t*)&Size);
 
 	cinfo.image_width = Width;
 	cinfo.image_height = Height;
@@ -266,7 +266,7 @@ CAPI_FUNC(I32) capi_Create_JPG_ImageToMemory(JPG** ppFilePointer, U64* pFileSize
 	capi_free(pImageBuffer);
 
 	*ppFilePointer = pJPG;
-	*pFileSize = Length;
+	*pFileSize = Size;
 
 	return CAPI_ERROR_NONE;
 }

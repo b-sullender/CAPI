@@ -181,11 +181,11 @@ CAPI_SUBFUNC(void) ico_apply_icAND(U8* p_icAND_mask, IMAGE* pImage, size_t mask_
 	}
 }
 
-CAPI_SUBFUNC(I32) ico_Create_BMP_Image(BMPV3** ppFilePointer, U64* pFileSize, IMAGE* pImage)
+CAPI_SUBFUNC(I32) ico_Create_BMP_ToMemory(BMPV3** ppFilePointer, U64* pFileSize, IMAGE* pImage)
 {
 	PIXEL* pSource, pPalette[256];
 	size_t Stride, mask_Stride;
-	U32 Width, Height, PaletteLen, Length, BPP, ScanLine, X, I;
+	U32 Width, Height, PaletteLen, Size, BPP, ScanLine, X, I;
 	BMPV3* pBMPV3;
 	PIXEL_BGRA* pPaletteBGRA;
 	void* pDestination;
@@ -201,7 +201,7 @@ CAPI_SUBFUNC(I32) ico_Create_BMP_Image(BMPV3** ppFilePointer, U64* pFileSize, IM
 	Width = pImage->Width;
 	Height = pImage->Height;
 
-	Length = sizeof(BMPV3);
+	Size = sizeof(BMPV3);
 
 	if (image_get_transparency_level(pImage) == 4)
 	{
@@ -218,7 +218,7 @@ CAPI_SUBFUNC(I32) ico_Create_BMP_Image(BMPV3** ppFilePointer, U64* pFileSize, IM
 		}
 		else
 		{
-			Length += sizeof(PIXEL_BGRA) * PaletteLen;
+			Size += sizeof(PIXEL_BGRA) * PaletteLen;
 
 			if (PaletteLen <= 2) BPP = 1;
 			else if (PaletteLen <= 4) BPP = 2;
@@ -229,9 +229,9 @@ CAPI_SUBFUNC(I32) ico_Create_BMP_Image(BMPV3** ppFilePointer, U64* pFileSize, IM
 
 	Stride = ((((Width * BPP) + 31) & ~31) >> 3);
 	mask_Stride = ((((Width * 1) + 31) & ~31) >> 3);
-	Length += ((U32)Stride * Height) + ((U32)mask_Stride * Height);
+	Size += ((U32)Stride * Height) + ((U32)mask_Stride * Height);
 
-	pBMPV3 = (BMPV3*)capi_malloc(Length);
+	pBMPV3 = (BMPV3*)capi_malloc(Size);
 	if (pBMPV3 == 0) return CAPI_ERROR_OUT_OF_MEMORY;
 
 	pBMPV3->HeaderSize = sizeof(BMPV3);
@@ -331,7 +331,7 @@ CAPI_SUBFUNC(I32) ico_Create_BMP_Image(BMPV3** ppFilePointer, U64* pFileSize, IM
 	ico_apply_icAND(p_icAND_mask, pImage, mask_Stride);
 
 	*ppFilePointer = pBMPV3;
-	*pFileSize = Length;
+	*pFileSize = Size;
 
 	return CAPI_ERROR_NONE;
 }
@@ -608,9 +608,9 @@ CAPI_FUNC(I32) capi_Load_ICO_FromMemory(IMAGE* pImage, U32 Alignment, ICO* pIcoF
 	return CAPI_ERROR_NONE;
 }
 
-CAPI_FUNC(I32) capi_Create_ICO_ImageToMemory(ICO** ppFilePointer, U64* pFileSize, IMAGE* pImageList, U16 nImages, U8 Format, void* pParameters)
+CAPI_FUNC(I32) capi_Create_ICO_ToMemory(ICO** ppFilePointer, U64* pFileSize, IMAGE* pImageList, U16 nImages, U8 Format, void* pParameters)
 {
-	I32 I, ErrorCode, Length;
+	I32 I, ErrorCode, Size;
 	void* pFileList[64], * pThisFile;
 	U64 FileSizeList[64];
 	ICO* pIcoFile;
@@ -619,7 +619,7 @@ CAPI_FUNC(I32) capi_Create_ICO_ImageToMemory(ICO** ppFilePointer, U64* pFileSize
 	if ((ppFilePointer == 0) || (pFileSize == 0) || (pImageList == 0) || (nImages == 0) || (nImages > 64)) return CAPI_ERROR_INVALID_PARAMETER;
 
 	pIcoFile = 0;
-	Length = 0;
+	Size = 0;
 	ErrorCode = CAPI_ERROR_NONE;
 
 	capi_memset(pFileList, 0, sizeof(void*) * 64);
@@ -638,32 +638,32 @@ CAPI_FUNC(I32) capi_Create_ICO_ImageToMemory(ICO** ppFilePointer, U64* pFileSize
 
 		for (I = 0; I < nImages; I++)
 		{
-			ErrorCode = capi_Create_PNG_ImageToMemory((PNG**)&pFileList[I], &FileSizeList[I], &pImageList[I], (PNG_PARAMETERS*)pParameters);
+			ErrorCode = capi_Create_PNG_ToMemory((PNG**)&pFileList[I], &FileSizeList[I], &pImageList[I], (PNG_PARAMETERS*)pParameters);
 			if (ErrorCode != CAPI_ERROR_NONE)
 			{
 				nImages = (U16)I;
 				goto exit_func;
 			}
-			Length += (U32)FileSizeList[I];
+			Size += (U32)FileSizeList[I];
 		}
 	}
 	else if (Format == ICO_FORMAT_BMP)
 	{
 		for (I = 0; I < nImages; I++)
 		{
-			ErrorCode = ico_Create_BMP_Image((BMPV3**)&pFileList[I], &FileSizeList[I], &pImageList[I]);
+			ErrorCode = ico_Create_BMP_ToMemory((BMPV3**)&pFileList[I], &FileSizeList[I], &pImageList[I]);
 			if (ErrorCode != CAPI_ERROR_NONE)
 			{
 				nImages = (U16)I;
 				goto exit_func;
 			}
-			Length += (U32)FileSizeList[I];
+			Size += (U32)FileSizeList[I];
 		}
 	}
 
-	Length += sizeof(ICO) + (sizeof(ICO_ENTRY) * nImages);
+	Size += sizeof(ICO) + (sizeof(ICO_ENTRY) * nImages);
 
-	pIcoFile = (ICO*)capi_malloc(Length);
+	pIcoFile = (ICO*)capi_malloc(Size);
 	if (pIcoFile == 0)
 	{
 		ErrorCode = CAPI_ERROR_OUT_OF_MEMORY;
@@ -707,7 +707,7 @@ exit_func:
 	}
 
 	*ppFilePointer = pIcoFile;
-	*pFileSize = Length;
+	*pFileSize = Size;
 
 	return ErrorCode;
 }

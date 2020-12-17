@@ -719,11 +719,11 @@ CAPI_FUNC(I32) capi_Load_BMP_FromMemory(IMAGE* pImage, U32 Alignment, BMP* pBmpF
 	return CAPI_ERROR_NONE;
 }
 
-CAPI_FUNC(I32) capi_Create_BMP_ImageToMemory(BMP** ppFilePointer, U64* pFileSize, IMAGE* pImage)
+CAPI_FUNC(I32) capi_Create_BMP_ToMemory(BMP** ppFilePointer, U64* pFileSize, IMAGE* pImage)
 {
 	PIXEL* pSource, pPalette[256];
 	size_t Stride;
-	U32 Width, Height, PaletteLen, Length, BPP, ScanLine, X, I;
+	U32 Width, Height, PaletteLen, Size, BPP, ScanLine, X, I;
 	BMP* pBMP; BMPV3* pBMPV3;
 	PIXEL_BGRA* pPaletteBGRA;
 	void* pDestination;
@@ -738,7 +738,7 @@ CAPI_FUNC(I32) capi_Create_BMP_ImageToMemory(BMP** ppFilePointer, U64* pFileSize
 	Width = pImage->Width;
 	Height = pImage->Height;
 
-	Length = sizeof(BMP);
+	Size = sizeof(BMP);
 
 	if (image_get_transparency_level(pImage) > 1)
 	{
@@ -755,7 +755,7 @@ CAPI_FUNC(I32) capi_Create_BMP_ImageToMemory(BMP** ppFilePointer, U64* pFileSize
 		}
 		else
 		{
-			Length += sizeof(PIXEL_BGRA) * PaletteLen;
+			Size += sizeof(PIXEL_BGRA) * PaletteLen;
 
 			if (PaletteLen <= 2) BPP = 1;
 			else if (PaletteLen <= 4) BPP = 2;
@@ -765,20 +765,20 @@ CAPI_FUNC(I32) capi_Create_BMP_ImageToMemory(BMP** ppFilePointer, U64* pFileSize
 	}
 
 	Stride = ((((Width * BPP) + 31) & ~31) >> 3);
-	Length += (U32)Stride * Height;
+	Size += (U32)Stride * Height;
 	pDestination = (void*)((Height - 1) * Stride);
 
 	Stride = -(ptrdiff_t)Stride;
 
-	Length += sizeof(BMPV3);
+	Size += sizeof(BMPV3);
 
-	pBMP = (BMP*)capi_malloc(Length);
+	pBMP = (BMP*)capi_malloc(Size);
 	if (pBMP == 0) return CAPI_ERROR_OUT_OF_MEMORY;
 
 	pBMPV3 = (BMPV3*)((size_t)pBMP + sizeof(BMP));
 
 	pBMP->Type = 0x4D42;
-	pBMP->BmpSize = Length;
+	pBMP->BmpSize = Size;
 	pBMP->Reserved1 = 0;
 	pBMP->Reserved2 = 0;
 	pBMP->PixelStart = sizeof(BMP) + sizeof(BMPV3) + (sizeof(PIXEL_BGRA) * PaletteLen);
@@ -873,7 +873,7 @@ CAPI_FUNC(I32) capi_Create_BMP_ImageToMemory(BMP** ppFilePointer, U64* pFileSize
 	}
 
 	*ppFilePointer = pBMP;
-	*pFileSize = Length;
+	*pFileSize = Size;
 
 	return CAPI_ERROR_NONE;
 }

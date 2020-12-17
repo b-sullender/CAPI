@@ -47,6 +47,6 @@ CAPI_SUBFUNC(U32) ico_get_embedded_image_dimensions_file(FILE* pIcoFile, U32 Ima
 
 CAPI_SUBFUNC(void) ico_apply_icAND(U8* p_icAND_mask, IMAGE* pImage, size_t mask_Stride);
 
-CAPI_SUBFUNC(I32) ico_Create_BMP_Image(BMPV3** ppFilePointer, U64* pFileSize, IMAGE* pImage);
+CAPI_SUBFUNC(I32) ico_Create_BMP_ToMemory(BMPV3** ppFilePointer, U64* pFileSize, IMAGE* pImage);
 
 #endif /* ICO_H */

@@ -255,7 +255,7 @@ PNG_PARAMETERS
 Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
 * FilterMethod [The filter method] 0 = filter method 0
 * InterlaceMethod [The interlace method] 0 = interlace method 0 (null method), 1 = interlace method 1 (Adam7 method)
-* IDAT_Length [The maximum size in bytes of the IDAT chunks] Values 0x20000 (128 KB) or 0x80000 (512 KB) are recommended
+* IDAT_Size [The maximum size in bytes of the IDAT chunks] Values 0x20000 (128 KB) or 0x80000 (512 KB) are recommended
 *
 */
 STRUCT(PNG_PARAMETERS)
@@ -264,7 +264,7 @@ STRUCT(PNG_PARAMETERS)
 	int Level;
 	U8 FilterMethod;
 	U8 InterlaceMethod;
-	U32 IDAT_Length;
+	U32 IDAT_Size;
 };
 
 #ifdef __cplusplus
@@ -706,7 +706,7 @@ extern "C" {
 	* returns CAPI_ERROR_NONE on success
 	*
 	*/
-	CAPI_FUNC(I32) capi_Create_BMP_ImageToMemory(BMP** ppFilePointer, U64* pFileSize, IMAGE* pImage);
+	CAPI_FUNC(I32) capi_Create_BMP_ToMemory(BMP** ppFilePointer, U64* pFileSize, IMAGE* pImage);
 
 	/*
 	*
@@ -718,7 +718,7 @@ extern "C" {
 	* returns CAPI_ERROR_NONE on success
 	*
 	*/
-	CAPI_FUNC(I32) capi_Create_JPG_ImageToMemory(JPG** ppFilePointer, U64* pFileSize, IMAGE* pImage, U8 Quality);
+	CAPI_FUNC(I32) capi_Create_JPG_ToMemory(JPG** ppFilePointer, U64* pFileSize, IMAGE* pImage, U8 Quality);
 
 	/*
 	*
@@ -730,7 +730,7 @@ extern "C" {
 	* returns CAPI_ERROR_NONE on success
 	*
 	*/
-	CAPI_FUNC(I32) capi_Create_PNG_ImageToMemory(PNG** ppFilePointer, U64* pFileSize, IMAGE* pImage, PNG_PARAMETERS* pParameters);
+	CAPI_FUNC(I32) capi_Create_PNG_ToMemory(PNG** ppFilePointer, U64* pFileSize, IMAGE* pImage, PNG_PARAMETERS* pParameters);
 
 	/*
 	*
@@ -744,7 +744,7 @@ extern "C" {
 	* returns CAPI_ERROR_NONE on success
 	*
 	*/
-	CAPI_FUNC(I32) capi_Create_ICO_ImageToMemory(ICO** ppFilePointer, U64* pFileSize, IMAGE* pImageList, U16 nImages, U8 Format, void* pParameters);
+	CAPI_FUNC(I32) capi_Create_ICO_ToMemory(ICO** ppFilePointer, U64* pFileSize, IMAGE* pImageList, U16 nImages, U8 Format, void* pParameters);
 
 #ifdef __cplusplus
 }
