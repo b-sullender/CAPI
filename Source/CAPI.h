@@ -118,8 +118,8 @@ typedef signed long long I64;
 PACK(STRUCT(I128) { U64 Lo; I64 Hi; });
 PACK(STRUCT(I256) { U128 Lo; I128 Hi; });
 
-typedef I8 ASCII;   // ASCII Unit
-typedef U8 UTF8;    // UTF8 Unit
+typedef char ASCII;   // ASCII Unit
+typedef char UTF8;    // UTF8 Unit
 #ifdef _MSC_VER
 typedef wchar_t UTF16;  // UTF16 Unit
 #else
@@ -767,7 +767,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrLenA(ASCII* String);
+	CAPI_FUNC(size_t) capi_StrLenA(const ASCII* String);
 
 	/*
 	*
@@ -780,7 +780,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrCopyA(ASCII* Destination, size_t Length, ASCII* Source);
+	CAPI_FUNC(size_t) capi_StrCopyA(ASCII* Destination, size_t Length, const ASCII* Source);
 
 	/*
 	*
@@ -793,7 +793,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrAppendA(ASCII* Destination, size_t Length, ASCII* Source);
+	CAPI_FUNC(size_t) capi_StrAppendA(ASCII* Destination, size_t Length, const ASCII* Source);
 
 	/*
 	*
@@ -807,7 +807,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareA(ASCII* String1, ASCII* String2);
+	CAPI_FUNC(I32) capi_StrCompareA(const ASCII* String1, const ASCII* String2);
 
 	/*
 	*
@@ -821,7 +821,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareInsensitiveA(ASCII* String1, ASCII* String2);
+	CAPI_FUNC(I32) capi_StrCompareInsensitiveA(const ASCII* String1, const ASCII* String2);
 
 	/*
 	*
@@ -831,7 +831,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	*
 	*/
-	CAPI_FUNC(ASCII*) capi_StrFindA(ASCII* String, ASCII Delimit);
+	CAPI_FUNC(ASCII*) capi_StrFindA(const ASCII* String, ASCII Delimit);
 
 	/*
 	*
@@ -841,7 +841,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(ASCII*) capi_StrFindStrA(ASCII* String, ASCII* StrDelimit);
+	CAPI_FUNC(ASCII*) capi_StrFindStrA(const ASCII* String, const ASCII* StrDelimit);
 
 	/*
 	*
@@ -851,7 +851,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(ASCII*) capi_StrFindStrInsensitiveA(ASCII* String, ASCII* StrDelimit);
+	CAPI_FUNC(ASCII*) capi_StrFindStrInsensitiveA(const ASCII* String, const ASCII* StrDelimit);
 
 	/*
 	*
@@ -914,7 +914,7 @@ extern "C" {
 	* This function does not check if String is valid
 	*
 	*/
-	CAPI_FUNC(U32) capi_UTF8_Decode(U8 Units, UTF8* String);
+	CAPI_FUNC(U32) capi_UTF8_Decode(U8 Units, const UTF8* String);
 
 	/*
 	*
@@ -924,7 +924,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrLenU(UTF8* String);
+	CAPI_FUNC(size_t) capi_StrLenU(const UTF8* String);
 
 	/*
 	*
@@ -934,7 +934,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrUnitsU(UTF8* String);
+	CAPI_FUNC(size_t) capi_StrUnitsU(const UTF8* String);
 
 	/*
 	*
@@ -947,7 +947,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrCopyU(UTF8* Destination, size_t Length, UTF8* Source);
+	CAPI_FUNC(size_t) capi_StrCopyU(UTF8* Destination, size_t Length, const UTF8* Source);
 
 	/*
 	*
@@ -960,7 +960,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrAppendU(UTF8* Destination, size_t Length, UTF8* Source);
+	CAPI_FUNC(size_t) capi_StrAppendU(UTF8* Destination, size_t Length, const UTF8* Source);
 
 	/*
 	*
@@ -974,7 +974,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareU(UTF8* String1, UTF8* String2);
+	CAPI_FUNC(I32) capi_StrCompareU(const UTF8* String1, const UTF8* String2);
 
 	/*
 	*
@@ -988,7 +988,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareInsensitiveU(UTF8* String1, UTF8* String2);
+	CAPI_FUNC(I32) capi_StrCompareInsensitiveU(const UTF8* String1, const UTF8* String2);
 
 	/*
 	*
@@ -998,7 +998,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF8*) capi_StrFindU(UTF8* String, U32 Delimit);
+	CAPI_FUNC(UTF8*) capi_StrFindU(const UTF8* String, U32 Delimit);
 
 	/*
 	*
@@ -1008,7 +1008,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF8*) capi_StrFindStrU(UTF8* String, UTF8* StrDelimit);
+	CAPI_FUNC(UTF8*) capi_StrFindStrU(const UTF8* String, const UTF8* StrDelimit);
 
 	/*
 	*
@@ -1018,7 +1018,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF8*) capi_StrFindStrInsensitiveU(UTF8* String, UTF8* StrDelimit);
+	CAPI_FUNC(UTF8*) capi_StrFindStrInsensitiveU(const UTF8* String, const UTF8* StrDelimit);
 
 	/*
 	*
@@ -1081,7 +1081,7 @@ extern "C" {
 	* This function does not check if String is valid
 	*
 	*/
-	CAPI_FUNC(U32) capi_UTF16_Decode(U8 Units, UTF16* String);
+	CAPI_FUNC(U32) capi_UTF16_Decode(U8 Units, const UTF16* String);
 
 	/*
 	*
@@ -1091,7 +1091,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrLenW(UTF16* String);
+	CAPI_FUNC(size_t) capi_StrLenW(const UTF16* String);
 
 	/*
 	*
@@ -1102,7 +1102,7 @@ extern "C" {
 	* To get the size of the string in bytes, multiply the result by sizeof(UTF16)
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrUnitsW(UTF16* String);
+	CAPI_FUNC(size_t) capi_StrUnitsW(const UTF16* String);
 
 	/*
 	*
@@ -1115,7 +1115,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrCopyW(UTF16* Destination, size_t Length, UTF16* Source);
+	CAPI_FUNC(size_t) capi_StrCopyW(UTF16* Destination, size_t Length, const UTF16* Source);
 
 	/*
 	*
@@ -1128,7 +1128,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrAppendW(UTF16* Destination, size_t Length, UTF16* Source);
+	CAPI_FUNC(size_t) capi_StrAppendW(UTF16* Destination, size_t Length, const UTF16* Source);
 
 	/*
 	*
@@ -1142,7 +1142,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareW(UTF16* String1, UTF16* String2);
+	CAPI_FUNC(I32) capi_StrCompareW(const UTF16* String1, const UTF16* String2);
 
 	/*
 	*
@@ -1156,7 +1156,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareInsensitiveW(UTF16* String1, UTF16* String2);
+	CAPI_FUNC(I32) capi_StrCompareInsensitiveW(const UTF16* String1, const UTF16* String2);
 
 	/*
 	*
@@ -1166,7 +1166,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF16*) capi_StrFindW(UTF16* String, U32 Delimit);
+	CAPI_FUNC(UTF16*) capi_StrFindW(const UTF16* String, U32 Delimit);
 
 	/*
 	*
@@ -1176,7 +1176,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF16*) capi_StrFindStrW(UTF16* String, UTF16* StrDelimit);
+	CAPI_FUNC(UTF16*) capi_StrFindStrW(const UTF16* String, const UTF16* StrDelimit);
 
 	/*
 	*
@@ -1186,7 +1186,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF16*) capi_StrFindStrInsensitiveW(UTF16* String, UTF16* StrDelimit);
+	CAPI_FUNC(UTF16*) capi_StrFindStrInsensitiveW(const UTF16* String, const UTF16* StrDelimit);
 
 	/*
 	*
@@ -1215,7 +1215,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrLenL(UTF32* String);
+	CAPI_FUNC(size_t) capi_StrLenL(const UTF32* String);
 
 	/*
 	*
@@ -1228,7 +1228,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrCopyL(UTF32* Destination, size_t Length, UTF32* Source);
+	CAPI_FUNC(size_t) capi_StrCopyL(UTF32* Destination, size_t Length, const UTF32* Source);
 
 	/*
 	*
@@ -1241,7 +1241,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_StrAppendL(UTF32* Destination, size_t Length, UTF32* Source);
+	CAPI_FUNC(size_t) capi_StrAppendL(UTF32* Destination, size_t Length, const UTF32* Source);
 
 	/*
 	*
@@ -1255,7 +1255,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareL(UTF32* String1, UTF32* String2);
+	CAPI_FUNC(I32) capi_StrCompareL(const UTF32* String1, const UTF32* String2);
 
 	/*
 	*
@@ -1269,7 +1269,7 @@ extern "C" {
 	* 0x7FFFFFFF is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(I32) capi_StrCompareInsensitiveL(UTF32* String1, UTF32* String2);
+	CAPI_FUNC(I32) capi_StrCompareInsensitiveL(const UTF32* String1, const UTF32* String2);
 
 	/*
 	*
@@ -1279,7 +1279,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF32*) capi_StrFindL(UTF32* String, U32 Delimit);
+	CAPI_FUNC(UTF32*) capi_StrFindL(const UTF32* String, U32 Delimit);
 
 	/*
 	*
@@ -1289,7 +1289,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF32*) capi_StrFindStrL(UTF32* String, UTF32* StrDelimit);
+	CAPI_FUNC(UTF32*) capi_StrFindStrL(const UTF32* String, const UTF32* StrDelimit);
 
 	/*
 	*
@@ -1299,7 +1299,7 @@ extern "C" {
 	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	*
 	*/
-	CAPI_FUNC(UTF32*) capi_StrFindStrInsensitiveL(UTF32* String, UTF32* StrDelimit);
+	CAPI_FUNC(UTF32*) capi_StrFindStrInsensitiveL(const UTF32* String, const UTF32* StrDelimit);
 
 	/*
 	*
@@ -1331,7 +1331,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_UTF8_To_UTF16(UTF16* Destination, size_t Length, UTF8* Source);
+	CAPI_FUNC(size_t) capi_UTF8_To_UTF16(UTF16* Destination, size_t Length, const UTF8* Source);
 
 	/*
 	*
@@ -1344,7 +1344,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_UTF8_To_UTF32(UTF32* Destination, size_t Length, UTF8* Source);
+	CAPI_FUNC(size_t) capi_UTF8_To_UTF32(UTF32* Destination, size_t Length, const UTF8* Source);
 
 	/*
 	*
@@ -1357,7 +1357,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_UTF16_To_UTF8(UTF8* Destination, size_t Length, UTF16* Source);
+	CAPI_FUNC(size_t) capi_UTF16_To_UTF8(UTF8* Destination, size_t Length, const UTF16* Source);
 
 	/*
 	*
@@ -1370,7 +1370,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_UTF16_To_UTF32(UTF32* Destination, size_t Length, UTF16* Source);
+	CAPI_FUNC(size_t) capi_UTF16_To_UTF32(UTF32* Destination, size_t Length, const UTF16* Source);
 
 	/*
 	*
@@ -1383,7 +1383,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_UTF32_To_UTF8(UTF8* Destination, size_t Length, UTF32* Source);
+	CAPI_FUNC(size_t) capi_UTF32_To_UTF8(UTF8* Destination, size_t Length, const UTF32* Source);
 
 	/*
 	*
@@ -1396,7 +1396,7 @@ extern "C" {
 	* -1 is returned for an invalid parameter
 	*
 	*/
-	CAPI_FUNC(size_t) capi_UTF32_To_UTF16(UTF16* Destination, size_t Length, UTF32* Source);
+	CAPI_FUNC(size_t) capi_UTF32_To_UTF16(UTF16* Destination, size_t Length, const UTF32* Source);
 
 #ifdef __cplusplus
 }
