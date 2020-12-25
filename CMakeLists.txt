@@ -37,6 +37,7 @@ file(GLOB capi_source_files
 	"Source/jpg.c"
 	"Source/png.c"
 	"Source/ico.c"
+	"Source/strings.c"
 )
 
 file(GLOB zlib_header_files
