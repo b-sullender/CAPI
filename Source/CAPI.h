@@ -123,12 +123,12 @@ typedef char UTF8;    // UTF8 Unit
 #ifdef _MSC_VER
 typedef wchar_t UTF16;  // UTF16 Unit
 #else
-typedef U16 UTF16;  // UTF16 Unit
+typedef U16 UTF16;    // UTF16 Unit
 #endif
 #ifdef __GNUC__
 typedef wchar_t UTF32;  // UTF32 Unit
 #else
-typedef U32 UTF32;  // UTF32 Unit
+typedef U32 UTF32;    // UTF32 Unit
 #endif
 
 #ifdef UNICODE
@@ -264,7 +264,7 @@ PACK(STRUCT(ICO)
 *
 PNG_PARAMETERS
 * CompressionMethod [PNG compression method] 0 = zlib
-* Level [The compression level] If CompressionMethod is set to (zlib) This may be any value 0-9 or one the the following constants:
+* Level [The compression level] If CompressionMethod is set to (zlib) This may be any value 0-9 or one of the following constants:
 Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
 * FilterMethod [The filter method] 0 = filter method 0
 * InterlaceMethod [The interlace method] 0 = interlace method 0 (null method), 1 = interlace method 1 (Adam7 method)
@@ -325,7 +325,7 @@ extern "C" {
 	z_def_file - Compress from file source to file destination until EOF on source (zpipe.c)
 	* dest [A file stream opened with fopen to write]
 	* source [A file stream opened with fopen to read]
-	* level [The compression level] This may be any value 0-9 or one the the following constants: Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
+	* level [The compression level] This may be any value 0-9 or one of the following constants: Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
 	* returns Z_OK on success
 	*
 	*/
@@ -348,7 +348,7 @@ extern "C" {
 	* desLen [Pointer to a uLong variable to receive the number of bytes outputted to dest]
 	* src [The source file in memory to compress]
 	* srcLen [The source file size in bytes]
-	* level [The compression level] This may be any value 0-9 or one the the following constants: Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
+	* level [The compression level] This may be any value 0-9 or one of the following constants: Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
 	* returns Z_OK on success
 	*
 	*/
@@ -784,7 +784,7 @@ extern "C" {
 
 	/*
 	*
-	capi_StrAppendA - Appends a ASCII string (strings.c)
+	capi_StrAppendA - Append a ASCII string (strings.c)
 	* Destination [Null-terminated destination string buffer]
 	* Length [Length of the destination string buffer in ASCII units]
 	* Source [Null-terminated source string buffer]
@@ -930,7 +930,7 @@ extern "C" {
 	*
 	capi_StrUnitsU - Get the number of UTF8 units in a UTF8 string (strings.c)
 	* String [Pointer to a null-terminated string]
-	* returns the the number of UTF8 units in the string, not including the terminating null character
+	* returns the number of UTF8 units in the string, not including the terminating null character
 	* -1 is returned for an invalid parameter
 	*
 	*/
@@ -951,7 +951,7 @@ extern "C" {
 
 	/*
 	*
-	capi_StrAppendU - Appends a UTF8 string (strings.c)
+	capi_StrAppendU - Append a UTF8 string (strings.c)
 	* Destination [Null-terminated destination string buffer]
 	* Length [Length of the destination string buffer in UTF8 units]
 	* Source [Null-terminated source string buffer]
@@ -1097,7 +1097,7 @@ extern "C" {
 	*
 	capi_StrUnitsW - Get the number of UTF16 units in a UTF16 string (strings.c)
 	* String [Pointer to a null-terminated string]
-	* returns the the number of UTF16 units in the string, not including the terminating null character
+	* returns the number of UTF16 units in the string, not including the terminating null character
 	* -1 is returned for an invalid parameter
 	* To get the size of the string in bytes, multiply the result by sizeof(UTF16)
 	*
@@ -1119,7 +1119,7 @@ extern "C" {
 
 	/*
 	*
-	capi_StrAppendW - Appends a UTF16 string (strings.c)
+	capi_StrAppendW - Append a UTF16 string (strings.c)
 	* Destination [Null-terminated destination string buffer]
 	* Length [Length of the destination string buffer in UTF16 units]
 	* Source [Null-terminated source string buffer]
@@ -1232,7 +1232,7 @@ extern "C" {
 
 	/*
 	*
-	capi_StrAppendL - Appends a UTF32 string (strings.c)
+	capi_StrAppendL - Append a UTF32 string (strings.c)
 	* Destination [Null-terminated destination string buffer]
 	* Length [Length of the destination string buffer in UTF32 units]
 	* Source [Null-terminated source string buffer]
