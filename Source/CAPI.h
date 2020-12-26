@@ -136,11 +136,33 @@ typedef UTF16 STRING;
 #define STR(String) L##String
 #define capi_Version capi_VersionW
 #define capi_ErrorCodeToString capi_ErrorCodeToStringW
+#define capi_StrLen capi_StrLenW
+#define capi_StrUnits capi_StrUnitsW
+#define capi_StrCopy capi_StrCopyW
+#define capi_StrAppend capi_StrAppendW
+#define capi_StrCompare capi_StrCompareW
+#define capi_StrCompareInsensitive capi_StrCompareInsensitiveW
+#define capi_StrFind capi_StrFindW
+#define capi_StrFindStr capi_StrFindStrW
+#define capi_StrFindStrInsensitive capi_StrFindStrInsensitiveW
+#define capi_StrSplit capi_StrSplitW
+#define capi_StrReverse capi_StrReverseW
 #else
 typedef UTF8 STRING;
 #define STR(String) String
 #define capi_Version capi_VersionA
 #define capi_ErrorCodeToString capi_ErrorCodeToStringA
+#define capi_StrLen capi_StrLenU
+#define capi_StrUnits capi_StrUnitsU
+#define capi_StrCopy capi_StrCopyU
+#define capi_StrAppend capi_StrAppendU
+#define capi_StrCompare capi_StrCompareU
+#define capi_StrCompareInsensitive capi_StrCompareInsensitiveU
+#define capi_StrFind capi_StrFindU
+#define capi_StrFindStr capi_StrFindStrU
+#define capi_StrFindStrInsensitive capi_StrFindStrInsensitiveU
+#define capi_StrSplit capi_StrSplitU
+#define capi_StrReverse capi_StrReverseU
 #endif
 
 /* MACROS FOR READING BIG ENDIAN & LITTLE ENDIAN */
@@ -1400,6 +1422,701 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+struct String
+{
+	//  Get the length of a string
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of characters in the string, not including the terminating null character
+	//  -1 is returned for an invalid parameter
+	static size_t Length(const STRING* String)
+	{
+		return capi_StrLen(String);
+	}
+
+	//  Get the number of units in a string
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of units in the string, not including the terminating null character
+	//  -1 is returned for an invalid parameter
+	//  To get the size of the string in bytes, multiply the result by sizeof(STRING)
+	static size_t Units(const STRING* String)
+	{
+		return capi_StrUnits(String);
+	}
+
+	//  Copy a string
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of units copied to the destination string, not including the terminating null character
+	//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//  -1 is returned for an invalid parameter
+	static size_t Copy(STRING* Destination, size_t Length, const STRING* Source)
+	{
+		return capi_StrCopy(Destination, Length, Source);
+	}
+
+	//  Append a string
+	//      Destination [Null-terminated destination string buffer]
+	//      Length [Length of the destination string buffer in units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of units appended to the destination string, not including the terminating null character
+	//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//  -1 is returned for an invalid parameter
+	static size_t Append(STRING* Destination, size_t Length, const STRING* Source)
+	{
+		return capi_StrAppend(Destination, Length, Source);
+	}
+
+	//  Compare strings
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//  0x7FFFFFFF is returned for an invalid parameter
+	static I32 Compare(const STRING* String1, const STRING* String2)
+	{
+		return capi_StrCompare(String1, String2);
+	}
+
+	//  Perform a case-insensitive comparison of strings
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//  0x7FFFFFFF is returned for an invalid parameter
+	static I32 CompareInsensitive(const STRING* String1, const STRING* String2)
+	{
+		return capi_StrCompareInsensitive(String1, String2);
+	}
+
+	//  Find a character in a string
+	//      String [Null-terminated source string to search]
+	//      Delimit [Character to be located]
+	//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
+	static STRING* Find(const STRING* String, STRING Delimit)
+	{
+		return capi_StrFind(String, Delimit);
+	}
+
+	//  Find a string in a string
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+	static STRING* FindStr(const STRING* String, const STRING* StrDelimit)
+	{
+		return capi_StrFindStr(String, StrDelimit);
+	}
+
+	//  Perform a case-insensitive search for a string in a string
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+	static STRING* FindStrInsensitive(const STRING* String, const STRING* StrDelimit)
+	{
+		return capi_StrFindStrInsensitive(String, StrDelimit);
+	}
+
+	//  Split a string
+	//      String [Null-terminated source string to split]
+	//      Delimit [Character to be located and replaced]
+	//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
+	//  When Delimit is found its set to 0
+	static STRING* Split(STRING* String, STRING Delimit)
+	{
+		return capi_StrSplit(String, Delimit);
+	}
+
+	//  Reverse a string
+	//      String [Null-terminated source string to reverse]
+	static void Reverse(STRING* String)
+	{
+		capi_StrReverse(String);
+	}
+
+	struct Encoding
+	{
+		struct _ASCII_
+		{
+			//  Get the length of a ASCII string
+			//      String [Pointer to a null-terminated string]
+			//  returns the number of characters in the string, not including the terminating null character
+			//  -1 is returned for an invalid parameter
+			//  To get the size of the string in bytes, multiply the result by sizeof(ASCII)
+			static size_t Length(const ASCII* String)
+			{
+				return capi_StrLenA(String);
+			}
+
+			//  Copy a ASCII string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in ASCII units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units copied to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Copy(ASCII* Destination, size_t Length, const ASCII* Source)
+			{
+				return capi_StrCopyA(Destination, Length, Source);
+			}
+
+			//  Append a ASCII string
+			//      Destination [Null-terminated destination string buffer]
+			//      Length [Length of the destination string buffer in ASCII units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units appended to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Append(ASCII* Destination, size_t Length, const ASCII* Source)
+			{
+				return capi_StrAppendA(Destination, Length, Source);
+			}
+
+			//  Compare ASCII strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 Compare(const ASCII* String1, const ASCII* String2)
+			{
+				return capi_StrCompareA(String1, String2);
+			}
+
+			//  Perform a case-insensitive comparison of ASCII strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 CompareInsensitive(const ASCII* String1, const ASCII* String2)
+			{
+				return capi_StrCompareInsensitiveA(String1, String2);
+			}
+
+			//  Find a character in a ASCII string
+			//      String [Null-terminated source string to search]
+			//      Delimit [Character to be located]
+			//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
+			static ASCII* Find(const ASCII* String, ASCII Delimit)
+			{
+				return capi_StrFindA(String, Delimit);
+			}
+
+			//  Find a ASCII string in a ASCII string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static ASCII* FindStr(const ASCII* String, const ASCII* StrDelimit)
+			{
+				return capi_StrFindStrA(String, StrDelimit);
+			}
+
+			//  Perform a case-insensitive search for a ASCII string in a ASCII string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static ASCII* FindStrInsensitive(const ASCII* String, const ASCII* StrDelimit)
+			{
+				return capi_StrFindStrInsensitiveA(String, StrDelimit);
+			}
+
+			//  Split a ASCII string
+			//      String [Null-terminated source string to split]
+			//      Delimit [Character to be located and replaced]
+			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
+			//  When Delimit is found its set to 0
+			static ASCII* Split(ASCII* String, ASCII Delimit)
+			{
+				return capi_StrSplitA(String, Delimit);
+			}
+
+			//  Reverse a ASCII string
+			//      String [Null-terminated source string to reverse]
+			static void Reverse(ASCII* String)
+			{
+				capi_StrReverseA(String);
+			}
+		};
+		struct _UTF8_
+		{
+			//  Get the number of bytes (units) a UTF8 code-point encoding uses
+			//      Code [The 1st UTF8 unit of the code-point encoding]
+			//  returns the number of UTF8 units the code-point encoding uses, or 0 for an error
+			static U8 GetCharUnits(UTF8 Code)
+			{
+				return capi_UTF8_GetCharUnits(Code);
+			}
+
+			//  Encode a code-point using the UTF8 encoding
+			//      String [The destination string buffer]
+			//      CodePoint [The code-point to encode]
+			//  returns the number of UTF8 units that was written to String, or 0 for an error
+			//  This function does not check if String is valid and does not output any null-terminator character
+			//  Consider using the safer version String::Encoding::_UTF8_::Encode
+			static U8 Encode_Unsafe(UTF8* String, U32 CodePoint)
+			{
+				return capi_UTF8_Encode_Unsafe(String, CodePoint);
+			}
+
+			//  Encode a code-point using the UTF8 encoding
+			//      String [The destination string buffer]
+			//      Length [Length of the destination string buffer in UTF8 units]
+			//      CodePoint [The code-point to encode]
+			//  returns the number of UTF8 units that was written to String, not including the terminating null character, or 0 for an error
+			//  This function does not check if String is valid
+			static U8 Encode(UTF8* String, size_t Length, U32 CodePoint)
+			{
+				return capi_UTF8_Encode(String, Length, CodePoint);
+			}
+
+			//  Decode a UTF8 encoding into a code-point
+			//      Units [The number of UTF8 units the code-point uses] use String::Encoding::_UTF8_::GetCharUnits to get this value
+			//      String [The source string to decode a code-point from]
+			//  returns the decoded code-point, or 0 for an error
+			//  This function does not check if String is valid
+			static U32 Decode(U8 Units, const UTF8* String)
+			{
+				return capi_UTF8_Decode(Units, String);
+			}
+
+			//  Get the length of a UTF8 string
+			//      String [Pointer to a null-terminated string]
+			//  returns the number of characters in the string, not including the terminating null character
+			//  -1 is returned for an invalid parameter
+			static size_t Length(const UTF8* String)
+			{
+				return capi_StrLenU(String);
+			}
+
+			//  Copy a UTF8 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF8 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units copied to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Copy(UTF8* Destination, size_t Length, const UTF8* Source)
+			{
+				return capi_StrCopyU(Destination, Length, Source);
+			}
+
+			//  Append a UTF8 string
+			//      Destination [Null-terminated destination string buffer]
+			//      Length [Length of the destination string buffer in UTF8 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units appended to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Append(UTF8* Destination, size_t Length, const UTF8* Source)
+			{
+				return capi_StrAppendU(Destination, Length, Source);
+			}
+
+			//  Compare UTF8 strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 Compare(const UTF8* String1, const UTF8* String2)
+			{
+				return capi_StrCompareU(String1, String2);
+			}
+
+			//  Perform a case-insensitive comparison of UTF8 strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 CompareInsensitive(const UTF8* String1, const UTF8* String2)
+			{
+				return capi_StrCompareInsensitiveU(String1, String2);
+			}
+
+			//  Find a character in a UTF8 string
+			//      String [Null-terminated source string to search]
+			//      Delimit [Character to be located]
+			//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
+			static UTF8* Find(const UTF8* String, UTF8 Delimit)
+			{
+				return capi_StrFindU(String, Delimit);
+			}
+
+			//  Find a UTF8 string in a UTF8 string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static UTF8* FindStr(const UTF8* String, const UTF8* StrDelimit)
+			{
+				return capi_StrFindStrU(String, StrDelimit);
+			}
+
+			//  Perform a case-insensitive search for a UTF8 string in a UTF8 string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static UTF8* FindStrInsensitive(const UTF8* String, const UTF8* StrDelimit)
+			{
+				return capi_StrFindStrInsensitiveU(String, StrDelimit);
+			}
+
+			//  Split a UTF8 string
+			//      String [Null-terminated source string to split]
+			//      Delimit [Character to be located and replaced]
+			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
+			//  When Delimit is found its set to 0
+			static UTF8* Split(UTF8* String, UTF8 Delimit)
+			{
+				return capi_StrSplitU(String, Delimit);
+			}
+
+			//  Reverse a UTF8 string
+			//      String [Null-terminated source string to reverse]
+			static void Reverse(UTF8* String)
+			{
+				capi_StrReverseU(String);
+			}
+
+			//  Convert a UTF8 string to a UTF16 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF16 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t To_UTF16(UTF16* Destination, size_t Length, const UTF8* Source)
+			{
+				return capi_UTF8_To_UTF16(Destination, Length, Source);
+			}
+
+			//  Convert a UTF8 string to a UTF32 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF32 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t To_UTF32(UTF32* Destination, size_t Length, const UTF8* Source)
+			{
+				return capi_UTF8_To_UTF32(Destination, Length, Source);
+			}
+		};
+		struct _UTF16_
+		{
+			//  Get the number of words (units) a UTF16 code-point encoding uses
+			//      Code [The 1st UTF16 unit of the code-point encoding]
+			//  returns the number of UTF16 units the code-point encoding uses, or 0 for an error
+			static U8 GetCharUnits(UTF16 Code)
+			{
+				return capi_UTF16_GetCharUnits(Code);
+			}
+
+			//  Encode a code-point using the UTF16 encoding
+			//      String [The destination string buffer]
+			//      CodePoint [The code-point to encode]
+			//  returns the number of UTF16 units that was written to String, or 0 for an error
+			//  This function does not check if String is valid and does not output any null-terminator character
+			//  Consider using the safer version String::Encoding::_UTF16_::Encode
+			static U8 Encode_Unsafe(UTF16* String, U32 CodePoint)
+			{
+				return capi_UTF16_Encode_Unsafe(String, CodePoint);
+			}
+
+			//  Encode a code-point using the UTF16 encoding
+			//      String [The destination string buffer]
+			//      Length [Length of the destination string buffer in UTF16 units]
+			//      CodePoint [The code-point to encode]
+			//  returns the number of UTF16 units that was written to String, not including the terminating null character, or 0 for an error
+			//  This function does not check if String is valid
+			static U8 Encode(UTF16* String, size_t Length, U32 CodePoint)
+			{
+				return capi_UTF16_Encode(String, Length, CodePoint);
+			}
+
+			//  Decode a UTF16 encoding into a code-point
+			//      Units [The number of UTF16 units the code-point uses] use String::Encoding::_UTF8_::GetCharUnits to get this value
+			//      String [The source string to decode a code-point from]
+			//  returns the decoded code-point, or 0 for an error
+			//  This function does not check if String is valid
+			static U32 Decode(U8 Units, const UTF16* String)
+			{
+				return capi_UTF16_Decode(Units, String);
+			}
+
+			//  Get the length of a UTF16 string
+			//      String [Pointer to a null-terminated string]
+			//  returns the number of characters in the string, not including the terminating null character
+			//  -1 is returned for an invalid parameter
+			static size_t Length(const UTF16* String)
+			{
+				return capi_StrLenW(String);
+			}
+
+			//  Copy a UTF16 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF16 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units copied to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Copy(UTF16* Destination, size_t Length, const UTF16* Source)
+			{
+				return capi_StrCopyW(Destination, Length, Source);
+			}
+
+			//  Append a UTF16 string
+			//      Destination [Null-terminated destination string buffer]
+			//      Length [Length of the destination string buffer in UTF16 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units appended to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Append(UTF16* Destination, size_t Length, const UTF16* Source)
+			{
+				return capi_StrAppendW(Destination, Length, Source);
+			}
+
+			//  Compare UTF16 strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 Compare(const UTF16* String1, const UTF16* String2)
+			{
+				return capi_StrCompareW(String1, String2);
+			}
+
+			//  Perform a case-insensitive comparison of UTF16 strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 CompareInsensitive(const UTF16* String1, const UTF16* String2)
+			{
+				return capi_StrCompareInsensitiveW(String1, String2);
+			}
+
+			//  Find a character in a UTF16 string
+			//      String [Null-terminated source string to search]
+			//      Delimit [Character to be located]
+			//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
+			static UTF16* Find(const UTF16* String, UTF16 Delimit)
+			{
+				return capi_StrFindW(String, Delimit);
+			}
+
+			//  Find a UTF16 string in a UTF16 string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static UTF16* FindStr(const UTF16* String, const UTF16* StrDelimit)
+			{
+				return capi_StrFindStrW(String, StrDelimit);
+			}
+
+			//  Perform a case-insensitive search for a UTF16 string in a UTF16 string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static UTF16* FindStrInsensitive(const UTF16* String, const UTF16* StrDelimit)
+			{
+				return capi_StrFindStrInsensitiveW(String, StrDelimit);
+			}
+
+			//  Split a UTF16 string
+			//      String [Null-terminated source string to split]
+			//      Delimit [Character to be located and replaced]
+			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
+			//  When Delimit is found its set to 0
+			static UTF16* Split(UTF16* String, UTF16 Delimit)
+			{
+				return capi_StrSplitW(String, Delimit);
+			}
+
+			//  Reverse a UTF16 string
+			//      String [Null-terminated source string to reverse]
+			static void Reverse(UTF16* String)
+			{
+				capi_StrReverseW(String);
+			}
+
+			//  Convert a UTF16 string to a UTF8 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF8 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t To_UTF8(UTF8* Destination, size_t Length, const UTF16* Source)
+			{
+				return capi_UTF16_To_UTF8(Destination, Length, Source);
+			}
+
+			//  Convert a UTF16 string to a UTF32 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF32 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t To_UTF32(UTF32* Destination, size_t Length, const UTF16* Source)
+			{
+				return capi_UTF16_To_UTF32(Destination, Length, Source);
+			}
+		};
+		struct _UTF32_
+		{
+			//  Get the length of a UTF32 string
+			//      String [Pointer to a null-terminated string]
+			//  returns the number of characters in the string, not including the terminating null character
+			//  -1 is returned for an invalid parameter
+			static size_t Length(const UTF32* String)
+			{
+				return capi_StrLenL(String);
+			}
+
+			//  Copy a UTF32 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF32 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units copied to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Copy(UTF32* Destination, size_t Length, const UTF32* Source)
+			{
+				return capi_StrCopyL(Destination, Length, Source);
+			}
+
+			//  Append a UTF32 string
+			//      Destination [Null-terminated destination string buffer]
+			//      Length [Length of the destination string buffer in UTF32 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of units appended to the destination string, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t Append(UTF32* Destination, size_t Length, const UTF32* Source)
+			{
+				return capi_StrAppendL(Destination, Length, Source);
+			}
+
+			//  Compare UTF32 strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 Compare(const UTF32* String1, const UTF32* String2)
+			{
+				return capi_StrCompareL(String1, String2);
+			}
+
+			//  Perform a case-insensitive comparison of UTF32 strings
+			//      String1 [Null-terminated string to compare]
+			//      String2 [Null-terminated string to compare]
+			//  The return value indicates the ordinal relation of String1 to String2
+			//      < 0  String1 is less than String2
+			//        0  String1 is identical to String2
+			//      > 0  String1 is greater than String2
+			//  0x7FFFFFFF is returned for an invalid parameter
+			static I32 CompareInsensitive(const UTF32* String1, const UTF32* String2)
+			{
+				return capi_StrCompareInsensitiveL(String1, String2);
+			}
+
+			//  Find a character in a UTF32 string
+			//      String [Null-terminated source string to search]
+			//      Delimit [Character to be located]
+			//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
+			static UTF32* Find(const UTF32* String, UTF32 Delimit)
+			{
+				return capi_StrFindL(String, Delimit);
+			}
+
+			//  Find a UTF32 string in a UTF32 string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static UTF32* FindStr(const UTF32* String, const UTF32* StrDelimit)
+			{
+				return capi_StrFindStrL(String, StrDelimit);
+			}
+
+			//  Perform a case-insensitive search for a UTF32 string in a UTF32 string
+			//      String [Null-terminated source string to search]
+			//      StrDelimit [String to be located]
+			//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
+			static UTF32* FindStrInsensitive(const UTF32* String, const UTF32* StrDelimit)
+			{
+				return capi_StrFindStrInsensitiveL(String, StrDelimit);
+			}
+
+			//  Split a UTF32 string
+			//      String [Null-terminated source string to split]
+			//      Delimit [Character to be located and replaced]
+			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
+			//  When Delimit is found its set to 0
+			static UTF32* Split(UTF32* String, UTF32 Delimit)
+			{
+				return capi_StrSplitL(String, Delimit);
+			}
+
+			//  Reverse a UTF32 string
+			//      String [Null-terminated source string to reverse]
+			static void Reverse(UTF32* String)
+			{
+				capi_StrReverseL(String);
+			}
+
+			//  Convert a UTF32 string to a UTF8 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF8 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t To_UTF8(UTF8* Destination, size_t Length, const UTF32* Source)
+			{
+				return capi_UTF32_To_UTF8(Destination, Length, Source);
+			}
+
+			//  Convert a UTF32 string to a UTF16 string
+			//      Destination [Pointer to the destination string buffer]
+			//      Length [Length of the destination string buffer in UTF16 units]
+			//      Source [Null-terminated source string buffer]
+			//  returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
+			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//  -1 is returned for an invalid parameter
+			static size_t To_UTF16(UTF16* Destination, size_t Length, const UTF32* Source)
+			{
+				return capi_UTF32_To_UTF16(Destination, Length, Source);
+			}
+		};
+	};
+};
 #endif
 
 #endif /* CAPI_H */
