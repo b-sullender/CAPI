@@ -85,28 +85,28 @@ THREAD_WINDOW* TestApp_GetOpenThreadWindowSlot()
 	return 0;
 }
 
-void* LoadFile(const STRING* FilePath, U64* pFileLength)
+void* LoadFile(const STRING* FilePath, U64* pFileSize)
 {
 	FILE* Stream;
-	size_t BufferLength;
+	size_t BufferSize;
 	void* pThisFile;
 	void* pNewBlock;
 
-	if ((FilePath == 0) || (pFileLength == 0)) return 0;
+	if ((FilePath == 0) || (pFileSize == 0)) return 0;
 
-	*pFileLength = 0;
+	*pFileSize = 0;
 
 	Stream = str_fopen(FilePath, STR("rb"));
 	if (Stream == 0) return 0;
 
 	pThisFile = 0;
-	BufferLength = 0;
+	BufferSize = 0;
 
 	do
 	{
-		BufferLength += 0x1000;
+		BufferSize += 0x1000;
 
-		pNewBlock = capi_realloc(pThisFile, BufferLength);
+		pNewBlock = capi_realloc(pThisFile, BufferSize);
 		if (pNewBlock == 0)
 		{
 			if (pThisFile != 0) capi_free(pThisFile);
@@ -116,7 +116,7 @@ void* LoadFile(const STRING* FilePath, U64* pFileLength)
 
 		pThisFile = pNewBlock;
 
-		*pFileLength += fread(&((U8*)pThisFile)[*pFileLength], 1, 0x1000, Stream);
+		*pFileSize += fread(&((U8*)pThisFile)[*pFileSize], 1, 0x1000, Stream);
 	} while (!(feof(Stream)));
 
 	fclose(Stream);
@@ -124,21 +124,21 @@ void* LoadFile(const STRING* FilePath, U64* pFileLength)
 	return pThisFile;
 }
 
-I32 SaveFile(const STRING* FilePath, void* pFilePointer, U64 FileLength)
+I32 SaveFile(const STRING* FilePath, void* pFilePointer, U64 FileSize)
 {
 	FILE* Stream;
 	size_t nBytesWrite;
 	I32 ErrorCode;
 
-	if ((FilePath == 0) || (pFilePointer == 0) || (FileLength == 0)) return CAPI_ERROR_INVALID_PARAMETER;
+	if ((FilePath == 0) || (pFilePointer == 0) || (FileSize == 0)) return CAPI_ERROR_INVALID_PARAMETER;
 
 	ErrorCode = CAPI_ERROR_NONE;
 
 	Stream = str_fopen(FilePath, STR("w+b"));
 	if (Stream == 0) return CAPI_ERROR_ACCESS_DENIED;
 
-	nBytesWrite = fwrite(pFilePointer, 1, (size_t)FileLength, Stream);
-	if (nBytesWrite != FileLength)
+	nBytesWrite = fwrite(pFilePointer, 1, (size_t)FileSize, Stream);
+	if (nBytesWrite != FileSize)
 	{
 		ErrorCode = CAPI_ERROR_ACCESS_DENIED;
 		goto exit_func;
@@ -159,10 +159,10 @@ void SetupFilePath(STRING* pFilePath, const STRING* pDirectory, const STRING* pF
 void Load_TestImage(TEST_IMAGE_DATA* TestImage, BOOL FailTest)
 {
 	void* pFileData;
-	U64 FileLength;
+	U64 FileSize;
 	I32 ErrorCode;
 
-	pFileData = LoadFile(TestImage->FilePath, &FileLength);
+	pFileData = LoadFile(TestImage->FilePath, &FileSize);
 	if (pFileData == 0)
 	{
 		TestApp_OutMessage(STR("ERROR: LoadFile failed to load "), FALSE);
@@ -172,7 +172,7 @@ void Load_TestImage(TEST_IMAGE_DATA* TestImage, BOOL FailTest)
 
 	if (FailTest == FALSE)
 	{
-		ErrorCode = capi_LoadImageFromMemory(&TestImage->TestImage, IMAGE_DEFAULT_ALIGNMENT, pFileData, FileLength);
+		ErrorCode = capi_LoadImageFromMemory(&TestImage->TestImage, IMAGE_DEFAULT_ALIGNMENT, pFileData, FileSize);
 		if (ErrorCode != CAPI_ERROR_NONE)
 		{
 			TestApp_OutMessage(STR("ERROR: capi_LoadImageFromMemory failed to load "), FALSE);
@@ -181,7 +181,7 @@ void Load_TestImage(TEST_IMAGE_DATA* TestImage, BOOL FailTest)
 	}
 	else
 	{
-		ErrorCode = capi_LoadImageFromMemory(&TestImage->TestImage, IMAGE_DEFAULT_ALIGNMENT, pFileData, FileLength);
+		ErrorCode = capi_LoadImageFromMemory(&TestImage->TestImage, IMAGE_DEFAULT_ALIGNMENT, pFileData, FileSize);
 		if (ErrorCode == CAPI_ERROR_NONE)
 		{
 			TestApp_OutMessage(STR("ERROR: capi_LoadImageFromMemory had a FALSE success with "), FALSE);
