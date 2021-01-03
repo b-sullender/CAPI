@@ -36,6 +36,10 @@
 #include "zlib-1.2.11/zlib.h"
 #include "jpeg-9d/jpeglib.h"
 
+#ifndef BIT
+#define BIT(n) (1LL << n)
+#endif
+
 #define capi_malloc(n) malloc(n)
 #define capi_realloc(addr, newSize) realloc(addr, newSize)
 #define capi_free(addr) free(addr)
@@ -63,9 +67,11 @@
 #define CAPI_EXPORT_API
 #endif
 #ifdef __i386__
+#define CAPI_BIT_LENGTH 32
 #define CAPI_PROC __attribute__ ((stdcall))
 #endif
 #ifdef __amd64__
+#define CAPI_BIT_LENGTH 64
 #define CAPI_PROC __attribute__ ((sysv_abi))
 #endif
 #endif
@@ -78,9 +84,11 @@
 #define CAPI_EXPORT_API __declspec(dllimport)
 #endif
 #ifdef _M_IX86
+#define CAPI_BIT_LENGTH 32
 #define CAPI_PROC __stdcall
 #endif
 #ifdef _M_AMD64
+#define CAPI_BIT_LENGTH 64
 #define CAPI_PROC __fastcall
 #endif
 #endif
@@ -147,6 +155,9 @@ typedef UTF16 STRING;
 #define capi_StrFindStrInsensitive capi_StrFindStrInsensitiveW
 #define capi_StrSplit capi_StrSplitW
 #define capi_StrReverse capi_StrReverseW
+#define capi_PrintHex capi_PrintHexW
+#define capi_PrintUnsigned capi_PrintUnsignedW
+#define capi_PrintSigned capi_PrintSignedW
 #else
 typedef UTF8 STRING;
 #define STR(String) String
@@ -163,6 +174,9 @@ typedef UTF8 STRING;
 #define capi_StrFindStrInsensitive capi_StrFindStrInsensitiveU
 #define capi_StrSplit capi_StrSplitU
 #define capi_StrReverse capi_StrReverseU
+#define capi_PrintHex capi_PrintHexU
+#define capi_PrintUnsigned capi_PrintUnsignedU
+#define capi_PrintSigned capi_PrintSignedU
 #endif
 
 /* MACROS FOR READING BIG ENDIAN & LITTLE ENDIAN */
@@ -222,6 +236,28 @@ typedef UTF8 STRING;
 
 #define CAPI_ERROR_OUT_OF_MEMORY              7
 #define CAPI_ERROR_INVALID_FILE_FORMAT        8
+
+/* PRINT (TO STRING) FLAGS */
+
+#define PRINT_POSITIVE      BIT(11)                       // Prints a plus sign ('+') if the value is positive
+#define PRINT_HEX           BIT(12)                       // Print in hexadecimal format (signed values are printed as signed hexadecimal)
+#define PRINT_x_PREFIX      BIT(13)                       // "0x" printed to indicate hexadecimal format
+#define PRINT_X_PREFIX      (BIT(13)|BIT(14))             // "0X" printed to indicate hexadecimal format
+#define PRINT_h_PREFIX      (BIT(13)|BIT(15))             // '0' printed, 'h' appended to indicate hexadecimal format
+#define PRINT_H_PREFIX      (BIT(13)|BIT(14)|BIT(15))     // '0' printed, 'H' appended to indicate hexadecimal format
+#define PRINT_UPPERCASE     BIT(16)                       // Hexadecimal characters a, b, c, d, e and f are printed in uppercase
+#define PRINT_LZEROS        BIT(17)                       // Leading zeros of the hexadecimal format are printed
+#define PRINT_COMMA         BIT(13)                       // Mark place of thousands with Comma
+#define PRINT_PERIOD        BIT(14)                       // Mark place of thousands with Period
+#define PRINT_SPACE         (BIT(13)|BIT(14))             // Mark place of thousands with Space
+#define PRINT_FCAP          BIT(17)                       // "inf" and "qnan"/"snan" is capitalized
+#define PRINT_PAYLOAD       BIT(18)                       // Print the mantissa in 2s complement form following a decimal point when qnan/snan is the output
+#define PRINT_e_ENABLE      BIT(19)                       // Enable scientific notation printing with 'e' when possible
+#define PRINT_E_ENABLE      (BIT(19)|BIT(20))             // Same as PRINT_e_ENABLE except 'E' is used instead of 'e'
+#define PRINT_DP_COMMA      BIT(21)                       // Print the decimal point marker as a Comma instead of a Period. Thousands place marked with a period or space
+#define PRINT_ZEROF         BIT(22)                       // Append ".0" if the fraction is zero. Ignored if PRINT_EXACT is used with a value of zero
+#define PRINT_MAX(n)        (n << 24)                     // Truncate when fraction digits are greater than (n). Ignored when (n) is zero
+#define PRINT_EXACT(n)      (BIT(23)|(n << 24))           // Append '0' until fraction digits equal (n). Truncate when fraction digits are greater than (n). No decimal point if (n) is zero
 
 /* STRUTURES */
 
@@ -397,6 +433,190 @@ extern "C" {
 	*
 	*/
 	CAPI_FUNC(void) capi_memset32(void* pDestination, U32 Value, size_t nDwords);
+
+	//  capi_AddReturnCarry - Add to a variable of flexible length (arithmetic.c)
+	//      pAugend [Pointer to the Augend]
+	//      Addend [Value to add]
+	//      Count [Number of elements in the Augend array] This is the size of the variable
+	//  returns the carry flag
+	CAPI_FUNC(size_t) capi_AddReturnCarry(size_t* pAugend, size_t Addend, size_t Count);
+
+	//  capi_AddReturnCarryEx - Add to a variable of flexible length with a variable of the same size (arithmetic.c)
+	//      pAugend [Pointer to the Augend]
+	//      pAddend [Pointer to the Addend]
+	//      Count [Number of elements in the Augend array] This is the size of the variable
+	//  returns the carry flag
+	CAPI_FUNC(size_t) capi_AddReturnCarryEx(size_t* pAugend, size_t* pAddend, size_t Count);
+
+	//  capi_SubReturnBorrow - Subtract from a variable of flexible length (arithmetic.c)
+	//      pMinuend [Pointer to the Minuend]
+	//      Subtrahend [Value to subtract]
+	//      Count [Number of elements in the Minuend array] This is the size of the variable
+	//  returns the borrow flag
+	CAPI_FUNC(size_t) capi_SubReturnBorrow(size_t* pMinuend, size_t Subtrahend, size_t Count);
+
+	//  capi_SubReturnBorrowEx - Subtract from a variable of flexible length with a variable of the same size (arithmetic.c)
+	//      pMinuend [Pointer to the Minuend]
+	//      pSubtrahend [Pointer to the Subtrahend]
+	//      Count [Number of elements in the Minuend array] This is the size of the variable
+	//  returns the borrow flag
+	CAPI_FUNC(size_t) capi_SubReturnBorrowEx(size_t* pMinuend, size_t* pSubtrahend, size_t Count);
+
+	//  capi_DivReturnRemainder - Divide a variable of flexible length (arithmetic.c)
+	//      pDividend [Pointer to the Dividend]
+	//      Divisor [The divisor to use]
+	//      Count [Number of elements in the Dividend array] This is the size of the variable
+	//  returns the remainder
+	CAPI_FUNC(size_t) capi_DivReturnRemainder(size_t* pDividend, size_t Divisor, size_t Count);
+
+	//  capi_MulReturnOverflow - Multiply a variable of flexible length (arithmetic.c)
+	//      pMultiplicand [Pointer to the Multiplicand]
+	//      Multiplier [The multiplier to use]
+	//      Count [Number of elements in the Multiplicand array] This is the size of the variable
+	//  returns the overflow
+	CAPI_FUNC(size_t) capi_MulReturnOverflow(size_t* pMultiplicand, size_t Multiplier, size_t Count);
+
+	//  capi_Negate - Negate a variable of flexible length (bitwise.c)
+	//      pValue [Pointer to the variable to negate]
+	//      Count [Number of elements in the variable array] This is the size of the variable
+	CAPI_FUNC(void) capi_Negate(size_t* pValue, size_t Count);
+
+	//  capi_CountLZ - Count the leading zeros of a variable of flexible length (bitwise.c)
+	//      pValue [Pointer to the variable]
+	//      Count [Number of elements in the variable array] This is the size of the variable
+	//  returns the count of leading zeros
+	CAPI_FUNC(size_t) capi_CountLZ(size_t* pValue, size_t Count);
+
+	//  capi_CountL1 - Count the leading ones of a variable of flexible length (bitwise.c)
+	//      pValue [Pointer to the variable]
+	//      Count [Number of elements in the variable array] This is the size of the variable
+	//  returns the count of leading ones
+	CAPI_FUNC(size_t) capi_CountL1(size_t* pValue, size_t Count);
+
+	//  capi_CountTZ - Count the trailing zeros of a variable of flexible length (bitwise.c)
+	//      pValue [Pointer to the variable]
+	//      Count [Number of elements in the variable array] This is the size of the variable
+	//  returns the count of trailing zeros
+	CAPI_FUNC(size_t) capi_CountTZ(size_t* pValue, size_t Count);
+
+	//  capi_CountT1 - Count the trailing ones of a variable of flexible length (bitwise.c)
+	//      pValue [Pointer to the variable]
+	//      Count [Number of elements in the variable array] This is the size of the variable
+	//  returns the count of trailing ones
+	CAPI_FUNC(size_t) capi_CountT1(size_t* pValue, size_t Count);
+
+	//  capi_TestForZero - Test a variable of flexible length for zero (compare.c)
+	//      pData [Pointer to the variable]
+	//      Count [Number of elements in the variable array] This is the size of the variable
+	//  returns the first element in the array that is non-zero, or zero if all elements are zero
+	CAPI_FUNC(size_t) capi_TestForZero(size_t* pData, size_t Count);
+
+	//  capi_Compare - Compare variables of flexible length (compare.c)
+	//      pOperand1 [Pointer to the first Operand]
+	//      pOperand2 [Pointer to the second Operand]
+	//      Count [Number of elements in the variables array] This is the size of the variables
+	//  The return value indicates the ordinal relation of Operand1 to Operand2
+	//      < 0  Operand1 is less than Operand2
+	//        0  Operand1 is identical to Operand2
+	//      > 0  Operand1 is greater than Operand2
+	CAPI_FUNC(I8) capi_Compare(size_t* pOperand1, size_t* pOperand2, size_t Count);
+
+	//  capi_ZeroExtend - Zero extend a variable to a variable of flexible length (extend.c)
+	//      pDestination [Pointer to the destination of the extended variable]
+	//      Count [Number of elements in the destination variable array] This is the size of the variable
+	//      pSource [Pointer to the source variable to extend]
+	//      nBytes [The size in bytes of the source variable]
+	CAPI_FUNC(void) capi_ZeroExtend(size_t* pDestination, size_t Count, void* pSource, size_t nBytes);
+
+	//  capi_SignExtend - Sign extend a variable to a variable of flexible length (extend.c)
+	//      pDestination [Pointer to the destination of the extended variable]
+	//      Count [Number of elements in the destination variable array] This is the size of the variable
+	//      pSource [Pointer to the source variable to extend]
+	//      nBytes [The size in bytes of the source variable]
+	CAPI_FUNC(void) capi_SignExtend(size_t* pDestination, size_t Count, void* pSource, size_t nBytes);
+
+	//  capi_mul64 - Perform a unsigned 64-bit multiply (int64.c)
+	//      pResult [Pointer to a U128 variable to receive the result]
+	//      A [Unsigned value to multiply]
+	//      B [Unsigned value to multiply]
+	CAPI_FUNC(void) capi_mul64(U128* pResult, U64 A, U64 B);
+
+	//  capi_imul64 - Perform a signed 64-bit multiply (int64.c)
+	//      pResult [Pointer to a I128 variable to receive the result]
+	//      A [Signed value to multiply]
+	//      B [Signed value to multiply]
+	CAPI_FUNC(void) capi_imul64(I128* pResult, I64 A, I64 B);
+
+	//  capi_shl128 - Perform a 128-bit shift left (signed and unsigned are identical) (int128.c)
+	//      pValue [Pointer to a 128-bit variable to shift left]
+	//      N [The number of bits to shift left by]
+	CAPI_FUNC(void) capi_shl128(U128* pValue, U32 N);
+
+	//  capi_shr128 - Perform a unsigned 128-bit shift right (int128.c)
+	//      pValue [Pointer to a 128-bit variable to shift right]
+	//      N [The number of bits to shift right by]
+	CAPI_FUNC(void) capi_shr128(U128* pValue, U32 N);
+
+	//  capi_sar128 - Perform a signed 128-bit shift right (int128.c)
+	//      pValue [Pointer to a 128-bit variable to shift right]
+	//      N [The number of bits to shift right by]
+	CAPI_FUNC(void) capi_sar128(I128* pValue, U32 N);
+
+	//  capi_div128 - Perform a unsigned 128-bit divide (int128.c)
+	//      pQuotient [Pointer to a unsigned 128-bit variable to receive the quotient]
+	//      pDividend [Pointer to a unsigned 128-bit dividend]
+	//      pDivisor [Pointer to a unsigned 128-bit divisor]
+	CAPI_FUNC(void) capi_div128(U128* pQuotient, U128* pDividend, U128* pDivisor);
+
+	//  capi_idiv128 - Perform a signed 128-bit divide (int128.c)
+	//      pQuotient [Pointer to a signed 128-bit variable to receive the quotient]
+	//      pDividend [Pointer to a signed 128-bit dividend]
+	//      pDivisor [Pointer to a signed 128-bit divisor]
+	CAPI_FUNC(void) capi_idiv128(I128* pQuotient, I128* pDividend, I128* pDivisor);
+
+	//  capi_dvrm128 - Perform a unsigned 128-bit divide with remainder (int128.c)
+	//      pQuotient [Pointer to a unsigned 128-bit variable to receive the quotient]
+	//      pRemainder [Pointer to a unsigned 128-bit variable to receive the remainder]
+	//      pDividend [Pointer to a unsigned 128-bit dividend]
+	//      pDivisor [Pointer to a unsigned 128-bit divisor]
+	CAPI_FUNC(void) capi_dvrm128(U128* pQuotient, U128* pRemainder, U128* pDividend, U128* pDivisor);
+
+	//  capi_idvrm128 - Perform a signed 128-bit divide with remainder (int128.c)
+	//      pQuotient [Pointer to a signed 128-bit variable to receive the quotient]
+	//      pRemainder [Pointer to a signed 128-bit variable to receive the remainder]
+	//      pDividend [Pointer to a signed 128-bit dividend]
+	//      pDivisor [Pointer to a signed 128-bit divisor]
+	CAPI_FUNC(void) capi_idvrm128(I128* pQuotient, I128* pRemainder, I128* pDividend, I128* pDivisor);
+
+	//  capi_rem128 - Perform a unsigned 128-bit remainder (int128.c)
+	//      pRemainder [Pointer to a unsigned 128-bit variable to receive the remainder]
+	//      pDividend [Pointer to a unsigned 128-bit dividend]
+	//      pDivisor [Pointer to a unsigned 128-bit divisor]
+	CAPI_FUNC(void) capi_rem128(U128* pRemainder, U128* pDividend, U128* pDivisor);
+
+	//  capi_irem128 - Perform a signed 128-bit remainder (int128.c)
+	//      pRemainder [Pointer to a signed 128-bit variable to receive the remainder]
+	//      pDividend [Pointer to a signed 128-bit dividend]
+	//      pDivisor [Pointer to a signed 128-bit divisor]
+	CAPI_FUNC(void) capi_irem128(I128* pRemainder, I128* pDividend, I128* pDivisor);
+
+	//  capi_llmul128 - Perform a 128-bit multiply (signed and unsigned are identical) (int128.c)
+	//      p128 [Pointer to a 128-bit variable to receive the result]
+	//      pA [Pointer to a 128-bit variable to multiply]
+	//      pB [Pointer to a 128-bit variable to multiply]
+	CAPI_FUNC(void) capi_llmul128(U128* p128, U128* pA, U128* pB);
+
+	//  capi_mul128 - Perform a unsigned 128-bit multiply (int128.c)
+	//      p256 [Pointer to a U256 variable to receive the result]
+	//      pA [Pointer to a U128 variable to multiply]
+	//      pB [Pointer to a U128 variable to multiply]
+	CAPI_FUNC(void) capi_mul128(U256* p256, U128* pA, U128* pB);
+
+	//  capi_imul128 - Perform a signed 128-bit multiply (int128.c)
+	//      p256 [Pointer to a I256 variable to receive the result]
+	//      pA [Pointer to a I128 variable to multiply]
+	//      pB [Pointer to a I128 variable to multiply]
+	CAPI_FUNC(void) capi_imul128(I256* p256, I128* pA, I128* pB);
 
 	/*
 	*
@@ -1419,6 +1639,84 @@ extern "C" {
 	*
 	*/
 	CAPI_FUNC(size_t) capi_UTF32_To_UTF16(UTF16* Destination, size_t Length, const UTF32* Source);
+
+	/*
+	*
+	capi_PrintHexA - Convert a data variable to its hexadecimal ASCII string representation (hexadecimal.c)
+	* pBuffer [Pointer to the destination string buffer]
+	* Length [Length of the destination string buffer in ASCII units]
+	* pValue [Pointer to the data variable to convert]
+	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	* returns the number of characters written to the Destination buffer, not including the terminating null character
+	* If there is no null terminator within Length, then Length is returned to indicate the error condition
+	* -1 is returned for an invalid parameter
+	*
+	*/
+	CAPI_FUNC(size_t) capi_PrintHexA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	/*
+	*
+	capi_PrintHexU - Convert a data variable to its hexadecimal UTF8 string representation (hexadecimal.c)
+	* pBuffer [Pointer to the destination string buffer]
+	* Length [Length of the destination string buffer in UTF8 units]
+	* pValue [Pointer to the data variable to convert]
+	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	* returns the number of characters written to the Destination buffer, not including the terminating null character
+	* If there is no null terminator within Length, then Length is returned to indicate the error condition
+	* -1 is returned for an invalid parameter
+	*
+	*/
+	CAPI_FUNC(size_t) capi_PrintHexU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	/*
+	*
+	capi_PrintHexW - Convert a data variable to its hexadecimal UTF16 string representation (hexadecimal.c)
+	* pBuffer [Pointer to the destination string buffer]
+	* Length [Length of the destination string buffer in UTF16 units]
+	* pValue [Pointer to the data variable to convert]
+	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	* returns the number of characters written to the Destination buffer, not including the terminating null character
+	* If there is no null terminator within Length, then Length is returned to indicate the error condition
+	* -1 is returned for an invalid parameter
+	*
+	*/
+	CAPI_FUNC(size_t) capi_PrintHexW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	/*
+	*
+	capi_PrintHexL - Convert a data variable to its hexadecimal UTF32 string representation (hexadecimal.c)
+	* pBuffer [Pointer to the destination string buffer]
+	* Length [Length of the destination string buffer in UTF32 units]
+	* pValue [Pointer to the data variable to convert]
+	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	* returns the number of characters written to the Destination buffer, not including the terminating null character
+	* If there is no null terminator within Length, then Length is returned to indicate the error condition
+	* -1 is returned for an invalid parameter
+	*
+	*/
+	CAPI_FUNC(size_t) capi_PrintHexL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	// **** print.c **** //
+
+	CAPI_FUNC(size_t) capi_PrintUnsignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	CAPI_FUNC(size_t) capi_PrintSignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	CAPI_FUNC(size_t) capi_PrintUnsignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	CAPI_FUNC(size_t) capi_PrintSignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	CAPI_FUNC(size_t) capi_PrintUnsignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	CAPI_FUNC(size_t) capi_PrintSignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	CAPI_FUNC(size_t) capi_PrintUnsignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+
+	CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
 #ifdef __cplusplus
 }

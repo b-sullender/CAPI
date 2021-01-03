@@ -1140,6 +1140,511 @@ void Window_Paint_Handler(THREAD_WINDOW* thisWindow, IMAGE* pDisplay)
 	}
 }
 
+void TestInt128()
+{
+	U128 au128_1, au128_2, rm;
+	I128 ai128_1, ai128_2, irm;
+	U256 au256;
+	I256 ai256;
+
+	au128_1.Lo = 0xF;
+	au128_1.Hi = 0;
+
+	capi_shl128(&au128_1, 16);
+	if ((au128_1.Lo != 0xF0000) || (au128_1.Hi != 0)) TestApp_OutMessage(STR("capi_shl128 test #1 failed"), TRUE);
+
+	au128_1.Lo = 0x800000000000000F;
+	au128_1.Hi = 0xF;
+
+	capi_shl128(&au128_1, 32);
+	if ((au128_1.Lo != 0xF00000000) || (au128_1.Hi != 0xF80000000)) TestApp_OutMessage(STR("capi_shl128 test #2 failed"), TRUE);
+
+	au128_1.Lo = 0xF;
+	au128_1.Hi = 0xF;
+
+	capi_shl128(&au128_1, 64);
+	if ((au128_1.Lo != 0) || (au128_1.Hi != 0xF)) TestApp_OutMessage(STR("capi_shl128 test #3 failed"), TRUE);
+
+	au128_1.Lo = 0xF;
+	au128_1.Hi = 0;
+
+	capi_shl128(&au128_1, 127);
+	if ((au128_1.Lo != 0) || (au128_1.Hi != 0x8000000000000000)) TestApp_OutMessage(STR("capi_shl128 test #4 failed"), TRUE);
+
+	au128_1.Lo = 0xF100000000000000;
+	au128_1.Hi = 0xFAB0000C000000DE;
+
+	capi_shr128(&au128_1, 52);
+	if ((au128_1.Lo != 0xC000000DEF10) || (au128_1.Hi != 0x0000000000000FAB)) TestApp_OutMessage(STR("capi_shr128 test #1 failed"), TRUE);
+
+	au128_1.Lo = 0xF100000000000000;
+	au128_1.Hi = 0xF000000000000000;
+
+	capi_shr128(&au128_1, 128);
+	if ((au128_1.Lo != 0x0) || (au128_1.Hi != 0x0)) TestApp_OutMessage(STR("capi_shr128 test #2 failed"), TRUE);
+
+	au128_1.Lo = 0xF100000000000000;
+	au128_1.Hi = 0xFAB0000C000000DE;
+
+	capi_shr128(&au128_1, 80);
+	if ((au128_1.Lo != 0x0000FAB0000C0000) || (au128_1.Hi != 0x0)) TestApp_OutMessage(STR("capi_shr128 test #3 failed"), TRUE);
+
+	au128_1.Lo = 0xF100000000000000;
+	au128_1.Hi = 0xFAB0000C000000DE;
+
+	capi_shr128(&au128_1, 64);
+	if ((au128_1.Lo != 0xFAB0000C000000DE) || (au128_1.Hi != 0x0)) TestApp_OutMessage(STR("capi_shr128 test #4 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x8AB0000C000000DE;
+
+	capi_sar128(&ai128_1, 52);
+	if ((ai128_1.Lo != 0xC000000DEF10) || (ai128_1.Hi != 0xFFFFFFFFFFFFF8AB)) TestApp_OutMessage(STR("capi_sar128 test #1 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x8000000000000000;
+
+	capi_sar128(&ai128_1, 128);
+	if ((ai128_1.Lo != 0xFFFFFFFFFFFFFFFF) || (ai128_1.Hi != 0xFFFFFFFFFFFFFFFF)) TestApp_OutMessage(STR("capi_sar128 test #2 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x8AB0000C000000DE;
+
+	capi_sar128(&ai128_1, 80);
+	if ((ai128_1.Lo != 0xFFFF8AB0000C0000) || (ai128_1.Hi != 0xFFFFFFFFFFFFFFFF)) TestApp_OutMessage(STR("capi_sar128 test #3 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x8AB0000C000000DE;
+
+	capi_sar128(&ai128_1, 64);
+	if ((ai128_1.Lo != 0x8AB0000C000000DE) || (ai128_1.Hi != 0xFFFFFFFFFFFFFFFF)) TestApp_OutMessage(STR("capi_sar128 test #4 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x7AB0000C000000DE;
+
+	capi_sar128(&ai128_1, 52);
+	if ((ai128_1.Lo != 0xC000000DEF10) || (ai128_1.Hi != 0x00000000000007AB)) TestApp_OutMessage(STR("capi_sar128 test #5 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x7000000000000000;
+
+	capi_sar128(&ai128_1, 128);
+	if ((ai128_1.Lo != 0x0) || (ai128_1.Hi != 0x0)) TestApp_OutMessage(STR("capi_sar128 test #6 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x7AB0000C000000DE;
+
+	capi_sar128(&ai128_1, 80);
+	if ((ai128_1.Lo != 0x00007AB0000C0000) || (ai128_1.Hi != 0x0)) TestApp_OutMessage(STR("capi_sar128 test #7 failed"), TRUE);
+
+	ai128_1.Lo = 0xF100000000000000;
+	ai128_1.Hi = 0x7AB0000C000000DE;
+
+	capi_sar128(&ai128_1, 64);
+	if ((ai128_1.Lo != 0x7AB0000C000000DE) || (ai128_1.Hi != 0x0)) TestApp_OutMessage(STR("capi_sar128 test #8 failed"), TRUE);
+
+	au128_1.Lo = 1766038981;
+	au128_1.Hi = 0;
+	au128_2.Lo = 78137120;
+	au128_2.Hi = 0;
+
+	capi_div128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 22) || (au128_1.Hi != 0)) TestApp_OutMessage(STR("capi_div128 test #1 failed"), TRUE);
+
+	au128_1.Lo = 9223372036854775807;
+	au128_1.Hi = 0;
+	au128_2.Lo = 2;
+	au128_2.Hi = 0;
+
+	capi_div128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 4611686018427387903) || (au128_1.Hi != 0)) TestApp_OutMessage(STR("capi_div128 test #2 failed"), TRUE);
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 1;
+	au128_2.Hi = 0;
+
+	capi_div128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 0xFFFFFFFFFFFFFFFF) || (au128_1.Hi != 0xFFFFFFFFFFFFFFFF)) TestApp_OutMessage(STR("capi_div128 test #3 failed"), TRUE);
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 0xFFFFFFFFFFFFFFFF;
+
+	capi_div128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 1) || (au128_1.Hi != 0)) TestApp_OutMessage(STR("capi_div128 test #4 failed"), TRUE);
+
+	ai128_1.Lo = 1766038981;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = 78137120;
+	ai128_2.Hi = 0;
+
+	capi_idiv128(&ai128_1, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 22) || (ai128_1.Hi != 0)) TestApp_OutMessage(STR("capi_idiv128 test #1 failed"), TRUE);
+
+	ai128_1.Lo = 9223372036854775807;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = 2;
+	ai128_2.Hi = 0;
+
+	capi_idiv128(&ai128_1, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 4611686018427387903) || (ai128_1.Hi != 0)) TestApp_OutMessage(STR("capi_idiv128 test #2 failed"), TRUE);
+
+	ai128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Lo = 1;
+	ai128_2.Hi = 0;
+
+	capi_idiv128(&ai128_1, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 0xFFFFFFFFFFFFFFFF) || (ai128_1.Hi != 0xFFFFFFFFFFFFFFFF)) TestApp_OutMessage(STR("capi_idiv128 test #3 failed"), TRUE);
+
+	ai128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Hi = 0xFFFFFFFFFFFFFFFF;
+
+	capi_idiv128(&ai128_1, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 1) || (ai128_1.Hi != 0)) TestApp_OutMessage(STR("capi_idiv128 test #4 failed"), TRUE);
+
+	ai128_1.Lo = 9289367621;
+	ai128_1.Hi = 0xF862E3A880B27537;
+	ai128_2.Lo = 7452;
+	ai128_2.Hi = 1743127;
+
+	capi_idiv128(&ai128_1, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != -314736615136) || (ai128_1.Hi != -1)) TestApp_OutMessage(STR("capi_idiv128 test #5 failed"), TRUE);
+
+	au128_1.Lo = 1766038981;
+	au128_1.Hi = 0;
+	au128_2.Lo = 78137120;
+	au128_2.Hi = 0;
+
+	capi_dvrm128(&au128_1, &rm, &au128_1, &au128_2);
+	if ((au128_1.Lo != 22) || (au128_1.Hi != 0) || (rm.Lo != 0x2CD8105) || (rm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_dvrm128 test #1 failed"), TRUE);
+	}
+
+	au128_1.Lo = 9223372036854775807;
+	au128_1.Hi = 0;
+	au128_2.Lo = 2;
+	au128_2.Hi = 0;
+
+	capi_dvrm128(&au128_1, &rm, &au128_1, &au128_2);
+	if ((au128_1.Lo != 4611686018427387903) || (au128_1.Hi != 0) || (rm.Lo != 1) || (rm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_dvrm128 test #2 failed"), TRUE);
+	}
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 1;
+	au128_2.Hi = 0;
+
+	capi_dvrm128(&au128_1, &rm, &au128_1, &au128_2);
+	if ((au128_1.Lo != 0xFFFFFFFFFFFFFFFF) || (au128_1.Hi != 0xFFFFFFFFFFFFFFFF) || (rm.Lo != 0) || (rm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_dvrm128 test #3 failed"), TRUE);
+	}
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 0xFFFFFFFFFFFFFFFF;
+
+	capi_dvrm128(&au128_1, &rm, &au128_1, &au128_2);
+	if ((au128_1.Lo != 1) || (au128_1.Hi != 0) || (rm.Lo != 0) || (rm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_dvrm128 test #4 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 1766038981;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = 78137120;
+	ai128_2.Hi = 0;
+
+	capi_idvrm128(&ai128_1, &irm, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 22) || (ai128_1.Hi != 0) || (irm.Lo != 0x2CD8105) || (irm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_idvrm128 test #1 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 9223372036854775807;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = 2;
+	ai128_2.Hi = 0;
+
+	capi_idvrm128(&ai128_1, &irm, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 4611686018427387903) || (ai128_1.Hi != 0) || (irm.Lo != 1) || (irm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_idvrm128 test #2 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Lo = 1;
+	ai128_2.Hi = 0;
+
+	capi_idvrm128(&ai128_1, &irm, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 0xFFFFFFFFFFFFFFFF) || (ai128_1.Hi != 0xFFFFFFFFFFFFFFFF) || (irm.Lo != 0) || (irm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_idvrm128 test #3 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Hi = 0xFFFFFFFFFFFFFFFF;
+
+	capi_idvrm128(&ai128_1, &irm, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != 1) || (ai128_1.Hi != 0) || (irm.Lo != 0) || (irm.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_idvrm128 test #4 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 9289367621;
+	ai128_1.Hi = 0xF862E3A880B27537;
+	ai128_2.Lo = 7452;
+	ai128_2.Hi = 1743127;
+
+	capi_idvrm128(&ai128_1, &irm, &ai128_1, &ai128_2);
+	if ((ai128_1.Lo != -314736615136) || (ai128_1.Hi != -1) || (irm.Lo != 0x855272C1540C5) || (irm.Hi != 0xFFFFFFFFFFF99B57))
+	{
+		TestApp_OutMessage(STR("capi_idvrm128 test #5 failed"), TRUE);
+	}
+
+	au128_1.Lo = 1766038981;
+	au128_1.Hi = 0;
+	au128_2.Lo = 78137120;
+	au128_2.Hi = 0;
+
+	capi_rem128(&rm, &au128_1, &au128_2);
+	if ((rm.Lo != 0x2CD8105) || (rm.Hi != 0)) TestApp_OutMessage(STR("capi_rem128 test #1 failed"), TRUE);
+
+	au128_1.Lo = 9223372036854775807;
+	au128_1.Hi = 0;
+	au128_2.Lo = 2;
+	au128_2.Hi = 0;
+
+	capi_rem128(&rm, &au128_1, &au128_2);
+	if ((rm.Lo != 1) || (rm.Hi != 0)) TestApp_OutMessage(STR("capi_rem128 test #2 failed"), TRUE);
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 1;
+	au128_2.Hi = 0;
+
+	capi_rem128(&rm, &au128_1, &au128_2);
+	if ((rm.Lo != 0) || (rm.Hi != 0)) TestApp_OutMessage(STR("capi_rem128 test #3 failed"), TRUE);
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 0xFFFFFFFFFFFFFFFF;
+
+	capi_rem128(&rm, &au128_1, &au128_2);
+	if ((rm.Lo != 0) || (rm.Hi != 0)) TestApp_OutMessage(STR("capi_rem128 test #4 failed"), TRUE);
+
+	ai128_1.Lo = 1766038981;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = 78137120;
+	ai128_2.Hi = 0;
+
+	capi_irem128(&irm, &ai128_1, &ai128_2);
+	if ((irm.Lo != 0x2CD8105) || (irm.Hi != 0)) TestApp_OutMessage(STR("capi_irem128 test #1 failed"), TRUE);
+
+	ai128_1.Lo = 9223372036854775807;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = 2;
+	ai128_2.Hi = 0;
+
+	capi_irem128(&irm, &ai128_1, &ai128_2);
+	if ((irm.Lo != 1) || (irm.Hi != 0)) TestApp_OutMessage(STR("capi_irem128 test #2 failed"), TRUE);
+
+	ai128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Lo = 1;
+	ai128_2.Hi = 0;
+
+	capi_irem128(&irm, &ai128_1, &ai128_2);
+	if ((irm.Lo != 0) || (irm.Hi != 0)) TestApp_OutMessage(STR("capi_irem128 test #3 failed"), TRUE);
+
+	ai128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	ai128_2.Hi = 0xFFFFFFFFFFFFFFFF;
+
+	capi_irem128(&irm, &ai128_1, &ai128_2);
+	if ((irm.Lo != 0) || (irm.Hi != 0)) TestApp_OutMessage(STR("capi_irem128 test #4 failed"), TRUE);
+
+	ai128_1.Lo = 9289367621;
+	ai128_1.Hi = 0xF862E3A880B27537;
+	ai128_2.Lo = 7452;
+	ai128_2.Hi = 1743127;
+
+	capi_irem128(&irm, &ai128_1, &ai128_2);
+	if ((irm.Lo != 0x855272C1540C5) || (irm.Hi != 0xFFFFFFFFFFF99B57)) TestApp_OutMessage(STR("capi_irem128 test #5 failed"), TRUE);
+
+	au128_1.Lo = 500390625;
+	au128_1.Hi = 0;
+	au128_2.Lo = 250000000;
+	au128_2.Hi = 0;
+
+	capi_llmul128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 125097656250000000) || (au128_1.Hi != 0)) TestApp_OutMessage(STR("capi_llmul128 test #1 failed"), TRUE);
+
+	au128_1.Lo = 594997376485763;
+	au128_1.Hi = 0;
+	au128_2.Lo = -24221170119;
+	au128_2.Hi = -1;
+
+	capi_llmul128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 4578109304905035819) || (au128_1.Hi != 18446744073708770365)) TestApp_OutMessage(STR("capi_llmul128 test #2 failed"), TRUE);
+
+	au128_1.Lo = 0x5BE1A8521961973A;
+	au128_1.Hi = 0x5BE1A8521961973A;
+	au128_2.Lo = 0x5BE1A8521961973A;
+	au128_2.Hi = 0x5BE1A8521961973A;
+
+	capi_llmul128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 0x6B7935E547497924) || (au128_1.Hi != 0xF7ECA05E3B9ACCFB)) TestApp_OutMessage(STR("capi_llmul128 test #3 failed"), TRUE);
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 1;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 1;
+
+	capi_llmul128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 1) || (au128_1.Hi != 0xFFFFFFFFFFFFFFFC)) TestApp_OutMessage(STR("capi_llmul128 test #4 failed"), TRUE);
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 1;
+
+	capi_llmul128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 1) || (au128_1.Hi != 0xFFFFFFFFFFFFFFFE)) TestApp_OutMessage(STR("capi_llmul128 test #5 failed"), TRUE);
+
+	au128_1.Lo = -1;
+	au128_1.Hi = -1;
+	au128_2.Lo = -1;
+	au128_2.Hi = -1;
+
+	capi_llmul128(&au128_1, &au128_1, &au128_2);
+	if ((au128_1.Lo != 1) || (au128_1.Hi != 0)) TestApp_OutMessage(STR("capi_llmul128 test #6 failed"), TRUE);
+
+	au128_1.Lo = 500390625;
+	au128_1.Hi = 0;
+	au128_2.Lo = 250000000;
+	au128_2.Hi = 0;
+
+	capi_mul128(&au256, &au128_1, &au128_2);
+	if ((au256.Lo.Lo != 125097656250000000) || (au256.Lo.Hi != 0) || (au256.Hi.Lo != 0) || (au256.Hi.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_mul128 test #1 failed"), TRUE);
+	}
+
+	au128_1.Lo = 594997376485763;
+	au128_1.Hi = 0;
+	au128_2.Lo = 250000000;
+	au128_2.Hi = 0;
+
+	capi_mul128(&au256, &au128_1, &au128_2);
+	if ((au256.Lo.Lo != -5200088953074231424) || (au256.Lo.Hi != 8063) || (au256.Hi.Lo != 0) || (au256.Hi.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_mul128 test #2 failed"), TRUE);
+	}
+
+	au128_1.Lo = 0x5BE1A8521961973A;
+	au128_1.Hi = 0x5BE1A8521961973A;
+	au128_2.Lo = 0x5BE1A8521961973A;
+	au128_2.Hi = 0x5BE1A8521961973A;
+
+	capi_mul128(&au256, &au128_1, &au128_2);
+	if ((au256.Lo.Lo != 0x6B7935E547497924) || (au256.Lo.Hi != 0xF7ECA05E3B9ACCFB) || (au256.Hi.Lo != 0xAD6D9F0CA1592E8A) || (au256.Hi.Hi != 0x20FA3493AD07DAB3))
+	{
+		TestApp_OutMessage(STR("capi_mul128 test #3 failed"), TRUE);
+	}
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 1;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 1;
+
+	capi_mul128(&au256, &au128_1, &au128_2);
+	if ((au256.Lo.Lo != 1) || (au256.Lo.Hi != 0xFFFFFFFFFFFFFFFC) || (au256.Hi.Lo != 3) || (au256.Hi.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_mul128 test #4 failed"), TRUE);
+	}
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 1;
+
+	capi_mul128(&au256, &au128_1, &au128_2);
+	if ((au256.Lo.Lo != 1) || (au256.Lo.Hi != 0xFFFFFFFFFFFFFFFE) || (au256.Hi.Lo != 0xFFFFFFFFFFFFFFFE) || (au256.Hi.Hi != 1))
+	{
+		TestApp_OutMessage(STR("capi_mul128 test #5 failed"), TRUE);
+	}
+
+	au128_1.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_1.Hi = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Lo = 0xFFFFFFFFFFFFFFFF;
+	au128_2.Hi = 0xFFFFFFFFFFFFFFFF;
+
+	capi_mul128(&au256, &au128_1, &au128_2);
+	if ((au256.Lo.Lo != 1) || (au256.Lo.Hi != 0) || (au256.Hi.Lo != 0xFFFFFFFFFFFFFFFE) || (au256.Hi.Hi != 0xFFFFFFFFFFFFFFFF))
+	{
+		TestApp_OutMessage(STR("capi_mul128 test #6 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 500390625;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = 250000000;
+	ai128_2.Hi = 0;
+
+	capi_imul128(&ai256, &ai128_1, &ai128_2);
+	if ((ai256.Lo.Lo != 125097656250000000) || (ai256.Lo.Hi != 0) || (ai256.Hi.Lo != 0) || (ai256.Hi.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_imul128 test #1 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 0x5BE1A8521961973A;
+	ai128_1.Hi = 0x5BE1A8521961973A;
+	ai128_2.Lo = 0x5BE1A8521961973A;
+	ai128_2.Hi = 0x5BE1A8521961973A;
+
+	capi_imul128(&ai256, &ai128_1, &ai128_2);
+	if ((ai256.Lo.Lo != 0x6B7935E547497924) || (ai256.Lo.Hi != 0xF7ECA05E3B9ACCFB) || (ai256.Hi.Lo != 0xAD6D9F0CA1592E8A) || (ai256.Hi.Hi != 0x20FA3493AD07DAB3))
+	{
+		TestApp_OutMessage(STR("capi_imul128 test #2 failed"), TRUE);
+	}
+
+	ai128_1.Lo = 9223372036854775807;
+	ai128_1.Hi = 0;
+	ai128_2.Lo = -9223369837829422521;
+	ai128_2.Hi = -1;
+
+	capi_imul128(&ai256, &ai128_1, &ai128_2);
+	if ((ai256.Lo.Lo != -2199025353287) || (ai256.Lo.Hi != -4611684918914711261) || (ai256.Hi.Lo != -1) || (ai256.Hi.Hi != -1))
+	{
+		TestApp_OutMessage(STR("capi_imul128 test #3 failed"), TRUE);
+	}
+
+	ai128_1.Lo = -1;
+	ai128_1.Hi = -1;
+	ai128_2.Lo = -1;
+	ai128_2.Hi = -1;
+
+	capi_imul128(&ai256, &ai128_1, &ai128_2);
+	if ((ai256.Lo.Lo != 1) || (ai256.Lo.Hi != 0) || (ai256.Hi.Lo != 0) || (ai256.Hi.Hi != 0))
+	{
+		TestApp_OutMessage(STR("capi_imul128 test #4 failed"), TRUE);
+	}
+}
+
 I32 ReadResolution(STRING* input, U32* pWidth, U32* pHeight)
 {
 	U32 I, charCnt;
@@ -1764,6 +2269,8 @@ ConsoleEntryPoint()
 	capi_Version(&pVersion);
 	TestApp_OutMessage(STR("welcome - CAPI ver "), FALSE);
 	TestApp_OutMessage(pVersion, TRUE);
+
+	TestInt128();
 
 	capi_memset(app_windows, 0, sizeof(THREAD_WINDOW) * MAX_THREAD_WINDOWS);
 

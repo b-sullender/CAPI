@@ -7,8 +7,8 @@ project ("CAPI")
 
 set(CMAKE_BUILD_TYPE Debug ... FORCE)
 
-message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 if (CMAKE_BUILD_TYPE MATCHES Debug)
+	message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 	if (UNIX)
 		set(CMAKE_C_FLAGS "-g2")
 #		set(CMAKE_CXX_FLAGS_DEBUG "-g")
@@ -38,6 +38,14 @@ file(GLOB capi_source_files
 	"Source/png.c"
 	"Source/ico.c"
 	"Source/strings.c"
+	"Source/arithmetic.c"
+	"Source/bitwise.c"
+	"Source/compare.c"
+	"Source/extend.c"
+	"Source/int64.c"
+	"Source/int128.c"
+	"Source/hexadecimal.c"
+	"Source/print.c"
 )
 
 file(GLOB zlib_header_files
