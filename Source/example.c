@@ -2036,6 +2036,8 @@ ConsoleEntryPoint()
 	TestApp_OutMessage(STR("welcome - CAPI ver "), FALSE);
 	TestApp_OutMessage(pVersion, TRUE);
 
+	TestInt128();
+
 	capi_memset(app_windows, 0, sizeof(THREAD_WINDOW) * MAX_THREAD_WINDOWS);
 
 enter_input_loop:

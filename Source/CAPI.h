@@ -318,17 +318,13 @@ PACK(STRUCT(ICO)
 	U16 nImages;
 });
 
-/*
-*
-PNG_PARAMETERS
-* CompressionMethod [PNG compression method] 0 = zlib
-* Level [The compression level] If CompressionMethod is set to (zlib) This may be any value 0-9 or one of the following constants:
-Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
-* FilterMethod [The filter method] 0 = filter method 0
-* InterlaceMethod [The interlace method] 0 = interlace method 0 (null method), 1 = interlace method 1 (Adam7 method)
-* IDAT_Size [The maximum size in bytes of the IDAT chunks] Values 0x20000 (128 KB) or 0x80000 (512 KB) are recommended
-*
-*/
+//  PNG_PARAMETERS
+//    CompressionMethod [PNG compression method] 0 = zlib
+//    Level [The compression level] If CompressionMethod is set to (zlib) This may be any value 0-9 or one of the following constants:
+//        Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
+//    FilterMethod [The filter method] 0 = filter method 0
+//    InterlaceMethod [The interlace method] 0 = interlace method 0 (null method), 1 = interlace method 1 (Adam7 method)
+//    IDAT_Size [The maximum size in bytes of the IDAT chunks] Values 0x20000 (128 KB) or 0x80000 (512 KB) are recommended
 STRUCT(PNG_PARAMETERS)
 {
 	U8 CompressionMethod;
@@ -342,96 +338,62 @@ STRUCT(PNG_PARAMETERS)
 extern "C" {
 #endif
 
-	/*
-	*
-	capi_VersionA - Gets CAPI Version (version.c)
-	* ppVersion [A pointer to a const char* to receive a pointer to the MULTI-BYTE version string] this can be 0/NULL
-	* returns the version as a U32 data type
-	*
-	*/
+	//  capi_VersionA - Get CAPI Version (version.c)
+	//      ppVersion [A pointer to a const char* to receive a pointer to the MULTI-BYTE version string] This can be 0
+	//  returns the version as a U32 data type
 	CAPI_FUNC(U32) capi_VersionA(const char** ppVersion);
 
-	/*
-	*
-	capi_VersionW - Gets CAPI Version (version.c)
-	* ppVersion [A pointer to a const wchar_t* to receive a pointer to the UNICODE version string] this can be 0/NULL
-	* returns the version as a U32 data type
-	*
-	*/
+	//  capi_VersionW - Get CAPI Version (version.c)
+	//      ppVersion [A pointer to a const wchar_t* to receive a pointer to the UNICODE version string] This can be 0
+	//  returns the version as a U32 data type
 	CAPI_FUNC(U32) capi_VersionW(const wchar_t** ppVersion);
 
-	/*
-	*
-	capi_ErrorCodeToStringA - Get a string representation of a error code (error.c)
-	* ErrorCode [The error code to change to a string]
-	* returns the MULTI-BYTE string representation of the error code or 0 if its an invalid error code
-	*
-	*/
+	//  capi_ErrorCodeToStringA - Get a string representation of a error code (error.c)
+	//      ErrorCode [The error code to change to a string]
+	//  returns the MULTI-BYTE string representation of the error code or 0 if its an invalid error code
 	CAPI_FUNC(const char*) capi_ErrorCodeToStringA(I32 ErrorCode);
 
-	/*
-	*
-	capi_ErrorCodeToStringW - Get a string representation of a error code (error.c)
-	* ErrorCode [The error code to change to a string]
-	* returns the UNICODE string representation of the error code or 0 if its an invalid error code
-	*
-	*/
+	//  capi_ErrorCodeToStringW - Get a string representation of a error code (error.c)
+	//      ErrorCode [The error code to change to a string]
+	//  returns the UNICODE string representation of the error code or 0 if its an invalid error code
 	CAPI_FUNC(const wchar_t*) capi_ErrorCodeToStringW(I32 ErrorCode);
 
-	/*
-	*
-	z_def_file - Compress from file source to file destination until EOF on source (zpipe.c)
-	* dest [A file stream opened with fopen to write]
-	* source [A file stream opened with fopen to read]
-	* level [The compression level] This may be any value 0-9 or one of the following constants: Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
-	* returns Z_OK on success
-	*
-	*/
+	//  z_def_file - Compress from file source to file destination until EOF on source (zpipe.c)
+	//      dest [A file stream opened with fopen to write]
+	//      source [A file stream opened with fopen to read]
+	//      level [The compression level] This may be any value 0-9 or one of the following constants:
+	//          Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
+	//  returns Z_OK on success
 	CAPI_FUNC(int) z_def_file(FILE* dest, FILE* source, int level);
 
-	/*
-	*
-	z_inf_file - Decompress from file source to file destination until stream ends or EOF (zpipe.c)
-	* dest [A file stream opened with fopen to write]
-	* source [A file stream opened with fopen to read]
-	* returns Z_OK on success
-	*
-	*/
+	//  z_inf_file - Decompress from file source to file destination until stream ends or EOF (zpipe.c)
+	//      dest [A file stream opened with fopen to write]
+	//      source [A file stream opened with fopen to read]
+	//  returns Z_OK on success
 	CAPI_FUNC(int) z_inf_file(FILE* dest, FILE* source);
 
-	/*
-	*
-	z_def_mem - Compress from memory source to memory destination (zpipe.c)
-	* dest [Pointer to a void* variable to receive a pointer to the compressed file]
-	* desLen [Pointer to a uLong variable to receive the number of bytes outputted to dest]
-	* src [The source file in memory to compress]
-	* srcLen [The source file size in bytes]
-	* level [The compression level] This may be any value 0-9 or one of the following constants: Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
-	* returns Z_OK on success
-	*
-	*/
+	//  z_def_mem - Compress from memory source to memory destination (zpipe.c)
+	//      dest [Pointer to a void* variable to receive a pointer to the compressed file]
+	//      desLen [Pointer to a uLong variable to receive the number of bytes outputted to dest]
+	//      src [The source file in memory to compress]
+	//      srcLen [The source file size in bytes]
+	//      level [The compression level] This may be any value 0-9 or one of the following constants:
+	//          Z_NO_COMPRESSION, Z_BEST_SPEED, Z_BEST_COMPRESSION, Z_DEFAULT_COMPRESSION
+	//  returns Z_OK on success
 	CAPI_FUNC(int) z_def_mem(void** dest, uLong* desLen, void* src, uLong srcLen, int level);
 
-	/*
-	*
-	z_inf_mem - Decompress from memory source to memory destination (zpipe.c)
-	* dest [Pointer to a void* variable to receive a pointer to the decompressed file]
-	* desLen [Pointer to a uLong variable to receive the number of bytes outputted to dest]
-	* src [The source file in memory to decompress]
-	* srcLen [The source file size in bytes]
-	* returns Z_OK on success
-	*
-	*/
+	//  z_inf_mem - Decompress from memory source to memory destination (zpipe.c)
+	//      dest [Pointer to a void* variable to receive a pointer to the decompressed file]
+	//      desLen [Pointer to a uLong variable to receive the number of bytes outputted to dest]
+	//      src [The source file in memory to decompress]
+	//      srcLen [The source file size in bytes]
+	//  returns Z_OK on success
 	CAPI_FUNC(int) z_inf_mem(void** dest, uLong* desLen, void* src, uLong srcLen);
 
-	/*
-	*
-	memset32 - Sets buffers to a specified value (memory.c)
-	* pDestination [Pointer to destination]
-	* Value [32-Bit value to set]
-	* nDwords [Number of 32-Bit values]
-	*
-	*/
+	//  memset32 - Sets a buffer to a specified value (memory.c)
+	//      pDestination [Pointer to destination]
+	//      Value [32-Bit value to set]
+	//      nDwords [Number of 32-Bit values]
 	CAPI_FUNC(void) capi_memset32(void* pDestination, U32 Value, size_t nDwords);
 
 	//  capi_AddReturnCarry - Add to a variable of flexible length (arithmetic.c)
@@ -618,387 +580,265 @@ extern "C" {
 	//      pB [Pointer to a I128 variable to multiply]
 	CAPI_FUNC(void) capi_imul128(I256* p256, I128* pA, I128* pB);
 
-	/*
-	*
-	capi_CreateImage - Creates a new image of the standard format (image.c)
-	* pImage [Pointer to a IMAGE structure to receive the new image data]
-	* Width [The width for the new image]
-	* Height [The height for the new image]
-	* Color [The color for the new image] Use the COLOR macro to generate the color or specify 0 for a transparent image
-	* Alignment [The alignment of the image in memory and its scanlines] This value is the number of PIXEL, Not bytes
-	* returns a pointer to the image pixels on success, otherwise 0
-	* Call capi_FreeImage when done using the image
-	*
-	*/
+	//  capi_CreateImage - Creates a new image of the standard format (image.c)
+	//      pImage [Pointer to a IMAGE structure to receive the new image data]
+	//      Width [The width for the new image]
+	//      Height [The height for the new image]
+	//      Color [The color for the new image] Use the COLOR macro to generate the color or specify 0 for a transparent image
+	//      Alignment [The alignment of the image in memory and its scanlines] This value is the number of PIXEL, Not bytes
+	//  returns a pointer to the image pixels on success, otherwise 0
+	//      Call capi_FreeImage when done using the image
 	CAPI_FUNC(PIXEL*) capi_CreateImage(IMAGE* pImage, U32 Width, U32 Height, U32 Color, U32 Alignment);
 
-	/*
-	*
-	capi_FreeImage - Free a image resources (image.c)
-	* pImage [Pointer to a IMAGE structure of the image to free]
-	* This function sets the IMAGE structure members to 0 after freeing resources
-	*
-	*/
+	//  capi_FreeImage - Free a image resources (image.c)
+	//      pImage [Pointer to a IMAGE structure of the image to free]
+	//  This function sets the IMAGE structure members to 0 after freeing resources
 	CAPI_FUNC(void) capi_FreeImage(IMAGE* pImage);
 
-	/*
-	*
-	capi_FillImage - Fill an image with a color (image.c)
-	* pImage [Pointer to a IMAGE structure of the image to fill]
-	* Color [The color to fill the image] Use the COLOR macro to generate the color or specify 0 for a transparent image
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_FillImage - Fill an image with a color (image.c)
+	//      pImage [Pointer to a IMAGE structure of the image to fill]
+	//      Color [The color to fill the image] Use the COLOR macro to generate the color or specify 0 for a transparent image
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_FillImage(IMAGE* pImage, U32 Color);
 
-	/*
-	*
-	capi_RenderAlphaPixel - Render a pixel with a pixel and alpha value (image.c)
-	* pDestination [The pixel that the Color parameter is applied to]
-	* Color [The color that is applied to the pixel] The alpha channel of the color is used to apply the color
-	* Alpha [A alpha value that is applied to the Color parameter]
-	* This function does not check if pDestination is valid
-	*
-	*/
+	//  capi_RenderAlphaPixel - Render a pixel with a pixel and alpha value (image.c)
+	//      pDestination [The pixel that the Color parameter is applied to]
+	//      Color [The color that is applied to the pixel] The alpha channel of the color is used to apply the color
+	//      Alpha [A alpha value that is applied to the Color parameter]
+	//  This function does not check if pDestination is valid
 	CAPI_FUNC(void) capi_RenderAlphaPixel(PIXEL* pDestination, U32 Color, U8 Alpha);
 
-	/*
-	*
-	capi_RenderAlphaScanLine - Render a scanline with a scanline and alpha value (image.c)
-	* pDestination [The pixels that the pSource parameter is applied to]
-	* pSource [The pixels that are applied to pDestination]
-	* Width [The number of PIXEL to apply]
-	* Alpha [A alpha value that is applied to the pSource parameter pixels]
-	* This function does not check if pDestination or pSource is valid
-	*
-	*/
+	//  capi_RenderAlphaScanLine - Render a scanline with a scanline and alpha value (image.c)
+	//      pDestination [The pixels that the pSource parameter is applied to]
+	//      pSource [The pixels that are applied to pDestination]
+	//      Width [The number of PIXEL to apply]
+	//      Alpha [A alpha value that is applied to the pSource parameter pixels]
+	//  This function does not check if pDestination or pSource is valid
 	CAPI_FUNC(void) capi_RenderAlphaScanLine(PIXEL* pDestination, PIXEL* pSource, U32 Width, U8 Alpha);
 
-	/*
-	*
-	capi_RenderAlphaScanLine32 - Render a scanline with a pixel and alpha value (image.c)
-	* pDestination [The pixels that the Color parameter is applied to]
-	* Color [The color that is applied to the scanline] The alpha channel of the color is used to apply the color
-	* Width [The number of PIXEL to apply]
-	* Alpha [A alpha value that is applied to the Color parameter]
-	* This function does not check if pDestination is valid
-	*
-	*/
+	//  capi_RenderAlphaScanLine32 - Render a scanline with a pixel and alpha value (image.c)
+	//      pDestination [The pixels that the Color parameter is applied to]
+	//      Color [The color that is applied to the scanline] The alpha channel of the color is used to apply the color
+	//      Width [The number of PIXEL to apply]
+	//      Alpha [A alpha value that is applied to the Color parameter]
+	//  This function does not check if pDestination is valid
 	CAPI_FUNC(void) capi_RenderAlphaScanLine32(PIXEL* pDestination, U32 Color, U32 Width, U8 Alpha);
 
-	/*
-	*
-	capi_DrawLine - Draw a line on an image (image.c)
-	* pDestination [Pointer to a IMAGE structure of the image to draw on]
-	* pRect [Pointer to a CRECT structure specifying the coordinates of the line to draw]
-	* Color [The color used to draw the line] The alpha channel of the color is used to apply the color
-	* Thickness [The thickness of the line]
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_DrawLine - Draw a line on an image (image.c)
+	//      pDestination [Pointer to a IMAGE structure of the image to draw on]
+	//      pRect [Pointer to a CRECT structure specifying the coordinates of the line to draw]
+	//      Color [The color used to draw the line] The alpha channel of the color is used to apply the color
+	//      Thickness [The thickness of the line]
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_DrawLine(IMAGE* pDestination, CRECT* pRect, U32 Color, U32 Thickness);
 
-	/*
-	*
-	capi_DrawRect - Draw a rectangle on an image (image.c)
-	* pDestination [Pointer to a IMAGE structure of the image to draw on]
-	* pRect [Pointer to a CRECT structure specifying the coordinates of the rectangle to draw]
-	* LineColor [The color of the rectangle lines] The alpha channel of the color is used to apply the color
-	* Thickness [The thickness of the lines]
-	* FillColor [The color to fill the rectangle] The alpha channel of the color is used to apply the color
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_DrawRect - Draw a rectangle on an image (image.c)
+	//      pDestination [Pointer to a IMAGE structure of the image to draw on]
+	//      pRect [Pointer to a CRECT structure specifying the coordinates of the rectangle to draw]
+	//      LineColor [The color of the rectangle lines] The alpha channel of the color is used to apply the color
+	//      Thickness [The thickness of the lines]
+	//      FillColor [The color to fill the rectangle] The alpha channel of the color is used to apply the color
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_DrawRect(IMAGE* pDestination, CRECT* pRect, U32 LineColor, U32 Thickness, U32 FillColor);
 
-	/*
-	*
-	capi_DrawImage - Draw an image onto another image at X,Y coordinates (image.c)
-	* pDestination [The destination image of the source image]
-	* pSource [The source image to draw]
-	* X [The x coordinate to draw the source image at]
-	* Y [The y coordinate to draw the source image at]
-	* returns CAPI_ERROR_NONE on success
-	* This function ignores the alpha channel of the source image. Use capi_DrawImageA for alpha rendering
-	*
-	*/
+	//  capi_DrawImage - Draw an image onto another image at X,Y coordinates (image.c)
+	//      pDestination [The destination image of the source image]
+	//      pSource [The source image to draw]
+	//      X [The x coordinate to draw the source image at]
+	//      Y [The y coordinate to draw the source image at]
+	//  returns CAPI_ERROR_NONE on success
+	//      This function ignores the alpha channel of the source image. Use capi_DrawImageA for alpha rendering
 	CAPI_FUNC(I32) capi_DrawImage(IMAGE* pDestination, IMAGE* pSource, I32 X, I32 Y);
 
-	/*
-	*
-	capi_DrawImageA - Draw an image onto another image at X,Y coordinates with alpha rendering (image.c)
-	* pDestination [The destination image of the source image]
-	* pSource [The source image to draw]
-	* X [The x coordinate to draw the source image at]
-	* Y [The y coordinate to draw the source image at]
-	* Alpha [A alpha value that is applied to the source image]
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_DrawImageA - Draw an image onto another image at X,Y coordinates with alpha rendering (image.c)
+	//      pDestination [The destination image of the source image]
+	//      pSource [The source image to draw]
+	//      X [The x coordinate to draw the source image at]
+	//      Y [The y coordinate to draw the source image at]
+	//      Alpha [A alpha value that is applied to the source image]
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_DrawImageA(IMAGE* pDestination, IMAGE* pSource, I32 X, I32 Y, U8 Alpha);
 
-	/*
-	*
-	capi_DrawImageEx - Draw an image onto another image at X,Y coordinates with stretching (image.c)
-	* pDestination [The destination image of the source image]
-	* pSource [The source image to stretch and draw]
-	* X [The x coordinate to draw the source image at]
-	* Y [The y coordinate to draw the source image at]
-	* Algorithm [The algorithm used to stretch the source image] This may be one of the following constants: DRAW_RESIZE_LINEAR, DRAW_RESIZE_BOXSAMP
-	* Width [The new width of the source image]
-	* Height [The new height of the source image]
-	* returns CAPI_ERROR_NONE on success
-	* This function ignores the alpha channel of the source image. Use capi_DrawImageExA for stretching with alpha rendering
-	*
-	*/
+	//  capi_DrawImageEx - Draw an image onto another image at X,Y coordinates with stretching (image.c)
+	//      pDestination [The destination image of the source image]
+	//      pSource [The source image to stretch and draw]
+	//      X [The x coordinate to draw the source image at]
+	//      Y [The y coordinate to draw the source image at]
+	//      Algorithm [The algorithm used to stretch the source image] This may be one of the following constants:
+	//          DRAW_RESIZE_LINEAR, DRAW_RESIZE_BOXSAMP
+	//      Width [The new width of the source image]
+	//      Height [The new height of the source image]
+	//  returns CAPI_ERROR_NONE on success
+	//      This function ignores the alpha channel of the source image. Use capi_DrawImageExA for stretching with alpha rendering
 	CAPI_FUNC(I32) capi_DrawImageEx(IMAGE* pDestination, IMAGE* pSource, I32 X, I32 Y, U8 Algorithm, U32 Width, U32 Height);
 
-	/*
-	*
-	capi_DrawImageExA - Draw an image onto another image at X,Y coordinates with stretching and alpha rendering (image.c)
-	* pDestination [The destination image of the source image]
-	* pSource [The source image to stretch and draw]
-	* X [The x coordinate to draw the source image at]
-	* Y [The y coordinate to draw the source image at]
-	* Algorithm [The algorithm used to stretch the source image] This may be one of the following constants: DRAW_RESIZE_LINEAR, DRAW_RESIZE_BOXSAMP
-	* Width [The new width of the source image]
-	* Height [The new height of the source image]
-	* Alpha [A alpha value that is applied to the source image]
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_DrawImageExA - Draw an image onto another image at X,Y coordinates with stretching and alpha rendering (image.c)
+	//      pDestination [The destination image of the source image]
+	//      pSource [The source image to stretch and draw]
+	//      X [The x coordinate to draw the source image at]
+	//      Y [The y coordinate to draw the source image at]
+	//      Algorithm [The algorithm used to stretch the source image] This may be one of the following constants:
+	//          DRAW_RESIZE_LINEAR, DRAW_RESIZE_BOXSAMP
+	//      Width [The new width of the source image]
+	//      Height [The new height of the source image]
+	//      Alpha [A alpha value that is applied to the source image]
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_DrawImageExA(IMAGE* pDestination, IMAGE* pSource, I32 X, I32 Y, U8 Algorithm, U32 Width, U32 Height, U8 Alpha);
 
-	/*
-	*
-	capi_Load_BMP_FromMemory - Loads a BMP (bitmap) formatted image from memory into a standard IMAGE format (bmp.c)
-	* pImage [Pointer to a IMAGE structure to receive the loaded image data]
-	* Alignment [The alignment to load the image in memory and its scanlines] This value is the number of PIXEL, Not bytes
-	* pBmpFile [A pointer to the source BMP file in memory]
-	* FileSize [The size of the source file in bytes]
-	* returns CAPI_ERROR_NONE on success
-	* Its recommended to use capi_LoadImageFromMemory instead
-	*
-	*/
+	//  capi_Load_BMP_FromMemory - Loads a BMP (bitmap) formatted image from memory into a standard IMAGE format (bmp.c)
+	//      pImage [Pointer to a IMAGE structure to receive the loaded image data]
+	//      Alignment [The alignment to use for the image and its scanlines] This value is the number of PIXEL, Not bytes
+	//      pBmpFile [A pointer to the source BMP file in memory]
+	//      FileSize [The size of the source file in bytes]
+	//  returns CAPI_ERROR_NONE on success
+	//      Its recommended to use capi_LoadImageFromMemory instead
 	CAPI_FUNC(I32) capi_Load_BMP_FromMemory(IMAGE* pImage, U32 Alignment, BMP* pBmpFile, size_t FileSize);
 
-	/*
-	*
-	capi_Load_JPG_FromMemory - Loads a JPG (jpeg) formatted image from memory into a standard IMAGE format (jpg.c)
-	* pImage [Pointer to a IMAGE structure to receive the loaded image data]
-	* Alignment [The alignment to load the image in memory and its scanlines] This value is the number of PIXEL, Not bytes
-	* pJpgFile [A pointer to the source JPG file in memory]
-	* FileSize [The size of the source file in bytes]
-	* returns CAPI_ERROR_NONE on success
-	* Its recommended to use capi_LoadImageFromMemory instead
-	*
-	*/
+	//  capi_Load_JPG_FromMemory - Loads a JPG (jpeg) formatted image from memory into a standard IMAGE format (jpg.c)
+	//      pImage [Pointer to a IMAGE structure to receive the loaded image data]
+	//      Alignment [The alignment to use for the image and its scanlines] This value is the number of PIXEL, Not bytes
+	//      pJpgFile [A pointer to the source JPG file in memory]
+	//      FileSize [The size of the source file in bytes]
+	//  returns CAPI_ERROR_NONE on success
+	//      Its recommended to use capi_LoadImageFromMemory instead
 	CAPI_FUNC(I32) capi_Load_JPG_FromMemory(IMAGE* pImage, U32 Alignment, JPG* pJpgFile, size_t FileSize);
 
-	/*
-	*
-	capi_Load_PNG_FromMemory - Loads a PNG (Portable Network Graphics) formatted image from memory into a standard IMAGE format (png.c)
-	* pImage [Pointer to a IMAGE structure to receive the loaded image data]
-	* Alignment [The alignment to load the image in memory and its scanlines] This value is the number of PIXEL, Not bytes
-	* pPngFile [A pointer to the source PNG file in memory]
-	* FileSize [The size of the source file in bytes]
-	* returns CAPI_ERROR_NONE on success
-	* Its recommended to use capi_LoadImageFromMemory instead
-	*
-	*/
+	//  capi_Load_PNG_FromMemory - Loads a PNG (Portable Network Graphics) formatted image from memory into a standard IMAGE format (png.c)
+	//      pImage [Pointer to a IMAGE structure to receive the loaded image data]
+	//      Alignment [The alignment to use for the image and its scanlines] This value is the number of PIXEL, Not bytes
+	//      pPngFile [A pointer to the source PNG file in memory]
+	//      FileSize [The size of the source file in bytes]
+	//  returns CAPI_ERROR_NONE on success
+	//      Its recommended to use capi_LoadImageFromMemory instead
 	CAPI_FUNC(I32) capi_Load_PNG_FromMemory(IMAGE* pImage, U32 Alignment, PNG* pPngFile, size_t FileSize);
 
-	/*
-	*
-	capi_Load_ICO_FromMemory - Loads a ICO (icon) formatted image from memory into a standard IMAGE format (ico.c)
-	* pImage [Pointer to a IMAGE structure to receive the loaded image data]
-	* Alignment [The alignment to load the image in memory and its scanlines] This value is the number of PIXEL, Not bytes
-	* pIcoFile [A pointer to the source ICO file in memory]
-	* FileSize [The size of the source file in bytes]
-	* IndexNumber [The index of the embedded image to load] Use -1 to load the image with the greatest width and height
-	* returns CAPI_ERROR_NONE on success
-	* If the paramter IndexNumber is not -1 and the index does not exist then this function returns CAPI_ERROR_INVALID_PARAMETER
-	* Its recommended to use capi_LoadImageFromMemory instead
-	*
-	*/
+	//  capi_Load_ICO_FromMemory - Loads a ICO (icon) formatted image from memory into a standard IMAGE format (ico.c)
+	//      pImage [Pointer to a IMAGE structure to receive the loaded image data]
+	//      Alignment [The alignment to use for the image and its scanlines] This value is the number of PIXEL, Not bytes
+	//      pIcoFile [A pointer to the source ICO file in memory]
+	//      FileSize [The size of the source file in bytes]
+	//      IndexNumber [The index of the embedded image to load] Use -1 to load the image with the greatest width and height
+	//  returns CAPI_ERROR_NONE on success
+	//      If the paramter IndexNumber is not -1 and the index does not exist then this function returns CAPI_ERROR_INVALID_PARAMETER
+	//      Its recommended to use capi_LoadImageFromMemory instead
 	CAPI_FUNC(I32) capi_Load_ICO_FromMemory(IMAGE* pImage, U32 Alignment, ICO* pIcoFile, size_t FileSize, I8 IndexNumber);
 
-	/*
-	*
-	capi_LoadImageFromMemory - Loads a formatted image from memory into a standard IMAGE format (image.c)
-	* pImage [Pointer to a IMAGE structure to receive the loaded image data]
-	* Alignment [The alignment to load the image in memory and its scanlines] This value is the number of PIXEL, Not bytes
-	* pFile [A pointer to the source image file in memory]
-	* FileSize [The size of the source file in bytes]
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_LoadImageFromMemory - Loads a formatted image from memory into a standard IMAGE format (image.c)
+	//      pImage [Pointer to a IMAGE structure to receive the loaded image data]
+	//      Alignment [The alignment to use for the image and its scanlines] This value is the number of PIXEL, Not bytes
+	//      pFile [A pointer to the source image file in memory]
+	//      FileSize [The size of the source file in bytes]
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_LoadImageFromMemory(IMAGE* pImage, U32 Alignment, void* pFile, U64 FileSize);
 
-	/*
-	*
-	capi_Get_BMP_DimensionsFromMemory - Gets the dimensions of a BMP (bitmap) formatted image in memory (bmp.c)
-	* pBmpFile [Pointer to a BMP formatted image]
-	* FileSize [The size of the image in bytes]
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	* Its recommended to use capi_GetImageDimensionsFromMemory instead
-	*
-	*/
+	//  capi_Get_BMP_DimensionsFromMemory - Gets the dimensions of a BMP (bitmap) formatted image in memory (bmp.c)
+	//      pBmpFile [Pointer to a BMP formatted image]
+	//      FileSize [The size of the image in bytes]
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
+	//      Its recommended to use capi_GetImageDimensionsFromMemory instead
 	CAPI_FUNC(U32) capi_Get_BMP_DimensionsFromMemory(BMP* pBmpFile, size_t FileSize, U32* pHeight);
 
-	/*
-	*
-	capi_Get_JPG_DimensionsFromMemory - Gets the dimensions of a JPG (jpeg) formatted image in memory (jpg.c)
-	* pJpgFile [Pointer to a JPG formatted image]
-	* FileSize [The size of the image in bytes]
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	* Its recommended to use capi_GetImageDimensionsFromMemory instead
-	*
-	*/
+	//  capi_Get_JPG_DimensionsFromMemory - Gets the dimensions of a JPG (jpeg) formatted image in memory (jpg.c)
+	//      pJpgFile [Pointer to a JPG formatted image]
+	//      FileSize [The size of the image in bytes]
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
+	//      Its recommended to use capi_GetImageDimensionsFromMemory instead
 	CAPI_FUNC(U32) capi_Get_JPG_DimensionsFromMemory(JPG* pJpgFile, size_t FileSize, U32* pHeight);
 
-	/*
-	*
-	capi_Get_PNG_DimensionsFromMemory - Gets the dimensions of a PNG (Portable Network Graphics) formatted image in memory (png.c)
-	* pPngFile [Pointer to a PNG formatted image]
-	* FileSize [The size of the image in bytes]
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	* Its recommended to use capi_GetImageDimensionsFromMemory instead
-	*
-	*/
+	//  capi_Get_PNG_DimensionsFromMemory - Gets the dimensions of a PNG (Portable Network Graphics) formatted image in memory (png.c)
+	//      pPngFile [Pointer to a PNG formatted image]
+	//      FileSize [The size of the image in bytes]
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
+	//      Its recommended to use capi_GetImageDimensionsFromMemory instead
 	CAPI_FUNC(U32) capi_Get_PNG_DimensionsFromMemory(PNG* pPngFile, size_t FileSize, U32* pHeight);
 
-	/*
-	*
-	capi_Get_ICO_DimensionsFromMemory - Gets the dimensions of a ICO (icon) formatted image in memory (ico.c)
-	* pIcoFile [Pointer to a ICO formatted image]
-	* FileSize [The size of the image in bytes]
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* IndexNumber [The index of the embedded image] Use -1 for the image with the greatest width and height
-	* returns the width of the image, or 0 for an error
-	* If the paramter IndexNumber is not -1 and the index does not exist then this function returns 0
-	* Its recommended to use capi_GetImageDimensionsFromMemory instead
-	*
-	*/
+	//  capi_Get_ICO_DimensionsFromMemory - Gets the dimensions of a ICO (icon) formatted image in memory (ico.c)
+	//      pIcoFile [Pointer to a ICO formatted image]
+	//      FileSize [The size of the image in bytes]
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//      IndexNumber [The index of the embedded image] Use -1 for the image with the greatest width and height
+	//  returns the width of the image, or 0 for an error
+	//      If the paramter IndexNumber is not -1 and the index does not exist then this function returns 0
+	//      Its recommended to use capi_GetImageDimensionsFromMemory instead
 	CAPI_FUNC(U32) capi_Get_ICO_DimensionsFromMemory(ICO* pIcoFile, size_t FileSize, U32* pHeight, I8 IndexNumber);
 
-	/*
-	*
-	capi_GetImageDimensionsFromMemory - Gets the dimensions of a formatted image in memory (image.c)
-	* pFile [Pointer to a formatted image]
-	* FileSize [The size of the image in bytes]
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	*
-	*/
+	//  capi_GetImageDimensionsFromMemory - Gets the dimensions of a formatted image in memory (image.c)
+	//      pFile [Pointer to a formatted image]
+	//      FileSize [The size of the image in bytes]
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
 	CAPI_FUNC(U32) capi_GetImageDimensionsFromMemory(void* pFile, size_t FileSize, U32* pHeight);
 
-	/*
-	*
-	capi_Get_BMP_DimensionsFromFile - Gets the dimensions of a BMP (bitmap) formatted image from a file (bmp.c)
-	* pBmpFile [A stream to a BMP formatted image] Use fopen to open the stream
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	* Its recommended to use capi_GetImageDimensionsFromFile instead
-	*
-	*/
+	//  capi_Get_BMP_DimensionsFromFile - Gets the dimensions of a BMP (bitmap) formatted image from a file (bmp.c)
+	//      pBmpFile [A stream to a BMP formatted image] Use fopen to open the stream
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
+	//      Its recommended to use capi_GetImageDimensionsFromFile instead
 	CAPI_FUNC(U32) capi_Get_BMP_DimensionsFromFile(FILE* pBmpFile, U32* pHeight);
 
-	/*
-	*
-	capi_Get_JPG_DimensionsFromFile - Gets the dimensions of a JPG (jpeg) formatted image from a file (jpg.c)
-	* pJpgFile [A stream to a JPG formatted image] Use fopen to open the stream
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	* Its recommended to use capi_GetImageDimensionsFromFile instead
-	*
-	*/
+	//  capi_Get_JPG_DimensionsFromFile - Gets the dimensions of a JPG (jpeg) formatted image from a file (jpg.c)
+	//      pJpgFile [A stream to a JPG formatted image] Use fopen to open the stream
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
+	//      Its recommended to use capi_GetImageDimensionsFromFile instead
 	CAPI_FUNC(U32) capi_Get_JPG_DimensionsFromFile(FILE* pJpgFile, U32* pHeight);
 
-	/*
-	*
-	capi_Get_PNG_DimensionsFromFile - Gets the dimensions of a PNG (Portable Network Graphics) formatted image from a file (png.c)
-	* pPngFile [A stream to a PNG formatted image] Use fopen to open the stream
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	* Its recommended to use capi_GetImageDimensionsFromFile instead
-	*
-	*/
+	//  capi_Get_PNG_DimensionsFromFile - Gets the dimensions of a PNG (Portable Network Graphics) formatted image from a file (png.c)
+	//      pPngFile [A stream to a PNG formatted image] Use fopen to open the stream
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
+	//      Its recommended to use capi_GetImageDimensionsFromFile instead
 	CAPI_FUNC(U32) capi_Get_PNG_DimensionsFromFile(FILE* pPngFile, U32* pHeight);
 
-	/*
-	*
-	capi_Get_ICO_DimensionsFromFile - Gets the dimensions of a ICO (icon) formatted image from a file (ico.c)
-	* pIcoFile [A stream to a ICO formatted image] Use fopen to open the stream
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* IndexNumber [The index of the embedded image] Use -1 for the image with the greatest width and height
-	* returns the width of the image, or 0 for an error
-	* If the paramter IndexNumber is not -1 and the index does not exist then this function returns 0
-	* Its recommended to use capi_GetImageDimensionsFromFile instead
-	*
-	*/
+	//  capi_Get_ICO_DimensionsFromFile - Gets the dimensions of a ICO (icon) formatted image from a file (ico.c)
+	//      pIcoFile [A stream to a ICO formatted image] Use fopen to open the stream
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//      IndexNumber [The index of the embedded image] Use -1 for the image with the greatest width and height
+	//  returns the width of the image, or 0 for an error
+	//      If the paramter IndexNumber is not -1 and the index does not exist then this function returns 0
+	//      Its recommended to use capi_GetImageDimensionsFromFile instead
 	CAPI_FUNC(U32) capi_Get_ICO_DimensionsFromFile(FILE* pIcoFile, U32* pHeight, I8 IndexNumber);
 
-	/*
-	*
-	capi_GetImageDimensionsFromFile - Gets the dimensions of a formatted image from a file (image.c)
-	* pFile [A stream to a formatted image] Use fopen to open the stream
-	* pHeight [Pointer to a variable to receive the height of the image]
-	* returns the width of the image, or 0 for an error
-	*
-	*/
+	//  capi_GetImageDimensionsFromFile - Gets the dimensions of a formatted image from a file (image.c)
+	//      pFile [A stream to a formatted image] Use fopen to open the stream
+	//      pHeight [Pointer to a variable to receive the height of the image]
+	//  returns the width of the image, or 0 for an error
 	CAPI_FUNC(U32) capi_GetImageDimensionsFromFile(FILE* pFile, U32* pHeight);
 
-	/*
-	*
-	capi_Create_BMP_ToMemory - Create a BMP (bitmap) formatted image to memory (bmp.c)
-	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
-	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
-	* pImage [Pointer to a IMAGE structure to create the new BMP image from]
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_Create_BMP_ToMemory - Create a BMP (bitmap) formatted image to memory (bmp.c)
+	//      ppFilePointer [Pointer to a variable to receive the pointer to the file]
+	//      pFileSize [Pointer to a variable to receive the size of the file in bytes]
+	//      pImage [Pointer to a IMAGE structure to create the new BMP image from]
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_Create_BMP_ToMemory(BMP** ppFilePointer, U64* pFileSize, IMAGE* pImage);
 
-	/*
-	*
-	capi_Create_JPG_ToMemory - Create a JPG (jpeg) formatted image to memory (jpg.c)
-	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
-	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
-	* pImage [Pointer to a IMAGE structure to create the new JPG image from]
-	* Quality [The quality of the JPG formatted image] This can be a value 1-100, 0 (terrible), 100 (very good), 70 is recommended
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_Create_JPG_ToMemory - Create a JPG (jpeg) formatted image to memory (jpg.c)
+	//      ppFilePointer [Pointer to a variable to receive the pointer to the file]
+	//      pFileSize [Pointer to a variable to receive the size of the file in bytes]
+	//      pImage [Pointer to a IMAGE structure to create the new JPG image from]
+	//      Quality [The quality of the JPG formatted image] This can be a value 1-100, 0 (terrible), 100 (very good), 74 is recommended
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_Create_JPG_ToMemory(JPG** ppFilePointer, U64* pFileSize, IMAGE* pImage, U8 Quality);
 
-	/*
-	*
-	capi_Create_PNG_ToMemory - Create a PNG (Portable Network Graphics) formatted image to memory (png.c)
-	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
-	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
-	* pImage [Pointer to a IMAGE structure to create the new PNG image from]
-	* pParameters [Pointer to a PNG_PARAMETERS structure that describes the type of PNG image to create]
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_Create_PNG_ToMemory - Create a PNG (Portable Network Graphics) formatted image to memory (png.c)
+	//      ppFilePointer [Pointer to a variable to receive the pointer to the file]
+	//      pFileSize [Pointer to a variable to receive the size of the file in bytes]
+	//      pImage [Pointer to a IMAGE structure to create the new PNG image from]
+	//      pParameters [Pointer to a PNG_PARAMETERS structure that describes the type of PNG image to create]
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_Create_PNG_ToMemory(PNG** ppFilePointer, U64* pFileSize, IMAGE* pImage, PNG_PARAMETERS* pParameters);
 
-	/*
-	*
-	capi_Create_ICO_ToMemory - Create a ICO (icon) formatted image to memory (ico.c)
-	* ppFilePointer [Pointer to a variable to receive the pointer to the file]
-	* pFileSize [Pointer to a variable to receive the size of the file in bytes]
-	* pImageList [Pointer to an array of IMAGE structures to create the new ICO images from]
-	* nImages [The number of IMAGE structures pointed to by pImageList]
-	* Format [The format to use for the embedded images] This can be one of the following constants: ICO_FORMAT_BMP, ICO_FORMAT_PNG
-	* pParameters [Pointer to a PNG_PARAMETERS structure that describes the type of PNG image to create] This should be 0 for ICO_FORMAT_BMP
-	* returns CAPI_ERROR_NONE on success
-	*
-	*/
+	//  capi_Create_ICO_ToMemory - Create a ICO (icon) formatted image to memory (ico.c)
+	//      ppFilePointer [Pointer to a variable to receive the pointer to the file]
+	//      pFileSize [Pointer to a variable to receive the size of the file in bytes]
+	//      pImageList [Pointer to an array of IMAGE structures to create the new ICO images from]
+	//      nImages [The number of IMAGE structures pointed to by pImageList]
+	//      Format [The format to use for the embedded images] This can be one of the following constants: ICO_FORMAT_BMP, ICO_FORMAT_PNG
+	//      pParameters [Pointer to a PNG_PARAMETERS structure that describes the type of PNG image to create] This should be 0 for ICO_FORMAT_BMP
+	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_Create_ICO_ToMemory(ICO** ppFilePointer, U64* pFileSize, IMAGE* pImageList, U16 nImages, U8 Format, void* pParameters);
 
 	/*
@@ -1150,7 +990,7 @@ extern "C" {
 	/*
 	*
 	capi_UTF8_Decode - Decode a UTF8 encoding into a code-point (strings.c)
-	* Units [The number of UTF8 units the code-point uses] use capi_UTF8_GetCharUnits to get this value
+	* Units [The number of UTF8 units the code-point uses] Use capi_UTF8_GetCharUnits to get this value
 	* String [The source string to decode a code-point from]
 	* returns the decoded code-point, or 0 for an error
 	* This function does not check if String is valid
@@ -1317,7 +1157,7 @@ extern "C" {
 	/*
 	*
 	capi_UTF16_Decode - Decode a UTF16 encoding into a code-point (strings.c)
-	* Units [The number of UTF16 units the code-point uses] use capi_UTF16_GetCharUnits to get this value
+	* Units [The number of UTF16 units the code-point uses] Use capi_UTF16_GetCharUnits to get this value
 	* String [The source string to decode a code-point from]
 	* returns the decoded code-point, or 0 for an error
 	* This function does not check if String is valid
@@ -1640,64 +1480,48 @@ extern "C" {
 	*/
 	CAPI_FUNC(size_t) capi_UTF32_To_UTF16(UTF16* Destination, size_t Length, const UTF32* Source);
 
-	/*
-	*
-	capi_PrintHexA - Convert a data variable to its hexadecimal ASCII string representation (hexadecimal.c)
-	* pBuffer [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in ASCII units]
-	* pValue [Pointer to the data variable to convert]
-	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
-	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
-	* returns the number of characters written to the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_PrintHexA - Convert a data variable to its hexadecimal ASCII string representation (hexadecimal.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in ASCII units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintHexA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
-	/*
-	*
-	capi_PrintHexU - Convert a data variable to its hexadecimal UTF8 string representation (hexadecimal.c)
-	* pBuffer [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF8 units]
-	* pValue [Pointer to the data variable to convert]
-	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
-	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
-	* returns the number of characters written to the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_PrintHexU - Convert a data variable to its hexadecimal UTF8 string representation (hexadecimal.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintHexU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
-	/*
-	*
-	capi_PrintHexW - Convert a data variable to its hexadecimal UTF16 string representation (hexadecimal.c)
-	* pBuffer [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF16 units]
-	* pValue [Pointer to the data variable to convert]
-	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
-	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
-	* returns the number of characters written to the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_PrintHexW - Convert a data variable to its hexadecimal UTF16 string representation (hexadecimal.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintHexW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
-	/*
-	*
-	capi_PrintHexL - Convert a data variable to its hexadecimal UTF32 string representation (hexadecimal.c)
-	* pBuffer [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF32 units]
-	* pValue [Pointer to the data variable to convert]
-	* Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
-	* nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
-	* returns the number of characters written to the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_PrintHexL - Convert a data variable to its hexadecimal UTF32 string representation (hexadecimal.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the hexadecimal string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintHexL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
 	// **** print.c **** //
@@ -1728,7 +1552,7 @@ struct String
 	//  Get the length of a string
 	//      String [Pointer to a null-terminated string]
 	//  returns the number of characters in the string, not including the terminating null character
-	//  -1 is returned for an invalid parameter
+	//      -1 is returned for an invalid parameter
 	static size_t Length(const STRING* String)
 	{
 		return capi_StrLen(String);
@@ -1737,8 +1561,8 @@ struct String
 	//  Get the number of units in a string
 	//      String [Pointer to a null-terminated string]
 	//  returns the number of units in the string, not including the terminating null character
-	//  -1 is returned for an invalid parameter
-	//  To get the size of the string in bytes, multiply the result by sizeof(STRING)
+	//      -1 is returned for an invalid parameter
+	//      To get the size of the string in bytes, multiply the result by sizeof(STRING)
 	static size_t Units(const STRING* String)
 	{
 		return capi_StrUnits(String);
@@ -1749,8 +1573,8 @@ struct String
 	//      Length [Length of the destination string buffer in units]
 	//      Source [Null-terminated source string buffer]
 	//  returns the number of units copied to the destination string, not including the terminating null character
-	//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-	//  -1 is returned for an invalid parameter
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	static size_t Copy(STRING* Destination, size_t Length, const STRING* Source)
 	{
 		return capi_StrCopy(Destination, Length, Source);
@@ -1761,8 +1585,8 @@ struct String
 	//      Length [Length of the destination string buffer in units]
 	//      Source [Null-terminated source string buffer]
 	//  returns the number of units appended to the destination string, not including the terminating null character
-	//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-	//  -1 is returned for an invalid parameter
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	static size_t Append(STRING* Destination, size_t Length, const STRING* Source)
 	{
 		return capi_StrAppend(Destination, Length, Source);
@@ -1825,7 +1649,7 @@ struct String
 	//      String [Null-terminated source string to split]
 	//      Delimit [Character to be located and replaced]
 	//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
-	//  When Delimit is found its set to 0
+	//      When Delimit is found its set to 0
 	static STRING* Split(STRING* String, STRING Delimit)
 	{
 		return capi_StrSplit(String, Delimit);
@@ -1845,8 +1669,8 @@ struct String
 			//  Get the length of a ASCII string
 			//      String [Pointer to a null-terminated string]
 			//  returns the number of characters in the string, not including the terminating null character
-			//  -1 is returned for an invalid parameter
-			//  To get the size of the string in bytes, multiply the result by sizeof(ASCII)
+			//      -1 is returned for an invalid parameter
+			//      To get the size of the string in bytes, multiply the result by sizeof(ASCII)
 			static size_t Length(const ASCII* String)
 			{
 				return capi_StrLenA(String);
@@ -1857,8 +1681,8 @@ struct String
 			//      Length [Length of the destination string buffer in ASCII units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units copied to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Copy(ASCII* Destination, size_t Length, const ASCII* Source)
 			{
 				return capi_StrCopyA(Destination, Length, Source);
@@ -1869,8 +1693,8 @@ struct String
 			//      Length [Length of the destination string buffer in ASCII units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units appended to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Append(ASCII* Destination, size_t Length, const ASCII* Source)
 			{
 				return capi_StrAppendA(Destination, Length, Source);
@@ -1933,7 +1757,7 @@ struct String
 			//      String [Null-terminated source string to split]
 			//      Delimit [Character to be located and replaced]
 			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
-			//  When Delimit is found its set to 0
+			//      When Delimit is found its set to 0
 			static ASCII* Split(ASCII* String, ASCII Delimit)
 			{
 				return capi_StrSplitA(String, Delimit);
@@ -1960,8 +1784,8 @@ struct String
 			//      String [The destination string buffer]
 			//      CodePoint [The code-point to encode]
 			//  returns the number of UTF8 units that was written to String, or 0 for an error
-			//  This function does not check if String is valid and does not output any null-terminator character
-			//  Consider using the safer version String::Encoding::_UTF8_::Encode
+			//      This function does not check if String is valid and does not output any null-terminator character
+			//      Consider using the safer version String::Encoding::_UTF8_::Encode
 			static U8 Encode_Unsafe(UTF8* String, U32 CodePoint)
 			{
 				return capi_UTF8_Encode_Unsafe(String, CodePoint);
@@ -1972,17 +1796,17 @@ struct String
 			//      Length [Length of the destination string buffer in UTF8 units]
 			//      CodePoint [The code-point to encode]
 			//  returns the number of UTF8 units that was written to String, not including the terminating null character, or 0 for an error
-			//  This function does not check if String is valid
+			//      This function does not check if String is valid
 			static U8 Encode(UTF8* String, size_t Length, U32 CodePoint)
 			{
 				return capi_UTF8_Encode(String, Length, CodePoint);
 			}
 
 			//  Decode a UTF8 encoding into a code-point
-			//      Units [The number of UTF8 units the code-point uses] use String::Encoding::_UTF8_::GetCharUnits to get this value
+			//      Units [The number of UTF8 units the code-point uses] Use String::Encoding::_UTF8_::GetCharUnits to get this value
 			//      String [The source string to decode a code-point from]
 			//  returns the decoded code-point, or 0 for an error
-			//  This function does not check if String is valid
+			//      This function does not check if String is valid
 			static U32 Decode(U8 Units, const UTF8* String)
 			{
 				return capi_UTF8_Decode(Units, String);
@@ -1991,7 +1815,7 @@ struct String
 			//  Get the length of a UTF8 string
 			//      String [Pointer to a null-terminated string]
 			//  returns the number of characters in the string, not including the terminating null character
-			//  -1 is returned for an invalid parameter
+			//      -1 is returned for an invalid parameter
 			static size_t Length(const UTF8* String)
 			{
 				return capi_StrLenU(String);
@@ -2002,8 +1826,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF8 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units copied to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Copy(UTF8* Destination, size_t Length, const UTF8* Source)
 			{
 				return capi_StrCopyU(Destination, Length, Source);
@@ -2014,8 +1838,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF8 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units appended to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Append(UTF8* Destination, size_t Length, const UTF8* Source)
 			{
 				return capi_StrAppendU(Destination, Length, Source);
@@ -2078,7 +1902,7 @@ struct String
 			//      String [Null-terminated source string to split]
 			//      Delimit [Character to be located and replaced]
 			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
-			//  When Delimit is found its set to 0
+			//      When Delimit is found its set to 0
 			static UTF8* Split(UTF8* String, UTF8 Delimit)
 			{
 				return capi_StrSplitU(String, Delimit);
@@ -2096,8 +1920,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF16 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t To_UTF16(UTF16* Destination, size_t Length, const UTF8* Source)
 			{
 				return capi_UTF8_To_UTF16(Destination, Length, Source);
@@ -2108,8 +1932,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF32 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t To_UTF32(UTF32* Destination, size_t Length, const UTF8* Source)
 			{
 				return capi_UTF8_To_UTF32(Destination, Length, Source);
@@ -2129,8 +1953,8 @@ struct String
 			//      String [The destination string buffer]
 			//      CodePoint [The code-point to encode]
 			//  returns the number of UTF16 units that was written to String, or 0 for an error
-			//  This function does not check if String is valid and does not output any null-terminator character
-			//  Consider using the safer version String::Encoding::_UTF16_::Encode
+			//      This function does not check if String is valid and does not output any null-terminator character
+			//      Consider using the safer version String::Encoding::_UTF16_::Encode
 			static U8 Encode_Unsafe(UTF16* String, U32 CodePoint)
 			{
 				return capi_UTF16_Encode_Unsafe(String, CodePoint);
@@ -2141,17 +1965,17 @@ struct String
 			//      Length [Length of the destination string buffer in UTF16 units]
 			//      CodePoint [The code-point to encode]
 			//  returns the number of UTF16 units that was written to String, not including the terminating null character, or 0 for an error
-			//  This function does not check if String is valid
+			//      This function does not check if String is valid
 			static U8 Encode(UTF16* String, size_t Length, U32 CodePoint)
 			{
 				return capi_UTF16_Encode(String, Length, CodePoint);
 			}
 
 			//  Decode a UTF16 encoding into a code-point
-			//      Units [The number of UTF16 units the code-point uses] use String::Encoding::_UTF8_::GetCharUnits to get this value
+			//      Units [The number of UTF16 units the code-point uses] Use String::Encoding::_UTF8_::GetCharUnits to get this value
 			//      String [The source string to decode a code-point from]
 			//  returns the decoded code-point, or 0 for an error
-			//  This function does not check if String is valid
+			//      This function does not check if String is valid
 			static U32 Decode(U8 Units, const UTF16* String)
 			{
 				return capi_UTF16_Decode(Units, String);
@@ -2160,7 +1984,7 @@ struct String
 			//  Get the length of a UTF16 string
 			//      String [Pointer to a null-terminated string]
 			//  returns the number of characters in the string, not including the terminating null character
-			//  -1 is returned for an invalid parameter
+			//      -1 is returned for an invalid parameter
 			static size_t Length(const UTF16* String)
 			{
 				return capi_StrLenW(String);
@@ -2171,8 +1995,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF16 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units copied to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Copy(UTF16* Destination, size_t Length, const UTF16* Source)
 			{
 				return capi_StrCopyW(Destination, Length, Source);
@@ -2183,8 +2007,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF16 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units appended to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Append(UTF16* Destination, size_t Length, const UTF16* Source)
 			{
 				return capi_StrAppendW(Destination, Length, Source);
@@ -2247,7 +2071,7 @@ struct String
 			//      String [Null-terminated source string to split]
 			//      Delimit [Character to be located and replaced]
 			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
-			//  When Delimit is found its set to 0
+			//      When Delimit is found its set to 0
 			static UTF16* Split(UTF16* String, UTF16 Delimit)
 			{
 				return capi_StrSplitW(String, Delimit);
@@ -2265,8 +2089,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF8 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t To_UTF8(UTF8* Destination, size_t Length, const UTF16* Source)
 			{
 				return capi_UTF16_To_UTF8(Destination, Length, Source);
@@ -2277,8 +2101,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF32 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t To_UTF32(UTF32* Destination, size_t Length, const UTF16* Source)
 			{
 				return capi_UTF16_To_UTF32(Destination, Length, Source);
@@ -2289,7 +2113,7 @@ struct String
 			//  Get the length of a UTF32 string
 			//      String [Pointer to a null-terminated string]
 			//  returns the number of characters in the string, not including the terminating null character
-			//  -1 is returned for an invalid parameter
+			//      -1 is returned for an invalid parameter
 			static size_t Length(const UTF32* String)
 			{
 				return capi_StrLenL(String);
@@ -2300,8 +2124,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF32 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units copied to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Copy(UTF32* Destination, size_t Length, const UTF32* Source)
 			{
 				return capi_StrCopyL(Destination, Length, Source);
@@ -2312,8 +2136,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF32 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of units appended to the destination string, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t Append(UTF32* Destination, size_t Length, const UTF32* Source)
 			{
 				return capi_StrAppendL(Destination, Length, Source);
@@ -2376,7 +2200,7 @@ struct String
 			//      String [Null-terminated source string to split]
 			//      Delimit [Character to be located and replaced]
 			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
-			//  When Delimit is found its set to 0
+			//      When Delimit is found its set to 0
 			static UTF32* Split(UTF32* String, UTF32 Delimit)
 			{
 				return capi_StrSplitL(String, Delimit);
@@ -2394,8 +2218,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF8 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t To_UTF8(UTF8* Destination, size_t Length, const UTF32* Source)
 			{
 				return capi_UTF32_To_UTF8(Destination, Length, Source);
@@ -2406,8 +2230,8 @@ struct String
 			//      Length [Length of the destination string buffer in UTF16 units]
 			//      Source [Null-terminated source string buffer]
 			//  returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
-			//  If there is no null terminator within Length, then Length is returned to indicate the error condition
-			//  -1 is returned for an invalid parameter
+			//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+			//      -1 is returned for an invalid parameter
 			static size_t To_UTF16(UTF16* Destination, size_t Length, const UTF32* Source)
 			{
 				return capi_UTF32_To_UTF16(Destination, Length, Source);
