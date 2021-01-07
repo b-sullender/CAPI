@@ -841,643 +841,419 @@ extern "C" {
 	//  returns CAPI_ERROR_NONE on success
 	CAPI_FUNC(I32) capi_Create_ICO_ToMemory(ICO** ppFilePointer, U64* pFileSize, IMAGE* pImageList, U16 nImages, U8 Format, void* pParameters);
 
-	/*
-	*
-	capi_StrLenA - Get the length of a ASCII string (strings.c)
-	* String [Pointer to a null-terminated string]
-	* returns the number of characters in the string, not including the terminating null character
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrLenA - Get the length of a ASCII string (strings.c)
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of characters in the string, not including the terminating null character
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrLenA(const ASCII* String);
 
-	/*
-	*
-	capi_StrCopyA - Copy a ASCII string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in ASCII units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters copied to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCopyA - Copy a ASCII string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in ASCII units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters copied to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrCopyA(ASCII* Destination, size_t Length, const ASCII* Source);
 
-	/*
-	*
-	capi_StrAppendA - Append a ASCII string (strings.c)
-	* Destination [Null-terminated destination string buffer]
-	* Length [Length of the destination string buffer in ASCII units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters appended to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrAppendA - Append a ASCII string (strings.c)
+	//      Destination [Null-terminated destination string buffer]
+	//      Length [Length of the destination string buffer in ASCII units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters appended to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrAppendA(ASCII* Destination, size_t Length, const ASCII* Source);
 
-	/*
-	*
-	capi_StrCompareA - Compare ASCII strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareA - Compare ASCII strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareA(const ASCII* String1, const ASCII* String2);
 
-	/*
-	*
-	capi_StrCompareInsensitiveA - Perform a case-insensitive comparison of ASCII strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareInsensitiveA - Perform a case-insensitive comparison of ASCII strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareInsensitiveA(const ASCII* String1, const ASCII* String2);
 
-	/*
-	*
-	capi_StrFindA - Find a character in a ASCII string (strings.c)
-	* String [Null-terminated source string to search]
-	* Delimit [Character to be located]
-	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-	*
-	*/
+	//  capi_StrFindA - Find a character in a ASCII string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      Delimit [Character to be located]
+	//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	CAPI_FUNC(ASCII*) capi_StrFindA(const ASCII* String, ASCII Delimit);
 
-	/*
-	*
-	capi_StrFindStrA - Find a ASCII string in a ASCII string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrA - Find a ASCII string in a ASCII string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(ASCII*) capi_StrFindStrA(const ASCII* String, const ASCII* StrDelimit);
 
-	/*
-	*
-	capi_StrFindStrInsensitiveA - Perform a case-insensitive search for a ASCII string in a ASCII string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrInsensitiveA - Perform a case-insensitive search for a ASCII string in a ASCII string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(ASCII*) capi_StrFindStrInsensitiveA(const ASCII* String, const ASCII* StrDelimit);
 
-	/*
-	*
-	capi_StrSplitA - Split a ASCII string (strings.c)
-	* String [Null-terminated source string to split]
-	* Delimit [Character to be located and replaced]
-	* returns a pointer to the ASCII string following the Delimit, or 0 if Delimit is not found
-	* When Delimit is found its set to 0
-	*
-	*/
+	//  capi_StrSplitA - Split a ASCII string (strings.c)
+	//      String [Null-terminated source string to split]
+	//      Delimit [Character to be located and replaced]
+	//  returns a pointer to the ASCII string following the Delimit, or 0 if Delimit is not found
+	//      When Delimit is found its set to 0
 	CAPI_FUNC(ASCII*) capi_StrSplitA(ASCII* String, ASCII Delimit);
 
-	/*
-	*
-	capi_StrReverseA - Reverse a ASCII string (strings.c)
-	* String [Null-terminated source string to reverse]
-	*
-	*/
+	//  capi_StrReverseA - Reverse a ASCII string (strings.c)
+	//      String [Null-terminated source string to reverse]
 	CAPI_FUNC(void) capi_StrReverseA(ASCII* String);
 
-	/*
-	*
-	capi_UTF8_GetCharSize - Get the number of bytes a UTF8 code-point encoding uses (strings.c)
-	* Code [The 1st UTF8 unit of the code-point encoding]
-	* returns the number of UTF8 units the code-point encoding uses, or 0 for an error
-	*
-	*/
+	//  capi_UTF8_GetCharSize - Get the number of bytes a UTF8 code-point encoding uses (strings.c)
+	//      Code [The 1st UTF8 unit of the code-point encoding]
+	//  returns the number of UTF8 units the code-point encoding uses, or 0 for an error
 	CAPI_FUNC(U8) capi_UTF8_GetCharUnits(UTF8 Code);
 
-	/*
-	*
-	capi_UTF8_Encode_Unsafe - Encode a code-point using the UTF8 encoding (strings.c)
-	* String [The destination string buffer]
-	* CodePoint [The code-point to encode]
-	* returns the number of UTF8 units that was written to String, or 0 for an error
-	* This function does not check if String is valid and does not output any null-terminator character
-	* Consider using the safer version capi_UTF8_Encode
-	*
-	*/
+	//  capi_UTF8_Encode_Unsafe - Encode a code-point using the UTF8 encoding (strings.c)
+	//      String [The destination string buffer]
+	//      CodePoint [The code-point to encode]
+	//  returns the number of UTF8 units that was written to String, or 0 for an error
+	//      This function does not check if String is valid and does not output any null-terminator character
+	//      Consider using the safer version capi_UTF8_Encode
 	CAPI_FUNC(U8) capi_UTF8_Encode_Unsafe(UTF8* String, U32 CodePoint);
 
-	/*
-	*
-	capi_UTF8_Encode - Encode a code-point using the UTF8 encoding (strings.c)
-	* String [The destination string buffer]
-	* Length [Length of the destination string buffer in UTF8 units]
-	* CodePoint [The code-point to encode]
-	* returns the number of UTF8 units that was written to String, not including the terminating null character, or 0 for an error
-	* This function does not check if String is valid
-	*
-	*/
+	//  capi_UTF8_Encode - Encode a code-point using the UTF8 encoding (strings.c)
+	//      String [The destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      CodePoint [The code-point to encode]
+	//  returns the number of UTF8 units that was written to String, not including the terminating null character, or 0 for an error
+	//      This function does not check if String is valid
 	CAPI_FUNC(U8) capi_UTF8_Encode(UTF8* String, size_t Length, U32 CodePoint);
 
-	/*
-	*
-	capi_UTF8_Decode - Decode a UTF8 encoding into a code-point (strings.c)
-	* Units [The number of UTF8 units the code-point uses] Use capi_UTF8_GetCharUnits to get this value
-	* String [The source string to decode a code-point from]
-	* returns the decoded code-point, or 0 for an error
-	* This function does not check if String is valid
-	*
-	*/
+	//  capi_UTF8_Decode - Decode a UTF8 encoding into a code-point (strings.c)
+	//      Units [The number of UTF8 units the code-point uses] Use capi_UTF8_GetCharUnits to get this value
+	//      String [The source string to decode a code-point from]
+	//  returns the decoded code-point, or 0 for an error
+	//      This function does not check if String is valid
 	CAPI_FUNC(U32) capi_UTF8_Decode(U8 Units, const UTF8* String);
 
-	/*
-	*
-	capi_StrLenU - Get the length of a UTF8 string (strings.c)
-	* String [Pointer to a null-terminated string]
-	* returns the number of characters in the string, not including the terminating null character
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrLenU - Get the length of a UTF8 string (strings.c)
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of characters in the string, not including the terminating null character
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrLenU(const UTF8* String);
 
-	/*
-	*
-	capi_StrUnitsU - Get the number of UTF8 units in a UTF8 string (strings.c)
-	* String [Pointer to a null-terminated string]
-	* returns the number of UTF8 units in the string, not including the terminating null character
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrUnitsU - Get the number of UTF8 units in a UTF8 string (strings.c)
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of UTF8 units in the string, not including the terminating null character
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrUnitsU(const UTF8* String);
 
-	/*
-	*
-	capi_StrCopyU - Copy a UTF8 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF8 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of UTF8 units copied to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCopyU - Copy a UTF8 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of UTF8 units copied to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrCopyU(UTF8* Destination, size_t Length, const UTF8* Source);
 
-	/*
-	*
-	capi_StrAppendU - Append a UTF8 string (strings.c)
-	* Destination [Null-terminated destination string buffer]
-	* Length [Length of the destination string buffer in UTF8 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of UTF8 units appended to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrAppendU - Append a UTF8 string (strings.c)
+	//      Destination [Null-terminated destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of UTF8 units appended to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrAppendU(UTF8* Destination, size_t Length, const UTF8* Source);
 
-	/*
-	*
-	capi_StrCompareU - Compare UTF8 strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareU - Compare UTF8 strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareU(const UTF8* String1, const UTF8* String2);
 
-	/*
-	*
-	capi_StrCompareInsensitiveU - Perform a case-insensitive comparison of UTF8 strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareInsensitiveU - Perform a case-insensitive comparison of UTF8 strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareInsensitiveU(const UTF8* String1, const UTF8* String2);
 
-	/*
-	*
-	capi_StrFindU - Find a character in a UTF8 string (strings.c)
-	* String [Null-terminated source string to search]
-	* Delimit [Character to be located]
-	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-	*
-	*/
+	//  capi_StrFindU - Find a character in a UTF8 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      Delimit [Character to be located]
+	//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	CAPI_FUNC(UTF8*) capi_StrFindU(const UTF8* String, U32 Delimit);
 
-	/*
-	*
-	capi_StrFindStrU - Find a UTF8 string in a UTF8 string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrU - Find a UTF8 string in a UTF8 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(UTF8*) capi_StrFindStrU(const UTF8* String, const UTF8* StrDelimit);
 
-	/*
-	*
-	capi_StrFindStrInsensitiveU - Perform a case-insensitive search for a UTF8 string in a UTF8 string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrInsensitiveU - Perform a case-insensitive search for a UTF8 string in a UTF8 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(UTF8*) capi_StrFindStrInsensitiveU(const UTF8* String, const UTF8* StrDelimit);
 
-	/*
-	*
-	capi_StrSplitU - Split a UTF8 string (strings.c)
-	* String [Null-terminated source string to split]
-	* Delimit [Character to be located and replaced]
-	* returns a pointer to the UTF8 string following the Delimit, or 0 if Delimit is not found
-	* When Delimit is found its set to 0
-	*
-	*/
+	//  capi_StrSplitU - Split a UTF8 string (strings.c)
+	//      String [Null-terminated source string to split]
+	//      Delimit [Character to be located and replaced]
+	//  returns a pointer to the UTF8 string following the Delimit, or 0 if Delimit is not found
+	//      When Delimit is found its set to 0
 	CAPI_FUNC(UTF8*) capi_StrSplitU(UTF8* String, U32 Delimit);
 
-	/*
-	*
-	capi_StrReverseU - Reverse a UTF8 string (strings.c)
-	* String [Null-terminated source string to reverse]
-	*
-	*/
+	//  capi_StrReverseU - Reverse a UTF8 string (strings.c)
+	//      String [Null-terminated source string to reverse]
 	CAPI_FUNC(void) capi_StrReverseU(UTF8* String);
 
-	/*
-	*
-	capi_UTF16_GetCharUnits - Get the number of words a UTF16 code-point encoding uses (strings.c)
-	* Code [The 1st UTF16 unit of the code-point encoding]
-	* returns the number of UTF16 units the code-point encoding uses, or 0 for an error
-	*
-	*/
+	//  capi_UTF16_GetCharUnits - Get the number of words a UTF16 code-point encoding uses (strings.c)
+	//      Code [The 1st UTF16 unit of the code-point encoding]
+	//  returns the number of UTF16 units the code-point encoding uses, or 0 for an error
 	CAPI_FUNC(U8) capi_UTF16_GetCharUnits(UTF16 Code);
 
-	/*
-	*
-	capi_UTF16_Encode_Unsafe - Encode a code-point using the UTF16 encoding (strings.c)
-	* String [The destination string buffer]
-	* CodePoint [The code-point to encode]
-	* returns the number of UTF16 units that was written to String, or 0 for an error
-	* This function does not check if String is valid and does not output any null-terminator character
-	* Consider using the safer version capi_UTF16_Encode
-	*
-	*/
+	//  capi_UTF16_Encode_Unsafe - Encode a code-point using the UTF16 encoding (strings.c)
+	//      String [The destination string buffer]
+	//      CodePoint [The code-point to encode]
+	//  returns the number of UTF16 units that was written to String, or 0 for an error
+	//      This function does not check if String is valid and does not output any null-terminator character
+	//      Consider using the safer version capi_UTF16_Encode
 	CAPI_FUNC(U8) capi_UTF16_Encode_Unsafe(UTF16* String, U32 CodePoint);
 
-	/*
-	*
-	capi_UTF16_Encode - Encode a code-point using the UTF16 encoding (strings.c)
-	* String [The destination string buffer]
-	* Length [Length of the destination string buffer in UTF16 units]
-	* CodePoint [The code-point to encode]
-	* returns the number of UTF16 units that was written to String, not including the terminating null character, or 0 for an error
-	* This function does not check if String is valid
-	*
-	*/
+	//  capi_UTF16_Encode - Encode a code-point using the UTF16 encoding (strings.c)
+	//      String [The destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      CodePoint [The code-point to encode]
+	//  returns the number of UTF16 units that was written to String, not including the terminating null character, or 0 for an error
+	//      This function does not check if String is valid
 	CAPI_FUNC(U8) capi_UTF16_Encode(UTF16* String, size_t Length, U32 CodePoint);
 
-	/*
-	*
-	capi_UTF16_Decode - Decode a UTF16 encoding into a code-point (strings.c)
-	* Units [The number of UTF16 units the code-point uses] Use capi_UTF16_GetCharUnits to get this value
-	* String [The source string to decode a code-point from]
-	* returns the decoded code-point, or 0 for an error
-	* This function does not check if String is valid
-	*
-	*/
+	//  capi_UTF16_Decode - Decode a UTF16 encoding into a code-point (strings.c)
+	//      Units [The number of UTF16 units the code-point uses] Use capi_UTF16_GetCharUnits to get this value
+	//      String [The source string to decode a code-point from]
+	//  returns the decoded code-point, or 0 for an error
+	//      This function does not check if String is valid
 	CAPI_FUNC(U32) capi_UTF16_Decode(U8 Units, const UTF16* String);
 
-	/*
-	*
-	capi_StrLenW - Get the length of a UTF16 string (strings.c)
-	* String [Pointer to a null-terminated string]
-	* returns the number of characters in the string, not including the terminating null character
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrLenW - Get the length of a UTF16 string (strings.c)
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of characters in the string, not including the terminating null character
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrLenW(const UTF16* String);
 
-	/*
-	*
-	capi_StrUnitsW - Get the number of UTF16 units in a UTF16 string (strings.c)
-	* String [Pointer to a null-terminated string]
-	* returns the number of UTF16 units in the string, not including the terminating null character
-	* -1 is returned for an invalid parameter
-	* To get the size of the string in bytes, multiply the result by sizeof(UTF16)
-	*
-	*/
+	//  capi_StrUnitsW - Get the number of UTF16 units in a UTF16 string (strings.c)
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of UTF16 units in the string, not including the terminating null character
+	//      -1 is returned for an invalid parameter
+	//      To get the size of the string in bytes, multiply the result by sizeof(UTF16)
 	CAPI_FUNC(size_t) capi_StrUnitsW(const UTF16* String);
 
-	/*
-	*
-	capi_StrCopyW - Copy a UTF16 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF16 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of UTF16 units copied to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCopyW - Copy a UTF16 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of UTF16 units copied to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrCopyW(UTF16* Destination, size_t Length, const UTF16* Source);
 
-	/*
-	*
-	capi_StrAppendW - Append a UTF16 string (strings.c)
-	* Destination [Null-terminated destination string buffer]
-	* Length [Length of the destination string buffer in UTF16 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of UTF16 units appended to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrAppendW - Append a UTF16 string (strings.c)
+	//      Destination [Null-terminated destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of UTF16 units appended to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrAppendW(UTF16* Destination, size_t Length, const UTF16* Source);
 
-	/*
-	*
-	capi_StrCompareW - Compare UTF16 strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareW - Compare UTF16 strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareW(const UTF16* String1, const UTF16* String2);
 
-	/*
-	*
-	capi_StrCompareInsensitiveW - Perform a case-insensitive comparison of UTF16 strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareInsensitiveW - Perform a case-insensitive comparison of UTF16 strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareInsensitiveW(const UTF16* String1, const UTF16* String2);
 
-	/*
-	*
-	capi_StrFindW - Find a character in a UTF16 string (strings.c)
-	* String [Null-terminated source string to search]
-	* Delimit [Character to be located]
-	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-	*
-	*/
+	//  capi_StrFindW - Find a character in a UTF16 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      Delimit [Character to be located]
+	//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	CAPI_FUNC(UTF16*) capi_StrFindW(const UTF16* String, U32 Delimit);
 
-	/*
-	*
-	capi_StrFindStrW - Find a UTF16 string in a UTF16 string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrW - Find a UTF16 string in a UTF16 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(UTF16*) capi_StrFindStrW(const UTF16* String, const UTF16* StrDelimit);
 
-	/*
-	*
-	capi_StrFindStrInsensitiveW - Perform a case-insensitive search for a UTF16 string in a UTF16 string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrInsensitiveW - Perform a case-insensitive search for a UTF16 string in a UTF16 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(UTF16*) capi_StrFindStrInsensitiveW(const UTF16* String, const UTF16* StrDelimit);
 
-	/*
-	*
-	capi_StrSplitW - Split a UTF16 string (strings.c)
-	* String [Null-terminated source string to split]
-	* Delimit [Character to be located and replaced]
-	* returns a pointer to the UTF16 string following the Delimit, or 0 if Delimit is not found
-	* When Delimit is found its set to 0
-	*
-	*/
+	//  capi_StrSplitW - Split a UTF16 string (strings.c)
+	//      String [Null-terminated source string to split]
+	//      Delimit [Character to be located and replaced]
+	//  returns a pointer to the UTF16 string following the Delimit, or 0 if Delimit is not found
+	//      When Delimit is found its set to 0
 	CAPI_FUNC(UTF16*) capi_StrSplitW(UTF16* String, U32 Delimit);
 
-	/*
-	*
-	capi_StrReverseW - Reverse a UTF16 string (strings.c)
-	* String [Null-terminated source string to reverse]
-	*
-	*/
+	//  capi_StrReverseW - Reverse a UTF16 string (strings.c)
+	//      String [Null-terminated source string to reverse]
 	CAPI_FUNC(void) capi_StrReverseW(UTF16* String);
 
-	/*
-	*
-	capi_StrLenL - Get the length of a UTF32 string (strings.c)
-	* String [Pointer to a null-terminated string]
-	* returns the number of characters in the string, not including the terminating null character
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrLenL - Get the length of a UTF32 string (strings.c)
+	//      String [Pointer to a null-terminated string]
+	//  returns the number of characters in the string, not including the terminating null character
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrLenL(const UTF32* String);
 
-	/*
-	*
-	capi_StrCopyL - Copy a UTF32 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF32 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of UTF32 units copied to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCopyL - Copy a UTF32 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of UTF32 units copied to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrCopyL(UTF32* Destination, size_t Length, const UTF32* Source);
 
-	/*
-	*
-	capi_StrAppendL - Append a UTF32 string (strings.c)
-	* Destination [Null-terminated destination string buffer]
-	* Length [Length of the destination string buffer in UTF32 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of UTF32 units appended to the destination string, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrAppendL - Append a UTF32 string (strings.c)
+	//      Destination [Null-terminated destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of UTF32 units appended to the destination string, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_StrAppendL(UTF32* Destination, size_t Length, const UTF32* Source);
 
-	/*
-	*
-	capi_StrCompareL - Compare UTF32 strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareL - Compare UTF32 strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareL(const UTF32* String1, const UTF32* String2);
 
-	/*
-	*
-	capi_StrCompareInsensitiveL - Perform a case-insensitive comparison of UTF32 strings (strings.c)
-	* String1 [Null-terminated string to compare]
-	* String2 [Null-terminated string to compare]
-	* The return value indicates the ordinal relation of String1 to String2
-	*	< 0  String1 is less than String2
-	*	  0  String1 is identical to String2
-	*	> 0  String1 is greater than String2
-	* 0x7FFFFFFF is returned for an invalid parameter
-	*
-	*/
+	//  capi_StrCompareInsensitiveL - Perform a case-insensitive comparison of UTF32 strings (strings.c)
+	//      String1 [Null-terminated string to compare]
+	//      String2 [Null-terminated string to compare]
+	//  The return value indicates the ordinal relation of String1 to String2
+	//      < 0  String1 is less than String2
+	//        0  String1 is identical to String2
+	//      > 0  String1 is greater than String2
+	//      0x7FFFFFFF is returned for an invalid parameter
 	CAPI_FUNC(I32) capi_StrCompareInsensitiveL(const UTF32* String1, const UTF32* String2);
 
-	/*
-	*
-	capi_StrFindL - Find a character in a UTF32 string (strings.c)
-	* String [Null-terminated source string to search]
-	* Delimit [Character to be located]
-	* returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-	*
-	*/
+	//  capi_StrFindL - Find a character in a UTF32 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      Delimit [Character to be located]
+	//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
 	CAPI_FUNC(UTF32*) capi_StrFindL(const UTF32* String, U32 Delimit);
 
-	/*
-	*
-	capi_StrFindStrL - Find a UTF32 string in a UTF32 string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrL - Find a UTF32 string in a UTF32 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(UTF32*) capi_StrFindStrL(const UTF32* String, const UTF32* StrDelimit);
 
-	/*
-	*
-	capi_StrFindStrInsensitiveL - Perform a case-insensitive search for a UTF32 string in a UTF32 string (strings.c)
-	* String [Null-terminated source string to search]
-	* StrDelimit [String to be located]
-	* returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
-	*
-	*/
+	//  capi_StrFindStrInsensitiveL - Perform a case-insensitive search for a UTF32 string in a UTF32 string (strings.c)
+	//      String [Null-terminated source string to search]
+	//      StrDelimit [String to be located]
+	//  returns a pointer to the first occurrence of StrDelimit in String, or 0 if StrDelimit is not found
 	CAPI_FUNC(UTF32*) capi_StrFindStrInsensitiveL(const UTF32* String, const UTF32* StrDelimit);
 
-	/*
-	*
-	capi_StrSplitL - Split a UTF32 string (strings.c)
-	* String [Null-terminated source string to split]
-	* Delimit [Character to be located and replaced]
-	* returns a pointer to the UTF32 string following the Delimit, or 0 if Delimit is not found
-	* When Delimit is found its set to 0
-	*
-	*/
+	//  capi_StrSplitL - Split a UTF32 string (strings.c)
+	//      String [Null-terminated source string to split]
+	//      Delimit [Character to be located and replaced]
+	//  returns a pointer to the UTF32 string following the Delimit, or 0 if Delimit is not found
+	//      When Delimit is found its set to 0
 	CAPI_FUNC(UTF32*) capi_StrSplitL(UTF32* String, U32 Delimit);
 
-	/*
-	*
-	capi_StrReverseL - Reverse a UTF32 string (strings.c)
-	* String [Null-terminated source string to reverse]
-	*
-	*/
+	//  capi_StrReverseL - Reverse a UTF32 string (strings.c)
+	//      String [Null-terminated source string to reverse]
 	CAPI_FUNC(void) capi_StrReverseL(UTF32* String);
 
-	/*
-	*
-	capi_UTF8_To_UTF16 - Convert a UTF8 string to a UTF16 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF16 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_UTF8_To_UTF16 - Convert a UTF8 string to a UTF16 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_UTF8_To_UTF16(UTF16* Destination, size_t Length, const UTF8* Source);
 
-	/*
-	*
-	capi_UTF8_To_UTF32 - Convert a UTF8 string to a UTF32 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF32 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_UTF8_To_UTF32 - Convert a UTF8 string to a UTF32 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_UTF8_To_UTF32(UTF32* Destination, size_t Length, const UTF8* Source);
 
-	/*
-	*
-	capi_UTF16_To_UTF8 - Convert a UTF16 string to a UTF8 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF8 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_UTF16_To_UTF8 - Convert a UTF16 string to a UTF8 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_UTF16_To_UTF8(UTF8* Destination, size_t Length, const UTF16* Source);
 
-	/*
-	*
-	capi_UTF16_To_UTF32 - Convert a UTF16 string to a UTF32 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF32 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_UTF16_To_UTF32 - Convert a UTF16 string to a UTF32 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters converted to UTF32 and put into the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_UTF16_To_UTF32(UTF32* Destination, size_t Length, const UTF16* Source);
 
-	/*
-	*
-	capi_UTF32_To_UTF8 - Convert a UTF32 string to a UTF8 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF8 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_UTF32_To_UTF8 - Convert a UTF32 string to a UTF8 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters converted to UTF8 and put into the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_UTF32_To_UTF8(UTF8* Destination, size_t Length, const UTF32* Source);
 
-	/*
-	*
-	capi_UTF32_To_UTF16 - Convert a UTF32 string to a UTF16 string (strings.c)
-	* Destination [Pointer to the destination string buffer]
-	* Length [Length of the destination string buffer in UTF16 units]
-	* Source [Null-terminated source string buffer]
-	* returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
-	* If there is no null terminator within Length, then Length is returned to indicate the error condition
-	* -1 is returned for an invalid parameter
-	*
-	*/
+	//  capi_UTF32_To_UTF16 - Convert a UTF32 string to a UTF16 string (strings.c)
+	//      Destination [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      Source [Null-terminated source string buffer]
+	//  returns the number of characters converted to UTF16 and put into the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_UTF32_To_UTF16(UTF16* Destination, size_t Length, const UTF32* Source);
 
 	//  capi_PrintHexA - Convert a data variable to its hexadecimal ASCII string representation (hexadecimal.c)
@@ -1599,7 +1375,7 @@ struct String
 	//      < 0  String1 is less than String2
 	//        0  String1 is identical to String2
 	//      > 0  String1 is greater than String2
-	//  0x7FFFFFFF is returned for an invalid parameter
+	//      0x7FFFFFFF is returned for an invalid parameter
 	static I32 Compare(const STRING* String1, const STRING* String2)
 	{
 		return capi_StrCompare(String1, String2);
@@ -1612,7 +1388,7 @@ struct String
 	//      < 0  String1 is less than String2
 	//        0  String1 is identical to String2
 	//      > 0  String1 is greater than String2
-	//  0x7FFFFFFF is returned for an invalid parameter
+	//      0x7FFFFFFF is returned for an invalid parameter
 	static I32 CompareInsensitive(const STRING* String1, const STRING* String2)
 	{
 		return capi_StrCompareInsensitive(String1, String2);
@@ -1707,7 +1483,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 Compare(const ASCII* String1, const ASCII* String2)
 			{
 				return capi_StrCompareA(String1, String2);
@@ -1720,7 +1496,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 CompareInsensitive(const ASCII* String1, const ASCII* String2)
 			{
 				return capi_StrCompareInsensitiveA(String1, String2);
@@ -1852,7 +1628,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 Compare(const UTF8* String1, const UTF8* String2)
 			{
 				return capi_StrCompareU(String1, String2);
@@ -1865,7 +1641,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 CompareInsensitive(const UTF8* String1, const UTF8* String2)
 			{
 				return capi_StrCompareInsensitiveU(String1, String2);
@@ -2021,7 +1797,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 Compare(const UTF16* String1, const UTF16* String2)
 			{
 				return capi_StrCompareW(String1, String2);
@@ -2034,7 +1810,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 CompareInsensitive(const UTF16* String1, const UTF16* String2)
 			{
 				return capi_StrCompareInsensitiveW(String1, String2);
@@ -2150,7 +1926,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 Compare(const UTF32* String1, const UTF32* String2)
 			{
 				return capi_StrCompareL(String1, String2);
@@ -2163,7 +1939,7 @@ struct String
 			//      < 0  String1 is less than String2
 			//        0  String1 is identical to String2
 			//      > 0  String1 is greater than String2
-			//  0x7FFFFFFF is returned for an invalid parameter
+			//      0x7FFFFFFF is returned for an invalid parameter
 			static I32 CompareInsensitive(const UTF32* String1, const UTF32* String2)
 			{
 				return capi_StrCompareInsensitiveL(String1, String2);
