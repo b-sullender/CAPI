@@ -1300,22 +1300,92 @@ extern "C" {
 	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintHexL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
-	// **** print.c **** //
-
+	//  capi_PrintUnsignedA - Convert a data variable to a unsigned ASCII string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in ASCII units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the unsigned string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintUnsignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintSignedA - Convert a data variable to a signed ASCII string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in ASCII units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the signed string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintSignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintUnsignedU - Convert a data variable to a unsigned UTF8 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the unsigned string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintUnsignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintSignedU - Convert a data variable to a signed UTF8 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF8 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the signed string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintSignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintUnsignedW - Convert a data variable to a unsigned UTF16 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the unsigned string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintUnsignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintSignedW - Convert a data variable to a signed UTF16 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the signed string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintSignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintUnsignedL - Convert a data variable to a unsigned UTF32 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the unsigned string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintUnsignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintSignedL - Convert a data variable to a signed UTF32 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      pValue [Pointer to the data variable to convert]
+	//      Format [Style of the signed string] This can a combination of the PRINT_xxx flags
+	//      nBytes [The number of bytes pValue points to] Use the sizeof operator to get this value
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
 #ifdef __cplusplus
