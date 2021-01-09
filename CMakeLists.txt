@@ -168,7 +168,7 @@ target_compile_definitions(CAPI PRIVATE
 set_source_files_properties(zlib.def PROPERTIES HEADER_FILE_ONLY TRUE)
 
 if (WIN32)
-	add_executable(TestApp "Source/example.h" "Source/example.c")
+	add_executable(TestApp "Source/testapp.h" "Source/testapp.c")
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 		set_target_properties(TestApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 		set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT TestApp)
