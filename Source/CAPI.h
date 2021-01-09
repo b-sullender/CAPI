@@ -139,6 +139,9 @@ typedef wchar_t UTF32;  // UTF32 Unit
 typedef U32 UTF32;    // UTF32 Unit
 #endif
 
+#define capi_PrintSingleU capi_PrintSingleA
+#define capi_PrintDoubleU capi_PrintDoubleA
+
 #ifdef UNICODE
 typedef UTF16 STRING;
 #define STR(String) L##String
@@ -156,8 +159,10 @@ typedef UTF16 STRING;
 #define capi_StrSplit capi_StrSplitW
 #define capi_StrReverse capi_StrReverseW
 #define capi_PrintHex capi_PrintHexW
-#define capi_PrintUnsigned capi_PrintUnsignedW
 #define capi_PrintSigned capi_PrintSignedW
+#define capi_PrintUnsigned capi_PrintUnsignedW
+#define capi_PrintSingle capi_PrintSingleW
+#define capi_PrintDouble capi_PrintDoubleW
 #else
 typedef UTF8 STRING;
 #define STR(String) String
@@ -175,8 +180,10 @@ typedef UTF8 STRING;
 #define capi_StrSplit capi_StrSplitU
 #define capi_StrReverse capi_StrReverseU
 #define capi_PrintHex capi_PrintHexU
-#define capi_PrintUnsigned capi_PrintUnsignedU
 #define capi_PrintSigned capi_PrintSignedU
+#define capi_PrintUnsigned capi_PrintUnsignedU
+#define capi_PrintSingle capi_PrintSingleU
+#define capi_PrintDouble capi_PrintDoubleU
 #endif
 
 /* MACROS FOR READING BIG ENDIAN & LITTLE ENDIAN */
@@ -1388,6 +1395,66 @@ extern "C" {
 	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_PrintSingleA - Convert a IEEE 754 32-bit binary data variable to a ASCII string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in ASCII units]
+	//      Value [The value to convert]
+	//      Format [Style of the string] This can a combination of the PRINT_xxx flags
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
+	CAPI_FUNC(size_t) capi_PrintSingleA(ASCII* pBuffer, size_t Length, float Value, U32 Format);
+
+	//  capi_PrintDoubleA - Convert a IEEE 754 64-bit binary data variable to a ASCII string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in ASCII units]
+	//      Value [The value to convert]
+	//      Format [Style of the string] This can a combination of the PRINT_xxx flags
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
+	CAPI_FUNC(size_t) capi_PrintDoubleA(ASCII* pBuffer, size_t Length, double Value, U32 Format);
+
+	//  capi_PrintSingleW - Convert a IEEE 754 32-bit binary data variable to a UTF16 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      Value [The value to convert]
+	//      Format [Style of the string] This can a combination of the PRINT_xxx flags
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
+	CAPI_FUNC(size_t) capi_PrintSingleW(UTF16* pBuffer, size_t Length, float Value, U32 Format);
+
+	//  capi_PrintDoubleW - Convert a IEEE 754 64-bit binary data variable to a UTF16 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF16 units]
+	//      Value [The value to convert]
+	//      Format [Style of the string] This can a combination of the PRINT_xxx flags
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
+	CAPI_FUNC(size_t) capi_PrintDoubleW(UTF16* pBuffer, size_t Length, double Value, U32 Format);
+
+	//  capi_PrintSingleL - Convert a IEEE 754 32-bit binary data variable to a UTF32 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      Value [The value to convert]
+	//      Format [Style of the string] This can a combination of the PRINT_xxx flags
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
+	CAPI_FUNC(size_t) capi_PrintSingleL(UTF32* pBuffer, size_t Length, float Value, U32 Format);
+
+	//  capi_PrintDoubleL - Convert a IEEE 754 64-bit binary data variable to a UTF32 string representation (print.c)
+	//      pBuffer [Pointer to the destination string buffer]
+	//      Length [Length of the destination string buffer in UTF32 units]
+	//      Value [The value to convert]
+	//      Format [Style of the string] This can a combination of the PRINT_xxx flags
+	//  returns the number of characters written to the Destination buffer, not including the terminating null character
+	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
+	//      -1 is returned for an invalid parameter
+	CAPI_FUNC(size_t) capi_PrintDoubleL(UTF32* pBuffer, size_t Length, double Value, U32 Format);
+
 #ifdef __cplusplus
 }
 #endif
@@ -2085,6 +2152,80 @@ struct String
 		};
 	};
 };
-#endif
+
+inline size_t ToString(STRING* pBuffer, size_t Length, char Value)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, signed char Value)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned char Value)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, short Value)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned short Value)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, int Value)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned int Value)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, long Value)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned long Value)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, long long Value)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned long long Value)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, 0, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, float Value)
+{
+	return capi_PrintSingle(pBuffer, Length, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(8));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, double Value)
+{
+	return capi_PrintDouble(pBuffer, Length, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(16));
+}
+
+#else /* C */
+
+#if __STDC_VERSION__ >= 201112L
+#define ToString(pBuffer, Length, Var) \
+_Generic((Var), \
+char: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+unsigned char: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+short: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+unsigned short: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+int: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+unsigned int: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+long: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+unsigned long: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+long long: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+unsigned long long: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
+float: capi_PrintSingle(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(8)), \
+double: capi_PrintDouble(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(16)) \
+)
+#endif /* >= C11 */
+
+#endif /* __cplusplus */
 
 #endif /* CAPI_H */

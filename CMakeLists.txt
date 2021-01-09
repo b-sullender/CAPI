@@ -25,6 +25,7 @@ file(GLOB capi_header_files
 	"Source/jpg.h"
 	"Source/png.h"
 	"Source/ico.h"
+	"Source/ieee754.h"
 )
 
 file(GLOB capi_source_files
@@ -46,6 +47,7 @@ file(GLOB capi_source_files
 	"Source/int128.c"
 	"Source/hexadecimal.c"
 	"Source/print.c"
+	"Source/ieee754.c"
 )
 
 file(GLOB zlib_header_files
