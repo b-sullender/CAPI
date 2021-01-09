@@ -43,7 +43,7 @@ This project has been tested with the following:
 # Using CAPI
 After building the project files, run the included TestApp program to test CAPI.  
 TestApp has several commands for testing the CAPI library (see HELP.txt for details).  
-You can include CAPI.h and link to CAPI.lib (Linux, libCAPI.o) in your C/C++ projects.  
+You can include CAPI.h and link to CAPI.lib (Linux, libCAPI.so) in your C/C++ projects.  
 Exported CAPI functions start with **capi_** to identify them.  
 Some wrapper functions (E.g. zpipe.c functions) may not use the **capi_** identifier.  
 C/C++ preprocessors may also use the **capi_** identifier for system compatibility  
