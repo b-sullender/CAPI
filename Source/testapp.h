@@ -1,12 +1,12 @@
 
 /******************************************************************************************
 *
-* Name: example.h
+* Name: testapp.h
 *
 * Created by  Brian Sullender
 *
 * Description:
-*  Main header file used by example.c the TestApp.
+*  Main header file used by testapp.c
 *
 *******************************************************************************************/
 

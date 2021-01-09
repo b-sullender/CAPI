@@ -183,7 +183,13 @@ if (UNIX)
 	target_link_libraries(TestApp "-lpthread")
 endif (UNIX)
 
+add_executable(ExampleApp "Source/example.cpp")
+if (WIN32)
+	set_target_properties(ExampleApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
+endif (WIN32)
+
 target_link_libraries(TestApp CAPI)
+target_link_libraries(ExampleApp CAPI)
 
 set(test_images_path STR\(\"${CMAKE_SOURCE_DIR}/Images\"\))
 target_compile_definitions(TestApp PRIVATE
