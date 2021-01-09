@@ -10,7 +10,7 @@
 *
 *******************************************************************************************/
 
-#include "example.h"
+#include "testapp.h"
 
 #ifdef __GNUC__
 STRUCT(THREAD_WINDOW_INTERNAL)
