@@ -39,8 +39,8 @@ This project has been tested with the following:
   Visual Studio 2010 (Windows XP, x86 and x64)
   CodeBlocks - Unix Makefiles (Fedora 32)
 ```
-On Linux the included TestApp program uses X11 for creating windows with a frame buffer  
-See the HELP.txt file for details about installing the needed X11 dev package  
+On Linux the included TestApp program uses X11 for creating windows with a frame buffer.  
+See the HELP.txt file for details about installing the needed X11 dev package.  
 
 
 # Using CAPI
@@ -49,7 +49,7 @@ TestApp has several commands for testing the CAPI library (see HELP.txt for deta
 You can include CAPI.h and link to CAPI.lib (Linux, libCAPI.so) in your C/C++ projects.  
 Exported CAPI functions start with **capi_** to identify them.  
 Some wrapper functions (E.g. zpipe.c functions) may not use the **capi_** identifier.  
-C/C++ preprocessors may also use the **capi_** identifier for system compatibility  
+C/C++ preprocessors may also use the **capi_** identifier for system compatibility.  
 
 # Changelog for 3rd party source code:
   
