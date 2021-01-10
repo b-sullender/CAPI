@@ -39,6 +39,9 @@ This project has been tested with the following:
   Visual Studio 2010 (Windows XP, x86 and x64)
   CodeBlocks - Unix Makefiles (Fedora 32)
 ```
+On Linux the included TestApp program uses X11 for creating windows with a frame buffer  
+See the HELP.txt file for details about installing the needed X11 dev package  
+
 
 # Using CAPI
 After building the project files, run the included TestApp program to test CAPI.  
