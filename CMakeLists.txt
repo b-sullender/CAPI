@@ -173,6 +173,9 @@ if (WIN32)
 		set_target_properties(TestApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 		set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT TestApp)
 	endif ()
+	add_executable(ExampleApp "Source/example.cpp")
+	set_target_properties(ExampleApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
+	target_link_libraries(ExampleApp CAPI)
 endif (WIN32)
 
 if (UNIX)
@@ -183,13 +186,7 @@ if (UNIX)
 	target_link_libraries(TestApp "-lpthread")
 endif (UNIX)
 
-add_executable(ExampleApp "Source/example.cpp")
-if (WIN32)
-	set_target_properties(ExampleApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
-endif (WIN32)
-
 target_link_libraries(TestApp CAPI)
-target_link_libraries(ExampleApp CAPI)
 
 set(test_images_path STR\(\"${CMAKE_SOURCE_DIR}/Images\"\))
 target_compile_definitions(TestApp PRIVATE
