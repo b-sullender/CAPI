@@ -79,7 +79,7 @@ Use one of the following approved functions:
 
 Use the `STRUCT` macro for defining structures unless its a C++ struct with constructors or overloaded functions. Structures defined with `STRUCT` should have all capitalized letters in the name.
 For hardware and file structures that are packed, use the `PACK` macro. 
-`
+```
 STRUCT(MY_STRUCT_NAME)
 {
 	U32 someVar;
@@ -96,19 +96,19 @@ struct Mystruct
 	{
 	}
 };
-`
+```
 
 **Comments**
 
 Source code comments are not necessary but welcomed. Start comment lines with `//` instead of `/* ... */`.  
 Use `/* ... */` to seperate code sections if desired. Preferred format is:
-`
+```
 // *                      * //
 // **                    ** //
 // ***  ASCII versions  *** //
 // **                    ** //
 // *                      * //
-`
+```
 All exported functions are required to be documented in the primary CAPI.h header with the function declaration, with the exception of 3rd party library exports.
 
 **Third-party libraries**
