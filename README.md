@@ -58,7 +58,7 @@ Bugs, build problems, and discovered vulnerabilities that you are relatively cer
 If confidentiality precludes a public question or issue, you may contact the project leader privately at capi.project.brian@gmail.com
 
 # Contributing
-CAPI welcomes code contributions. You can request to be a collaborator at [Contribute Request](https://github.com/b-sullender/CAPI/discussions/categories/contribute-request). We take code contributions via the usual GitHub pull request (PR) mechanism. Please see [CONTRIBUTING] for detailed instructions.
+CAPI welcomes code contributions. You can request to be a collaborator at [Contribute Request](https://github.com/b-sullender/CAPI/discussions/categories/contribute-request). We take code contributions via the usual GitHub pull request (PR) mechanism. Please see [CONTRIBUTING](https://github.com/b-sullender/CAPI/blob/main/CONTRIBUTING.md) for detailed instructions.
 
 # Changelog for 3rd party source code:
   
