@@ -1,8 +1,8 @@
 # CAPI
 
-Data and Image processing library
+Data and Image processing library for general C/C++ programming. This is a non-specific operating system library designed to integrate into any future operating system and their applications. To keep this library independent, required libraries are built into CAPI
 
-This source code package ships with the following 3rd party source code:  
+This library ships with the following 3rd party library source code:  
 ```
 jpeg-9d  
 zlib-1.2.11  
@@ -50,6 +50,15 @@ You can include CAPI.h and link to CAPI.lib (Linux, libCAPI.so) in your C/C++ pr
 Exported CAPI functions start with **capi_** to identify them.  
 Some wrapper functions (E.g. zpipe.c functions) may not use the **capi_** identifier.  
 C/C++ preprocessors may also use the **capi_** identifier for system compatibility.  
+
+# Contact & reporting problems
+Simple "how do i...", "I'm having trouble", or "is this a bug" questions are best asked at [Discussions Q&A](https://github.com/b-sullender/CAPI/discussions/categories/q-a)  
+Bugs, build problems, and discovered vulnerabilities that you are relatively certain is a legit problem in the code, and for which you can give clear instructions for how to reproduce, should be [reported as issues](https://github.com/b-sullender/CAPI/issues)
+
+If confidentiality precludes a public question or issue, you may contact the project leader privately at capi.project.brian@gmail.com
+
+# Contributing
+CAPI welcomes code contributions. You can request to be a collaborator at [Contribute Request](https://github.com/b-sullender/CAPI/discussions/categories/contribute-request). We take code contributions via the usual GitHub pull request (PR) mechanism. Please see [CONTRIBUTING] for detailed instructions.
 
 # Changelog for 3rd party source code:
   
