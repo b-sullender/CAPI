@@ -12,6 +12,62 @@
 
 #include "CAPI.h"
 
+CAPI_SUBFUNC(void) hexadecimal_ShiftLeftBy4(void* pResult, U32 nBytes)
+{
+	U32 I;
+	U8 was32shifted;
+
+	if ((pResult == 0) || (nBytes == 0)) return;
+
+	pResult = (U8*)pResult + nBytes;
+
+	I = nBytes >> 2;
+
+	if (I == 0) { was32shifted = FALSE; goto shift_32_done; }
+
+	pResult = (U32*)pResult - 1;
+
+	was32shifted = TRUE;
+
+shift_32_loop:
+
+	((U32*)pResult)[0] <<= 4;
+
+	I--;
+
+	if (I == 0) goto shift_32_done;
+
+	pResult = (U32*)pResult - 1;
+
+	((U32*)pResult)[1] |= (((U32*)pResult)[0] >> 28);
+
+	goto shift_32_loop;
+
+shift_32_done:
+
+	I = nBytes & 3;
+
+	if (I == 0) return;
+
+	pResult = (U8*)pResult - 1;
+
+	if (was32shifted == TRUE) ((U8*)pResult)[1] |= (((U8*)pResult)[0] >> 4);
+
+shift_8_loop:
+
+	((U8*)pResult)[0] <<= 4;
+
+	I--;
+
+	if (I == 0) return;
+
+	pResult = (U8*)pResult - 1;
+
+	((U8*)pResult)[1] |= (((U8*)pResult)[0] >> 4);
+
+	goto shift_8_loop;
+}
+
 CAPI_FUNC(size_t) capi_PrintHexA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
 {
 	U8 ABCDEF_Case;
@@ -423,4 +479,330 @@ length_error:
 	*pBuffer = 0;
 
 	return Length;
+}
+
+CAPI_FUNC(I8) capi_ScanHexA(void* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes)
+{
+	U32 CodePoint, MaxDigits, nDigitsRead, LeadingZeros;
+
+	if ((pResult == 0) || (pSource == 0)) return 2;
+
+	nDigitsRead = 0;
+	LeadingZeros = 0;
+	MaxDigits = nBytes * 2;
+
+	capi_memset(pResult, 0, nBytes);
+
+	while (*pSource == 0x20) pSource++;
+
+	if (*pSource == 0x30)
+	{
+		if ((pSource[1] == 0x78) || (pSource[1] == 0x58)) pSource += 2;
+	}
+
+	while (*pSource == 0x30)
+	{
+		pSource++;
+		LeadingZeros++;
+	}
+
+	while (*pSource != 0)
+	{
+		if (*pSource == 0x20) break;
+
+		CodePoint = *pSource;
+
+		if ((CodePoint >= 0x30) && (CodePoint <= 0x39)) CodePoint -= 0x30; // 0 - 9
+		else if ((CodePoint >= 0x41) && (CodePoint <= 0x46)) CodePoint -= 0x37; // A - F
+		else if ((CodePoint >= 0x61) && (CodePoint <= 0x66)) CodePoint -= 0x57; // a - f
+		else
+		{
+			if (Flags & SCAN_STRICT) return 1;
+			if ((CodePoint == 0x0A) || (CodePoint == 0x0D)) break; // LF or CR
+			if ((CodePoint >= 0x21) && (CodePoint <= 0x2F)) break; // ! " # $ % & ' ( ) * + , - . /
+			if ((CodePoint >= 0x3A) && (CodePoint <= 0x40)) break; // : ; < = > ? @
+			if ((CodePoint >= 0x5B) && (CodePoint <= 0x60)) break; // [ \ ] ^ _ `
+			if ((CodePoint >= 0x7B) && (CodePoint <= 0x7E)) break; // { | } ~
+		}
+
+		hexadecimal_ShiftLeftBy4(pResult, nBytes);
+		*(U8*)pResult |= CodePoint;
+
+		if (nDigitsRead == MaxDigits) return -1;
+		nDigitsRead++;
+
+		pSource++;
+	}
+
+	nDigitsRead += LeadingZeros;
+	if (nDigitsRead == 0) return 1;
+
+	if (Flags & SCAN_STRICT)
+	{
+		while (*pSource == 0x20) pSource++;
+		if (*pSource != 0) return 1;
+	}
+
+	if (ppNewPos != 0) *ppNewPos = pSource;
+
+	return 0;
+}
+
+CAPI_FUNC(I8) capi_ScanHexU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes)
+{
+	U8 CharUnits, NextCharUnits;
+	U32 CodePoint, NextCodePoint, MaxDigits, nDigitsRead, LeadingZeros;
+	UTF8* pNextChar;
+
+	if ((pResult == 0) || (pSource == 0)) return 2;
+
+	nDigitsRead = 0;
+	LeadingZeros = 0;
+	MaxDigits = nBytes * 2;
+
+	capi_memset(pResult, 0, nBytes);
+
+	CharUnits = capi_UTF8_GetCharUnits(*pSource);
+	CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+
+	while (CodePoint == 0x20)
+	{
+		pSource += CharUnits;
+		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+	}
+
+	if ((CodePoint == 0x30) || (CodePoint == 0xFF10))
+	{
+		pNextChar = pSource + CharUnits;
+		NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+		NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
+
+		if ((NextCodePoint == 0x78) || (NextCodePoint == 0x58) || (NextCodePoint == 0xFF58) || (NextCodePoint == 0xFF38))
+		{
+			pSource += CharUnits + NextCharUnits;
+			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+		}
+	}
+
+	while ((CodePoint == 0x30) || (CodePoint == 0xFF10))
+	{
+		pSource += CharUnits;
+		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+		LeadingZeros++;
+	}
+
+	while (CodePoint != 0)
+	{
+		if (CodePoint == 0x20) break;
+
+		if ((CodePoint >= 0x30) && (CodePoint <= 0x39)) CodePoint -= 0x30; // 0 - 9
+		else if ((CodePoint >= 0x41) && (CodePoint <= 0x46)) CodePoint -= 0x37; // A - F
+		else if ((CodePoint >= 0x61) && (CodePoint <= 0x66)) CodePoint -= 0x57; // a - f
+		else if ((CodePoint >= 0xFF10) && (CodePoint <= 0xFF19)) CodePoint -= 0xFF10; // 0 - 9
+		else if ((CodePoint >= 0xFF21) && (CodePoint <= 0xFF3A)) CodePoint -= 0xFF17; // A - F
+		else if ((CodePoint >= 0xFF41) && (CodePoint <= 0xFF5A)) CodePoint -= 0xFF37; // a - f
+		else
+		{
+			if (Flags & SCAN_STRICT) return 1;
+			if ((CodePoint == 0x0A) || (CodePoint == 0x0D)) break; // LF or CR
+			if ((CodePoint >= 0x21) && (CodePoint <= 0x2F)) break; // ! " # $ % & ' ( ) * + , - . /
+			if ((CodePoint >= 0x3A) && (CodePoint <= 0x40)) break; // : ; < = > ? @
+			if ((CodePoint >= 0x5B) && (CodePoint <= 0x60)) break; // [ \ ] ^ _ `
+			if ((CodePoint >= 0x7B) && (CodePoint <= 0x7E)) break; // { | } ~
+		}
+
+		hexadecimal_ShiftLeftBy4(pResult, nBytes);
+		*(U8*)pResult |= CodePoint;
+
+		if (nDigitsRead == MaxDigits) return -1;
+		nDigitsRead++;
+
+		pSource += CharUnits;
+		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+	}
+
+	nDigitsRead += LeadingZeros;
+	if (nDigitsRead == 0) return 1;
+
+	if (Flags & SCAN_STRICT)
+	{
+		while (CodePoint == 0x20)
+		{
+			pSource += CharUnits;
+			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+		}
+		if (CodePoint != 0) return 1;
+	}
+
+	if (ppNewPos != 0) *ppNewPos = pSource;
+
+	return 0;
+}
+
+CAPI_FUNC(I8) capi_ScanHexW(void* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes)
+{
+	U8 CharUnits, NextCharUnits;
+	U32 CodePoint, NextCodePoint, MaxDigits, nDigitsRead, LeadingZeros;
+	UTF16* pNextChar;
+
+	if ((pResult == 0) || (pSource == 0)) return 2;
+
+	nDigitsRead = 0;
+	LeadingZeros = 0;
+	MaxDigits = nBytes * 2;
+
+	capi_memset(pResult, 0, nBytes);
+
+	CharUnits = capi_UTF16_GetCharUnits(*pSource);
+	CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+
+	while (CodePoint == 0x20)
+	{
+		pSource += CharUnits;
+		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+	}
+
+	if ((CodePoint == 0x30) || (CodePoint == 0xFF10))
+	{
+		pNextChar = pSource + CharUnits;
+		NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+		NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
+
+		if ((NextCodePoint == 0x78) || (NextCodePoint == 0x58) || (NextCodePoint == 0xFF58) || (NextCodePoint == 0xFF38))
+		{
+			pSource += CharUnits + NextCharUnits;
+			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+		}
+	}
+
+	while ((CodePoint == 0x30) || (CodePoint == 0xFF10))
+	{
+		pSource += CharUnits;
+		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+		LeadingZeros++;
+	}
+
+	while (CodePoint != 0)
+	{
+		if (CodePoint == 0x20) break;
+
+		if ((CodePoint >= 0x30) && (CodePoint <= 0x39)) CodePoint -= 0x30; // 0 - 9
+		else if ((CodePoint >= 0x41) && (CodePoint <= 0x46)) CodePoint -= 0x37; // A - F
+		else if ((CodePoint >= 0x61) && (CodePoint <= 0x66)) CodePoint -= 0x57; // a - f
+		else if ((CodePoint >= 0xFF10) && (CodePoint <= 0xFF19)) CodePoint -= 0xFF10; // 0 - 9
+		else if ((CodePoint >= 0xFF21) && (CodePoint <= 0xFF3A)) CodePoint -= 0xFF17; // A - F
+		else if ((CodePoint >= 0xFF41) && (CodePoint <= 0xFF5A)) CodePoint -= 0xFF37; // a - f
+		else
+		{
+			if (Flags & SCAN_STRICT) return 1;
+			if ((CodePoint == 0x0A) || (CodePoint == 0x0D)) break; // LF or CR
+			if ((CodePoint >= 0x21) && (CodePoint <= 0x2F)) break; // ! " # $ % & ' ( ) * + , - . /
+			if ((CodePoint >= 0x3A) && (CodePoint <= 0x40)) break; // : ; < = > ? @
+			if ((CodePoint >= 0x5B) && (CodePoint <= 0x60)) break; // [ \ ] ^ _ `
+			if ((CodePoint >= 0x7B) && (CodePoint <= 0x7E)) break; // { | } ~
+		}
+
+		hexadecimal_ShiftLeftBy4(pResult, nBytes);
+		*(U8*)pResult |= CodePoint;
+
+		if (nDigitsRead == MaxDigits) return -1;
+		nDigitsRead++;
+
+		pSource += CharUnits;
+		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+	}
+
+	nDigitsRead += LeadingZeros;
+	if (nDigitsRead == 0) return 1;
+
+	if (Flags & SCAN_STRICT)
+	{
+		while (CodePoint == 0x20)
+		{
+			pSource += CharUnits;
+			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+		}
+		if (CodePoint != 0) return 1;
+	}
+
+	if (ppNewPos != 0) *ppNewPos = pSource;
+
+	return 0;
+}
+
+CAPI_FUNC(I8) capi_ScanHexL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes)
+{
+	U32 CodePoint, MaxDigits, nDigitsRead, LeadingZeros;
+
+	if ((pResult == 0) || (pSource == 0)) return 2;
+
+	nDigitsRead = 0;
+	LeadingZeros = 0;
+	MaxDigits = nBytes * 2;
+
+	capi_memset(pResult, 0, nBytes);
+
+	while (*pSource == 0x20) pSource++;
+
+	if (*pSource == 0x30)
+	{
+		if ((pSource[1] == 0x78) || (pSource[1] == 0x58)) pSource += 2;
+	}
+
+	while (*pSource == 0x30)
+	{
+		pSource++;
+		LeadingZeros++;
+	}
+
+	while (*pSource != 0)
+	{
+		if (*pSource == 0x20) break;
+
+		CodePoint = *pSource;
+
+		if ((CodePoint >= 0x30) && (CodePoint <= 0x39)) CodePoint -= 0x30; // 0 - 9
+		else if ((CodePoint >= 0x41) && (CodePoint <= 0x46)) CodePoint -= 0x37; // A - F
+		else if ((CodePoint >= 0x61) && (CodePoint <= 0x66)) CodePoint -= 0x57; // a - f
+		else
+		{
+			if (Flags & SCAN_STRICT) return 1;
+			if ((CodePoint == 0x0A) || (CodePoint == 0x0D)) break; // LF or CR
+			if ((CodePoint >= 0x21) && (CodePoint <= 0x2F)) break; // ! " # $ % & ' ( ) * + , - . /
+			if ((CodePoint >= 0x3A) && (CodePoint <= 0x40)) break; // : ; < = > ? @
+			if ((CodePoint >= 0x5B) && (CodePoint <= 0x60)) break; // [ \ ] ^ _ `
+			if ((CodePoint >= 0x7B) && (CodePoint <= 0x7E)) break; // { | } ~
+		}
+
+		hexadecimal_ShiftLeftBy4(pResult, nBytes);
+		*(U8*)pResult |= CodePoint;
+
+		if (nDigitsRead == MaxDigits) return -1;
+		nDigitsRead++;
+
+		pSource++;
+	}
+
+	nDigitsRead += LeadingZeros;
+	if (nDigitsRead == 0) return 1;
+
+	if (Flags & SCAN_STRICT)
+	{
+		while (*pSource == 0x20) pSource++;
+		if (*pSource != 0) return 1;
+	}
+
+	if (ppNewPos != 0) *ppNewPos = pSource;
+
+	return 0;
 }

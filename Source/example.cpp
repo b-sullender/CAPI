@@ -45,4 +45,6 @@ int main()
 	String::Append(myString, STR_OUTPUT_BUFFER, varBuffer);
 
 	ExampleApp_OutMessage(myString, TRUE);
+
+	while (true) {};
 }

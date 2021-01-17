@@ -47,6 +47,7 @@ file(GLOB capi_source_files
 	"Source/int128.c"
 	"Source/hexadecimal.c"
 	"Source/print.c"
+	"Source/scan.c"
 	"Source/ieee754.c"
 )
 

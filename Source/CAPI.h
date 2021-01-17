@@ -163,6 +163,9 @@ typedef UTF16 STRING;
 #define capi_PrintUnsigned capi_PrintUnsignedW
 #define capi_PrintSingle capi_PrintSingleW
 #define capi_PrintDouble capi_PrintDoubleW
+#define capi_ScanHex capi_ScanHexW
+#define capi_ScanSigned capi_ScanSignedW
+#define capi_ScanUnsigned capi_ScanUnsignedW
 #else
 typedef UTF8 STRING;
 #define STR(String) String
@@ -184,6 +187,9 @@ typedef UTF8 STRING;
 #define capi_PrintUnsigned capi_PrintUnsignedU
 #define capi_PrintSingle capi_PrintSingleU
 #define capi_PrintDouble capi_PrintDoubleU
+#define capi_ScanHex capi_ScanHexU
+#define capi_ScanSigned capi_ScanSignedU
+#define capi_ScanUnsigned capi_ScanUnsignedU
 #endif
 
 /* MACROS FOR READING BIG ENDIAN & LITTLE ENDIAN */
@@ -265,6 +271,22 @@ typedef UTF8 STRING;
 #define PRINT_ZEROF         BIT(22)                       // Append ".0" if the fraction is zero. Ignored if PRINT_EXACT is used with a value of zero
 #define PRINT_MAX(n)        (n << 24)                     // Truncate when fraction digits are greater than (n). Ignored when (n) is zero
 #define PRINT_EXACT(n)      (BIT(23)|(n << 24))           // Append '0' until fraction digits equal (n). Truncate when fraction digits are greater than (n). No decimal point if (n) is zero
+
+/* SCAN (TO VARIABLE) FLAGS */
+
+#define SCAN_STRICT         BIT(12)                       // The string can only contain a valid number with the exception of spaces on the sides of the number
+#define SCAN_COMMA          BIT(13)                       // Enable thousands place marker scanning with a Comma
+#define SCAN_PERIOD         BIT(14)                       // Enable thousands place marker scanning with a Period
+#define SCAN_SPACE          BIT(15)                       // Enable thousands place marker scanning with a Space
+#define SCAN_HEX            BIT(16)                       // Enable hexadecimal scanning when "0x" or "0X" precedes the number
+#define SCAN_BIN            BIT(17)                       // Enable binary scanning when "0b" or "0B" precedes the number
+#define SCAN_MAX_HEX        BIT(19)                       // The range may be that of a unsigned variable when the number is hexadecimal and no minus sign is detected
+#define SCAN_DP_COMMA       BIT(21)                       // Decimal point is represented with a Comma and the thousands place is marked with a Period
+#define SCAN_NEAREST        0x00000000                    // Round-To-Nearest when fraction digits exceeds limit or number is unrepresentable
+#define SCAN_DOWN           BIT(22)                       // Round-Down when fraction digits exceeds limit or number is unrepresentable
+#define SCAN_UP             BIT(23)                       // Round-Up when fraction digits exceeds limit or number is unrepresentable
+#define SCAN_TRUNCATE(n)    (BIT(22)|BIT(23)|(n << 24))   // Truncate when fraction digits exceeds (n). Round-Down when number is unrepresentable
+#define SCPR_ROUND_MASK     (BIT(22)|BIT(23))             // ROUND-MODE MASK
 
 /* STRUTURES */
 
@@ -1307,6 +1329,50 @@ extern "C" {
 	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintHexL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
+	//  capi_ScanHexA - Convert a hexadecimal representation ASCII string into a data variable (hexadecimal.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a ASCII pointer to receive the position of the character following the hexadecimal number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid hexadecimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanHexA(void* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes);
+
+	//  capi_ScanHexU - Convert a hexadecimal representation UTF8 string into a data variable (hexadecimal.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF8 pointer to receive the position of the character following the hexadecimal number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid hexadecimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanHexU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes);
+
+	//  capi_ScanHexW - Convert a hexadecimal representation UTF16 string into a data variable (hexadecimal.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF16 pointer to receive the position of the character following the hexadecimal number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid hexadecimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanHexW(void* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes);
+
+	//  capi_ScanHexL - Convert a hexadecimal representation UTF32 string into a data variable (hexadecimal.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF32 pointer to receive the position of the character following the hexadecimal number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid hexadecimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanHexL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes);
+
 	//  capi_PrintUnsignedA - Convert a data variable to a unsigned ASCII string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
 	//      Length [Length of the destination string buffer in ASCII units]
@@ -1454,6 +1520,94 @@ extern "C" {
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintDoubleL(UTF32* pBuffer, size_t Length, double Value, U32 Format);
+
+	//  capi_ScanSignedA - Convert a signed number from a ASCII string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a ASCII pointer to receive the position of the character following the signed number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid signed number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes);
+
+	//  capi_ScanSignedU - Convert a signed number from a UTF8 string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF8 pointer to receive the position of the character following the signed number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid signed number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSignedU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes);
+
+	//  capi_ScanSignedW - Convert a signed number from a UTF16 string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF16 pointer to receive the position of the character following the signed number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid signed number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSignedW(void* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes);
+
+	//  capi_ScanSignedL - Convert a signed number from a UTF32 string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF32 pointer to receive the position of the character following the signed number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid signed number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes);
+
+	//  capi_ScanUnsignedA - Convert a unsigned number from a ASCII string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a ASCII pointer to receive the position of the character following the unsigned number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid unsigned number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanUnsignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes);
+
+	//  capi_ScanUnsignedU - Convert a unsigned number from a UTF8 string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF8 pointer to receive the position of the character following the unsigned number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid unsigned number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanUnsignedU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes);
+
+	//  capi_ScanUnsignedW - Convert a unsigned number from a UTF16 string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF16 pointer to receive the position of the character following the unsigned number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid unsigned number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanUnsignedW(void* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes);
+
+	//  capi_ScanUnsignedL - Convert a unsigned number from a UTF32 string representation into a data variable (scan.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF32 pointer to receive the position of the character following the unsigned number]
+	//      nBytes [The size in bytes of the destination variable]
+	//  returns 0 on success, 1 for an invalid unsigned number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanUnsignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes);
 
 #ifdef __cplusplus
 }
