@@ -34,14 +34,27 @@ void ExampleApp_OutMessage(const STRING* Msg, BOOL NewLine)
 
 int main()
 {
+	U32 var1, var2;
+	STRING equation[] = STR("83628012 + 4289102");
+	STRING* pEqu = equation;
 	STRING myString[STR_OUTPUT_BUFFER];
 	STRING varBuffer[STR_VAR_BUFFER];
 
-	String::Copy(myString, STR_OUTPUT_BUFFER, STR("Did you know 83628012 + 4289102 = "));
+	// Do some string setup
 
-	U32 var1 = 83628012 + 4289102;
+	String::Copy(myString, STR_OUTPUT_BUFFER, STR("Did you know "));
+	String::Append(myString, STR_OUTPUT_BUFFER, equation);
+	String::Append(myString, STR_OUTPUT_BUFFER, STR(" = "));
 
-	ToString(varBuffer, STR_VAR_BUFFER, var1);
+	// Read numbers from equation string
+
+	FromString(&var1, equation, 0, &pEqu);
+	while (String::PullChar(&pEqu) != '+');
+	FromString(&var2, pEqu);
+
+	// Print the result
+
+	ToString(varBuffer, STR_VAR_BUFFER, var1 + var2);
 	String::Append(myString, STR_OUTPUT_BUFFER, varBuffer);
 
 	ExampleApp_OutMessage(myString, TRUE);

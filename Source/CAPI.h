@@ -147,6 +147,8 @@ typedef UTF16 STRING;
 #define STR(String) L##String
 #define capi_Version capi_VersionW
 #define capi_ErrorCodeToString capi_ErrorCodeToStringW
+#define capi_StrCharUnits capi_UTF16_GetCharUnits
+#define capi_StrDecode capi_UTF16_Decode
 #define capi_StrLen capi_StrLenW
 #define capi_StrUnits capi_StrUnitsW
 #define capi_StrCopy capi_StrCopyW
@@ -173,6 +175,8 @@ typedef UTF8 STRING;
 #define STR(String) String
 #define capi_Version capi_VersionA
 #define capi_ErrorCodeToString capi_ErrorCodeToStringA
+#define capi_StrCharUnits capi_UTF8_GetCharUnits
+#define capi_StrDecode capi_UTF8_Decode
 #define capi_StrLen capi_StrLenU
 #define capi_StrUnits capi_StrUnitsU
 #define capi_StrCopy capi_StrCopyU
@@ -947,7 +951,7 @@ extern "C" {
 	//      String [Null-terminated source string to reverse]
 	CAPI_FUNC(void) capi_StrReverseA(ASCII* String);
 
-	//  capi_UTF8_GetCharSize - Get the number of bytes a UTF8 code-point encoding uses (strings.c)
+	//  capi_UTF8_GetCharUnits - Get the number of bytes a UTF8 code-point encoding uses (strings.c)
 	//      Code [The 1st UTF8 unit of the code-point encoding]
 	//  returns the number of UTF8 units the code-point encoding uses, or 0 for an error
 	CAPI_FUNC(U8) capi_UTF8_GetCharUnits(UTF8 Code);
@@ -1700,6 +1704,14 @@ extern "C" {
 #ifdef __cplusplus
 struct String
 {
+	//  Get the number of units a code-point encoding uses
+	//      Code [The 1st unit of the code-point encoding]
+	//  returns the number of units the code-point encoding uses, or 0 for an error
+	static U8 CharUnits(const STRING Code)
+	{
+		return capi_StrCharUnits(Code);
+	}
+
 	//  Get the length of a string
 	//      String [Pointer to a null-terminated string]
 	//  returns the number of characters in the string, not including the terminating null character
@@ -1811,6 +1823,38 @@ struct String
 	static void Reverse(STRING* String)
 	{
 		capi_StrReverse(String);
+	}
+
+	//  Get a character from a string
+	//      pString [Pointer to a null-terminated string]
+	//  returns the first character in the string
+	static U32 GetChar(const STRING* pString)
+	{
+		U8 CharUnits;
+
+		if (pString == 0) return 0;
+
+		CharUnits = capi_StrCharUnits(*pString);
+		return capi_StrDecode(CharUnits, pString);
+	}
+
+	//  Get a character from a string and move the string pointer to the next character
+	//      ppString [Pointer to a string pointer]
+	//  returns the first character in the string
+	static U32 PullChar(STRING** ppString)
+	{
+		STRING* pString;
+		U8 CharUnits;
+		U32 CodePoint;
+
+		if (ppString == 0) return 0;
+
+		pString = *ppString;
+		CharUnits = capi_StrCharUnits(*pString);
+		CodePoint = capi_StrDecode(CharUnits, pString);
+		*ppString += CharUnits;
+
+		return CodePoint;
 	}
 
 	struct Encoding
@@ -1926,7 +1970,7 @@ struct String
 			//  Get the number of bytes (units) a UTF8 code-point encoding uses
 			//      Code [The 1st UTF8 unit of the code-point encoding]
 			//  returns the number of UTF8 units the code-point encoding uses, or 0 for an error
-			static U8 GetCharUnits(UTF8 Code)
+			static U8 CharUnits(UTF8 Code)
 			{
 				return capi_UTF8_GetCharUnits(Code);
 			}
@@ -1970,6 +2014,15 @@ struct String
 			static size_t Length(const UTF8* String)
 			{
 				return capi_StrLenU(String);
+			}
+
+			//  Get the number of UTF8 units in a UTF8 string
+			//      String [Pointer to a null-terminated string]
+			//  returns the number of UTF8 units in the string, not including the terminating null character
+			//      -1 is returned for an invalid parameter
+			static size_t Units(const UTF8* String)
+			{
+				return capi_StrUnitsU(String);
 			}
 
 			//  Copy a UTF8 string
@@ -2095,7 +2148,7 @@ struct String
 			//  Get the number of words (units) a UTF16 code-point encoding uses
 			//      Code [The 1st UTF16 unit of the code-point encoding]
 			//  returns the number of UTF16 units the code-point encoding uses, or 0 for an error
-			static U8 GetCharUnits(UTF16 Code)
+			static U8 CharUnits(UTF16 Code)
 			{
 				return capi_UTF16_GetCharUnits(Code);
 			}
@@ -2139,6 +2192,16 @@ struct String
 			static size_t Length(const UTF16* String)
 			{
 				return capi_StrLenW(String);
+			}
+
+			//  Get the number of UTF16 units in a UTF16 string
+			//      String [Pointer to a null-terminated string]
+			//  returns the number of UTF16 units in the string, not including the terminating null character
+			//      -1 is returned for an invalid parameter
+			//      To get the size of the string in bytes, multiply the result by sizeof(UTF16)
+			static size_t Units(const UTF16* String)
+			{
+				return capi_StrUnitsW(String);
 			}
 
 			//  Copy a UTF16 string
@@ -2391,6 +2454,12 @@ struct String
 	};
 };
 
+// *                * //
+// **              ** //
+// ***  ToString  *** //
+// **              ** //
+// *                * //
+
 inline size_t ToString(STRING* pBuffer, size_t Length, char Value)
 {
 	return capi_PrintSigned(pBuffer, Length, &Value, 0, sizeof(Value));
@@ -2444,9 +2513,187 @@ inline size_t ToString(STRING* pBuffer, size_t Length, double Value)
 	return capi_PrintDouble(pBuffer, Length, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(16));
 }
 
+// *                                     * //
+// **                                   ** //
+// ***  ToString with Format versions  *** //
+// **                                   ** //
+// *                                     * //
+
+inline size_t ToString(STRING* pBuffer, size_t Length, char Value, U32 Format)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, signed char Value, U32 Format)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned char Value, U32 Format)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, short Value, U32 Format)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned short Value, U32 Format)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, int Value, U32 Format)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned int Value, U32 Format)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, long Value, U32 Format)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned long Value, U32 Format)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, long long Value, U32 Format)
+{
+	return capi_PrintSigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, unsigned long long Value, U32 Format)
+{
+	return capi_PrintUnsigned(pBuffer, Length, &Value, Format, sizeof(Value));
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, float Value, U32 Format)
+{
+	return capi_PrintSingle(pBuffer, Length, Value, Format);
+}
+inline size_t ToString(STRING* pBuffer, size_t Length, double Value, U32 Format)
+{
+	return capi_PrintDouble(pBuffer, Length, Value, Format);
+}
+
+// *                  * //
+// **                ** //
+// ***  FromString  *** //
+// **                ** //
+// *                  * //
+
+inline I8 FromString(char* pResult, STRING* pSource)
+{
+	return capi_ScanSigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(signed char* pResult, STRING* pSource)
+{
+	return capi_ScanSigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(unsigned char* pResult, STRING* pSource)
+{
+	return capi_ScanUnsigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(short* pResult, STRING* pSource)
+{
+	return capi_ScanSigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(unsigned short* pResult, STRING* pSource)
+{
+	return capi_ScanUnsigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(int* pResult, STRING* pSource)
+{
+	return capi_ScanSigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(unsigned int* pResult, STRING* pSource)
+{
+	return capi_ScanUnsigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(long* pResult, STRING* pSource)
+{
+	return capi_ScanSigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(unsigned long* pResult, STRING* pSource)
+{
+	return capi_ScanUnsigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(long long* pResult, STRING* pSource)
+{
+	return capi_ScanSigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(unsigned long long* pResult, STRING* pSource)
+{
+	return capi_ScanUnsigned(pResult, pSource, 0, 0, sizeof(pResult));
+}
+inline I8 FromString(float* pResult, STRING* pSource)
+{
+	return capi_ScanSingle(pResult, pSource, 0, 0);
+}
+inline I8 FromString(double* pResult, STRING* pSource)
+{
+	return capi_ScanDouble(pResult, pSource, 0, 0);
+}
+
+// *                                                 * //
+// **                                               ** //
+// ***  FromString with Flags & ppNewPos versions  *** //
+// **                                               ** //
+// *                                                 * //
+
+inline I8 FromString(char* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanSigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(signed char* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanSigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(unsigned char* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanUnsigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(short* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanSigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(unsigned short* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanUnsigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(int* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanSigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(unsigned int* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanUnsigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(long* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanSigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(unsigned long* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanUnsigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(long long* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanSigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(unsigned long long* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanUnsigned(pResult, pSource, Flags, ppNewPos, sizeof(pResult));
+}
+inline I8 FromString(float* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanSingle(pResult, pSource, Flags, ppNewPos);
+}
+inline I8 FromString(double* pResult, STRING* pSource, U32 Flags, STRING** ppNewPos)
+{
+	return capi_ScanDouble(pResult, pSource, Flags, ppNewPos);
+}
+
 #else /* C */
 
 #if __STDC_VERSION__ >= 201112L
+
 #define ToString(pBuffer, Length, Var) \
 _Generic((Var), \
 char: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
@@ -2460,8 +2707,23 @@ unsigned long: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
 long long: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
 unsigned long long: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
 float: capi_PrintSingle(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(8)), \
-double: capi_PrintDouble(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(16)) \
-)
+double: capi_PrintDouble(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(16)))
+
+#define FromString(Result, pSource) \
+_Generic((Result), \
+char: capi_ScanSigned(&Result, pSource, 0, 0, sizeof(Result)), \
+unsigned char: capi_ScanUnsigned(&Result, pSource, 0, 0, sizeof(Result)), \
+short: capi_ScanSigned(&Result, pSource, 0, 0, sizeof(Result)), \
+unsigned short: capi_ScanUnsigned(&Result, pSource, 0, 0, sizeof(Result)), \
+int: capi_ScanSigned(&Result, pSource, 0, 0, sizeof(Result)), \
+unsigned int: capi_ScanUnsigned(&Result, pSource, 0, 0, sizeof(Result)), \
+long: capi_ScanSigned(&Result, pSource, 0, 0, sizeof(Result)), \
+unsigned long: capi_ScanUnsigned(&Result, pSource, 0, 0, sizeof(Result)), \
+long long: capi_ScanSigned(&Result, pSource, 0, 0, sizeof(Result)), \
+unsigned long long: capi_ScanUnsigned(&Result, pSource, 0, 0, sizeof(Result)), \
+float: capi_ScanSingle(&Result, pSource, 0, 0), \
+double: capi_ScanDouble(&Result, pSource, 0, 0))
+
 #endif /* >= C11 */
 
 #endif /* __cplusplus */
