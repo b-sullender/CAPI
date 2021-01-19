@@ -82,8 +82,9 @@ CAPI_FUNC(I8) capi_ScanSignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII**
 
 			while (*pSource == 0x20)
 			{
+				if ((pSource[1] < 0x30) || (pSource[1] > 0x39)) break;
+
 				pSource++;
-				if ((*pSource < 0x30) || (*pSource > 0x39)) break;
 
 				for (I = 0; I < 3; I++)
 				{
@@ -285,12 +286,16 @@ get_integer:
 
 			while (CodePoint == 0x20)
 			{
-				pSource += CharUnits;
-				CharUnits = capi_UTF8_GetCharUnits(*pSource);
-				CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+				pNextChar = pSource + CharUnits;
+				NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+				NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
 
-				if ((CodePoint < 0x30) || (CodePoint > 0xFF19)) break;
-				if ((CodePoint > 0x39) && (CodePoint < 0xFF10)) break;
+				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
+				if ((NextCodePoint > 0x39) && (NextCodePoint < 0xFF10)) break;
+
+				pSource = pNextChar;
+				CharUnits = NextCharUnits;
+				CodePoint = NextCodePoint;
 
 				for (I = 0; I < 3; I++)
 				{
@@ -537,12 +542,16 @@ get_integer:
 
 			while (CodePoint == 0x20)
 			{
-				pSource += CharUnits;
-				CharUnits = capi_UTF16_GetCharUnits(*pSource);
-				CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+				pNextChar = pSource + CharUnits;
+				NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+				NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
 
-				if ((CodePoint < 0x30) || (CodePoint > 0xFF19)) break;
-				if ((CodePoint > 0x39) && (CodePoint < 0xFF10)) break;
+				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
+				if ((NextCodePoint > 0x39) && (NextCodePoint < 0xFF10)) break;
+
+				pSource = pNextChar;
+				CharUnits = NextCharUnits;
+				CodePoint = NextCodePoint;
 
 				for (I = 0; I < 3; I++)
 				{
@@ -744,8 +753,9 @@ CAPI_FUNC(I8) capi_ScanSignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32**
 
 			while (*pSource == 0x20)
 			{
+				if ((pSource[1] < 0x30) || (pSource[1] > 0x39)) break;
+
 				pSource++;
-				if ((*pSource < 0x30) || (*pSource > 0x39)) break;
 
 				for (I = 0; I < 3; I++)
 				{
@@ -883,8 +893,9 @@ CAPI_FUNC(I8) capi_ScanUnsignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII
 
 			while (*pSource == 0x20)
 			{
+				if ((pSource[1] < 0x30) || (pSource[1] > 0x39)) break;
+
 				pSource++;
-				if ((*pSource < 0x30) || (*pSource > 0x39)) break;
 
 				for (I = 0; I < 3; I++)
 				{
@@ -1052,12 +1063,16 @@ get_integer:
 
 			while (CodePoint == 0x20)
 			{
-				pSource += CharUnits;
-				CharUnits = capi_UTF8_GetCharUnits(*pSource);
-				CodePoint = capi_UTF8_Decode(CharUnits, pSource);
+				pNextChar = pSource + CharUnits;
+				NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+				NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
 
-				if ((CodePoint < 0x30) || (CodePoint > 0xFF19)) break;
-				if ((CodePoint > 0x39) && (CodePoint < 0xFF10)) break;
+				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
+				if ((NextCodePoint > 0x39) && (NextCodePoint < 0xFF10)) break;
+
+				pSource = pNextChar;
+				CharUnits = NextCharUnits;
+				CodePoint = NextCodePoint;
 
 				for (I = 0; I < 3; I++)
 				{
@@ -1270,12 +1285,16 @@ get_integer:
 
 			while (CodePoint == 0x20)
 			{
-				pSource += CharUnits;
-				CharUnits = capi_UTF16_GetCharUnits(*pSource);
-				CodePoint = capi_UTF16_Decode(CharUnits, pSource);
+				pNextChar = pSource + CharUnits;
+				NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+				NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
 
-				if ((CodePoint < 0x30) || (CodePoint > 0xFF19)) break;
-				if ((CodePoint > 0x39) && (CodePoint < 0xFF10)) break;
+				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
+				if ((NextCodePoint > 0x39) && (NextCodePoint < 0xFF10)) break;
+
+				pSource = pNextChar;
+				CharUnits = NextCharUnits;
+				CodePoint = NextCodePoint;
 
 				for (I = 0; I < 3; I++)
 				{
@@ -1441,8 +1460,9 @@ CAPI_FUNC(I8) capi_ScanUnsignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32
 
 			while (*pSource == 0x20)
 			{
+				if ((pSource[1] < 0x30) || (pSource[1] > 0x39)) break;
+
 				pSource++;
-				if ((*pSource < 0x30) || (*pSource > 0x39)) break;
 
 				for (I = 0; I < 3; I++)
 				{

@@ -57,6 +57,10 @@ Do not use normal C/C++ data types unless a library or function specifically ask
   - UTF16
   - UTF32
 
+- Other Types
+  - float
+  - double
+
 **System Resources**
 
 To obtain system resources use one of the folllowing approved functions:

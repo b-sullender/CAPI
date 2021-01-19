@@ -166,6 +166,8 @@ typedef UTF16 STRING;
 #define capi_ScanHex capi_ScanHexW
 #define capi_ScanSigned capi_ScanSignedW
 #define capi_ScanUnsigned capi_ScanUnsignedW
+#define capi_ScanSingle capi_ScanSingleW
+#define capi_ScanDouble capi_ScanDoubleW
 #else
 typedef UTF8 STRING;
 #define STR(String) String
@@ -190,6 +192,8 @@ typedef UTF8 STRING;
 #define capi_ScanHex capi_ScanHexU
 #define capi_ScanSigned capi_ScanSignedU
 #define capi_ScanUnsigned capi_ScanUnsignedU
+#define capi_ScanSingle capi_ScanSingleU
+#define capi_ScanDouble capi_ScanDoubleU
 #endif
 
 /* MACROS FOR READING BIG ENDIAN & LITTLE ENDIAN */
@@ -277,7 +281,7 @@ typedef UTF8 STRING;
 #define SCAN_STRICT         BIT(12)                       // The string can only contain a valid number with the exception of spaces on the sides of the number
 #define SCAN_COMMA          BIT(13)                       // Enable thousands place marker scanning with a Comma
 #define SCAN_PERIOD         BIT(14)                       // Enable thousands place marker scanning with a Period
-#define SCAN_SPACE          BIT(15)                       // Enable thousands place marker scanning with a Space
+#define SCAN_SPACE          BIT(15)                       // Enable thousands place marker scanning with a Space, use 2 or more spaces to escape thousands place scanning
 #define SCAN_HEX            BIT(16)                       // Enable hexadecimal scanning when "0x" or "0X" precedes the number
 #define SCAN_BIN            BIT(17)                       // Enable binary scanning when "0b" or "0B" precedes the number
 #define SCAN_MAX_HEX        BIT(19)                       // The range may be that of a unsigned variable when the number is hexadecimal and no minus sign is detected
@@ -1608,6 +1612,86 @@ extern "C" {
 	//      2 is returned for an invalid parameter
 	//      ppNewPos is optional and is only set on success
 	CAPI_FUNC(I8) capi_ScanUnsignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes);
+
+	//  capi_ScanSingleA - Convert a IEEE 754 32-bit binary number from a ASCII string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a ASCII pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSingleA(float* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos);
+
+	//  capi_ScanDoubleA - Convert a IEEE 754 64-bit binary number from a ASCII string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a ASCII pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanDoubleA(double* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos);
+
+	//  capi_ScanSingleU - Convert a IEEE 754 32-bit binary number from a UTF8 string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF8 pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos);
+
+	//  capi_ScanDoubleU - Convert a IEEE 754 64-bit binary number from a UTF8 string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF8 pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos);
+
+	//  capi_ScanSingleW - Convert a IEEE 754 32-bit binary number from a UTF16 string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF16 pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos);
+
+	//  capi_ScanDoubleW - Convert a IEEE 754 64-bit binary number from a UTF16 string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF16 pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos);
+
+	//  capi_ScanSingleL - Convert a IEEE 754 32-bit binary number from a UTF32 string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF32 pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanSingleL(float* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos);
+
+	//  capi_ScanDoubleL - Convert a IEEE 754 64-bit binary number from a UTF32 string representation into a data variable (ieee754.c)
+	//      pResult [Pointer to the destination variable]
+	//      pSource [The source string to convert]
+	//      Flags [A combination of the SCAN_xxx flags]
+	//      ppNewPos [Pointer to a UTF32 pointer to receive the position of the character following the decimal number]
+	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
+	//      2 is returned for an invalid parameter, or an error
+	//      ppNewPos is optional and is only set on success
+	CAPI_FUNC(I8) capi_ScanDoubleL(double* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos);
 
 #ifdef __cplusplus
 }
