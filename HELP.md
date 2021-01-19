@@ -37,15 +37,17 @@
 ```
 
 # Install command list for setting up a Linux workstation
-```
-	Install the GNU Compiler Collection
-		sudo yum install gcc
-	Install the GNU optimising compiler for C++
-		sudo yum install g++
-	Install MinGW dev package (for the debugger)
-		sudo yum install mingw32-gcc-c++
-	Install X11 dev libraries (TestApp uses X11)
-		sudo yum install libX11-devel
-	Install Code::Blocks (IDE)
-		sudo yum install codeblocks
-```
+
+- Red Hat-based (Fedora)
+  - **sudo yum install gcc** Install the GNU Compiler Collection
+  - **sudo yum install g++** Install the GNU optimising compiler for C++
+  - **sudo yum install mingw32-gcc-c++** Install MinGW dev package (for the debugger)
+  - **sudo yum install libX11-devel** Install X11 dev libraries (TestApp uses X11)
+  - **sudo yum install codeblocks** Install Code::Blocks (IDE)
+- Debian-based (Ubuntu)
+  - **sudo apt install gcc** Install the GNU Compiler Collection
+  - **sudo apt install g++** Install the GNU optimising compiler for C++
+  - **sudo apt install gcc-mingw-w64-base** Install MinGW dev package (for the debugger)
+  - **sudo apt install libx11-dev** Install X11 dev libraries (TestApp uses X11)
+  - **sudo apt install codeblocks** Install Code::Blocks (IDE)
+  - **sudo apt install make**
