@@ -37,7 +37,7 @@ CAPI_FUNC(void) capi_Negate(size_t* pValue, size_t Count)
 	}
 }
 
-CAPI_FUNC(size_t) capi_CountLZ(size_t* pValue, size_t Count)
+CAPI_FUNC(size_t) capi_CountLZ(const size_t* pValue, size_t Count)
 {
 	ptrdiff_t I;
 	size_t B, LzCnt;
@@ -64,7 +64,7 @@ CAPI_FUNC(size_t) capi_CountLZ(size_t* pValue, size_t Count)
 	return LzCnt;
 }
 
-CAPI_FUNC(size_t) capi_CountL1(size_t* pValue, size_t Count)
+CAPI_FUNC(size_t) capi_CountL1(const size_t* pValue, size_t Count)
 {
 	ptrdiff_t I;
 	size_t B, L1Cnt;
@@ -91,7 +91,7 @@ CAPI_FUNC(size_t) capi_CountL1(size_t* pValue, size_t Count)
 	return L1Cnt;
 }
 
-CAPI_FUNC(size_t) capi_CountTZ(size_t* pValue, size_t Count)
+CAPI_FUNC(size_t) capi_CountTZ(const size_t* pValue, size_t Count)
 {
 	size_t I, B, TzCnt;
 
@@ -117,7 +117,7 @@ CAPI_FUNC(size_t) capi_CountTZ(size_t* pValue, size_t Count)
 	return TzCnt;
 }
 
-CAPI_FUNC(size_t) capi_CountT1(size_t* pValue, size_t Count)
+CAPI_FUNC(size_t) capi_CountT1(const size_t* pValue, size_t Count)
 {
 	size_t I, B, T1Cnt;
 

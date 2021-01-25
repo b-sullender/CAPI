@@ -481,7 +481,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(I8) capi_ScanHexA(void* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanHexA(void* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes)
 {
 	U32 CodePoint, MaxDigits, nDigitsRead, LeadingZeros;
 
@@ -543,16 +543,16 @@ CAPI_FUNC(I8) capi_ScanHexA(void* pResult, ASCII* pSource, U32 Flags, ASCII** pp
 		if (*pSource != 0) return 1;
 	}
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (ASCII*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanHexU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanHexU(void* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes)
 {
 	U8 CharUnits, NextCharUnits;
 	U32 CodePoint, NextCodePoint, MaxDigits, nDigitsRead, LeadingZeros;
-	UTF8* pNextChar;
+	const UTF8* pNextChar;
 
 	if ((pResult == 0) || (pSource == 0)) return 2;
 
@@ -639,16 +639,16 @@ CAPI_FUNC(I8) capi_ScanHexU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNe
 		if (CodePoint != 0) return 1;
 	}
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF8*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanHexW(void* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanHexW(void* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes)
 {
 	U8 CharUnits, NextCharUnits;
 	U32 CodePoint, NextCodePoint, MaxDigits, nDigitsRead, LeadingZeros;
-	UTF16* pNextChar;
+	const UTF16* pNextChar;
 
 	if ((pResult == 0) || (pSource == 0)) return 2;
 
@@ -735,12 +735,12 @@ CAPI_FUNC(I8) capi_ScanHexW(void* pResult, UTF16* pSource, U32 Flags, UTF16** pp
 		if (CodePoint != 0) return 1;
 	}
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF16*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanHexL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanHexL(void* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes)
 {
 	U32 CodePoint, MaxDigits, nDigitsRead, LeadingZeros;
 
@@ -802,7 +802,7 @@ CAPI_FUNC(I8) capi_ScanHexL(void* pResult, UTF32* pSource, U32 Flags, UTF32** pp
 		if (*pSource != 0) return 1;
 	}
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF32*)pSource;
 
 	return 0;
 }

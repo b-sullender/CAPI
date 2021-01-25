@@ -34,7 +34,7 @@ void ExampleApp_OutMessage(const STRING* Msg, BOOL NewLine)
 
 int main()
 {
-	U32 var1, var2;
+	I128 var1, var2;
 	STRING equation[] = STR("83628012 + 4289102");
 	STRING* pEqu = equation;
 	STRING myString[STR_OUTPUT_BUFFER];

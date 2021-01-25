@@ -12,7 +12,7 @@
 
 #include "CAPI.h"
 
-CAPI_FUNC(void) capi_shl128(U128* pValue, U32 N)
+CAPI_FUNC(void) capi_shl128(CU128* pValue, U32 N)
 {
 	if (N == 0) return;
 
@@ -39,7 +39,7 @@ CAPI_FUNC(void) capi_shl128(U128* pValue, U32 N)
 	}
 }
 
-CAPI_FUNC(void) capi_shr128(U128* pValue, U32 N)
+CAPI_FUNC(void) capi_shr128(CU128* pValue, U32 N)
 {
 	if (N == 0) return;
 
@@ -66,7 +66,7 @@ CAPI_FUNC(void) capi_shr128(U128* pValue, U32 N)
 	}
 }
 
-CAPI_FUNC(void) capi_sar128(I128* pValue, U32 N)
+CAPI_FUNC(void) capi_sar128(CI128* pValue, U32 N)
 {
 	if (N == 0) return;
 
@@ -93,9 +93,9 @@ CAPI_FUNC(void) capi_sar128(I128* pValue, U32 N)
 	}
 }
 
-CAPI_FUNC(void) capi_div128(U128* pQuotient, U128* pDividend, U128* pDivisor)
+CAPI_FUNC(void) capi_div128(CU128* pQuotient, const CU128* pDividend, const CU128* pDivisor)
 {
-	U128 DD, DV;
+	CU128 DD, DV;
 	U32 T1, T2, Shift;
 
 	// Use local DD and DV so Dividend and Divisor dont get currupted.
@@ -162,9 +162,9 @@ CAPI_FUNC(void) capi_div128(U128* pQuotient, U128* pDividend, U128* pDivisor)
 	} while (Shift-- != 0);
 }
 
-CAPI_FUNC(void) capi_idiv128(I128* pQuotient, I128* pDividend, I128* pDivisor)
+CAPI_FUNC(void) capi_idiv128(CI128* pQuotient, const CI128* pDividend, const CI128* pDivisor)
 {
-	U128 DD, DV;
+	CU128 DD, DV;
 	U32 T1, T2, Shift;
 	U8 Neg;
 
@@ -231,7 +231,7 @@ CAPI_FUNC(void) capi_idiv128(I128* pQuotient, I128* pDividend, I128* pDivisor)
 
 	do
 	{
-		capi_shl128((U128*)pQuotient, 1);
+		capi_shl128((CU128*)pQuotient, 1);
 
 		if (capi_Compare((size_t*)&DV, (size_t*)&DD, 128 / CAPI_BIT_LENGTH) != 1)
 		{
@@ -252,9 +252,9 @@ idiv128_negate:
 	}
 }
 
-CAPI_FUNC(void) capi_dvrm128(U128* pQuotient, U128* pRemainder, U128* pDividend, U128* pDivisor)
+CAPI_FUNC(void) capi_dvrm128(CU128* pQuotient, CU128* pRemainder, const CU128* pDividend, const CU128* pDivisor)
 {
-	U128 DD, DV;
+	CU128 DD, DV;
 	U32 T1, T2, Shift;
 
 	// Use local DD and DV so Dividend and Divisor dont get currupted.
@@ -339,9 +339,9 @@ CAPI_FUNC(void) capi_dvrm128(U128* pQuotient, U128* pRemainder, U128* pDividend,
 	pRemainder->Hi = DD.Hi;
 }
 
-CAPI_FUNC(void) capi_idvrm128(I128* pQuotient, I128* pRemainder, I128* pDividend, I128* pDivisor)
+CAPI_FUNC(void) capi_idvrm128(CI128* pQuotient, CI128* pRemainder, const CI128* pDividend, const CI128* pDivisor)
 {
-	U128 DD, DV;
+	CU128 DD, DV;
 	U32 T1, T2, Shift;
 	U8 Neg;
 
@@ -417,7 +417,7 @@ CAPI_FUNC(void) capi_idvrm128(I128* pQuotient, I128* pRemainder, I128* pDividend
 
 	do
 	{
-		capi_shl128((U128*)pQuotient, 1);
+		capi_shl128((CU128*)pQuotient, 1);
 
 		if (capi_Compare((size_t*)&DV, (size_t*)&DD, 128 / CAPI_BIT_LENGTH) != 1)
 		{
@@ -444,9 +444,9 @@ idvrm128_negate:
 	}
 }
 
-CAPI_FUNC(void) capi_rem128(U128* pRemainder, U128* pDividend, U128* pDivisor)
+CAPI_FUNC(void) capi_rem128(CU128* pRemainder, const CU128* pDividend, const CU128* pDivisor)
 {
-	U128 DD, DV;
+	CU128 DD, DV;
 	U32 T1, T2, Shift;
 
 	// Use local DD and DV so Dividend and Divisor dont get currupted.
@@ -513,9 +513,9 @@ CAPI_FUNC(void) capi_rem128(U128* pRemainder, U128* pDividend, U128* pDivisor)
 	pRemainder->Hi = DD.Hi;
 }
 
-CAPI_FUNC(void) capi_irem128(I128* pRemainder, I128* pDividend, I128* pDivisor)
+CAPI_FUNC(void) capi_irem128(CI128* pRemainder, const CI128* pDividend, const CI128* pDivisor)
 {
-	U128 DD, DV;
+	CU128 DD, DV;
 	U32 T1, T2, Shift;
 	U8 Neg;
 
@@ -603,7 +603,7 @@ irem128_negate:
 	}
 }
 
-CAPI_FUNC(void) capi_llmul128(U128* p128, U128* pA, U128* pB)
+CAPI_FUNC(void) capi_llmul128(CU128* p128, const CU128* pA, const CU128* pB)
 {
 	U64 T;
 
@@ -612,10 +612,10 @@ CAPI_FUNC(void) capi_llmul128(U128* p128, U128* pA, U128* pB)
 	p128->Hi += T;
 }
 
-CAPI_FUNC(void) capi_mul128(U256* p256, U128* pA, U128* pB)
+CAPI_FUNC(void) capi_mul128(CU256* p256, const CU128* pA, const CU128* pB)
 {
 	U64 T;
-	U128 LoPart, HiPart, T1, T2;
+	CU128 LoPart, HiPart, T1, T2;
 	size_t CF;
 
 	// If both HIQWORDs are zero then just multiply the LOQWORDs.
@@ -650,9 +650,9 @@ CAPI_FUNC(void) capi_mul128(U256* p256, U128* pA, U128* pB)
 	p256->Hi = HiPart;
 }
 
-CAPI_FUNC(void) capi_imul128(I256* p256, I128* pA, I128* pB)
+CAPI_FUNC(void) capi_imul128(CI256* p256, const CI128* pA, const CI128* pB)
 {
-	capi_mul128((U256*)p256, (U128*)pA, (U128*)pB);
+	capi_mul128((CU256*)p256, (CU128*)pA, (CU128*)pB);
 
 	if (pA->Hi < 0) capi_SubReturnBorrowEx((size_t*)&p256->Hi, (size_t*)pB, 128 / CAPI_BIT_LENGTH);
 	if (pB->Hi < 0) capi_SubReturnBorrowEx((size_t*)&p256->Hi, (size_t*)pA, 128 / CAPI_BIT_LENGTH);

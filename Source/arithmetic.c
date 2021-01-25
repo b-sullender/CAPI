@@ -34,7 +34,7 @@ CAPI_FUNC(size_t) capi_AddReturnCarry(size_t* pAugend, size_t Addend, size_t Cou
 	return CF;
 }
 
-CAPI_FUNC(size_t) capi_AddReturnCarryEx(size_t* pAugend, size_t* pAddend, size_t Count)
+CAPI_FUNC(size_t) capi_AddReturnCarryEx(size_t* pAugend, const size_t* pAddend, size_t Count)
 {
 	size_t I, CF, NextCF;
 
@@ -78,7 +78,7 @@ CAPI_FUNC(size_t) capi_SubReturnBorrow(size_t* pMinuend, size_t Subtrahend, size
 	return CF;
 }
 
-CAPI_FUNC(size_t) capi_SubReturnBorrowEx(size_t* pMinuend, size_t* pSubtrahend, size_t Count)
+CAPI_FUNC(size_t) capi_SubReturnBorrowEx(size_t* pMinuend, const size_t* pSubtrahend, size_t Count)
 {
 	size_t I, CF, NextCF;
 

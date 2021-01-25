@@ -1142,10 +1142,10 @@ void Window_Paint_Handler(THREAD_WINDOW* thisWindow, IMAGE* pDisplay)
 
 void TestInt128()
 {
-	U128 au128_1, au128_2, rm;
-	I128 ai128_1, ai128_2, irm;
-	U256 au256;
-	I256 ai256;
+	CU128 au128_1, au128_2, rm;
+	CI128 ai128_1, ai128_2, irm;
+	CU256 au256;
+	CI256 ai256;
 
 	au128_1.Lo = 0xF;
 	au128_1.Hi = 0;

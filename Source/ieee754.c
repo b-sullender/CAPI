@@ -250,7 +250,7 @@ CAPI_SUBFUNC(void) ieee754_GetFixedFracFromDouble(size_t* pResult, U64 Value)
 	}
 }
 
-CAPI_FUNC(I8) capi_ScanSingleA(float* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos)
+CAPI_FUNC(I8) capi_ScanSingleA(float* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -816,12 +816,12 @@ exit_func:
 
 	*(U32*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (ASCII*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanDoubleA(double* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos)
+CAPI_FUNC(I8) capi_ScanDoubleA(double* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos)
 {
 	size_t IntPart[1024 / CAPI_BIT_LENGTH];
 	size_t FracPart[3584 / CAPI_BIT_LENGTH];
@@ -1387,12 +1387,12 @@ exit_func:
 
 	*(U64*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (ASCII*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos)
+CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -1407,7 +1407,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, UTF8* pSource, U32 Flags, UTF8** 
 	I32 I, U;
 	U32 CodePoint, NextCodePoint, Decimal, Fullwidth_Decimal, TpMarker, Fullwidth_TpMarker, Shift, eCount, eSign;
 	U32 Exponent, Mantissa, BitSet, TempResult, Sign;
-	UTF8* pNextChar;
+	const UTF8* pNextChar;
 
 	if (ieee754_Single_Lookup_Table == 0)
 	{
@@ -2080,12 +2080,12 @@ exit_func:
 
 	*(U32*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF8*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos)
+CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos)
 {
 	size_t IntPart[1024 / CAPI_BIT_LENGTH];
 	size_t FracPart[3584 / CAPI_BIT_LENGTH];
@@ -2100,7 +2100,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, UTF8* pSource, U32 Flags, UTF8**
 	I32 I, U;
 	U32 CodePoint, NextCodePoint, Decimal, Fullwidth_Decimal, TpMarker, Fullwidth_TpMarker, Shift, eCount, eSign;
 	U64 Exponent, Mantissa, BitSet, TempResult, Sign;
-	UTF8* pNextChar;
+	const UTF8* pNextChar;
 
 	if (ieee754_Double_Lookup_Table == 0)
 	{
@@ -2773,12 +2773,12 @@ exit_func:
 
 	*(U64*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF8*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos)
+CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -2793,7 +2793,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, UTF16* pSource, U32 Flags, UTF16*
 	I32 I, U;
 	U32 CodePoint, NextCodePoint, Decimal, Fullwidth_Decimal, TpMarker, Fullwidth_TpMarker, Shift, eCount, eSign;
 	U32 Exponent, Mantissa, BitSet, TempResult, Sign;
-	UTF16* pNextChar;
+	const UTF16* pNextChar;
 
 	if (ieee754_Single_Lookup_Table == 0)
 	{
@@ -3466,12 +3466,12 @@ exit_func:
 
 	*(U32*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF16*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos)
+CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos)
 {
 	size_t IntPart[1024 / CAPI_BIT_LENGTH];
 	size_t FracPart[3584 / CAPI_BIT_LENGTH];
@@ -3486,7 +3486,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, UTF16* pSource, U32 Flags, UTF16
 	I32 I, U;
 	U32 CodePoint, NextCodePoint, Decimal, Fullwidth_Decimal, TpMarker, Fullwidth_TpMarker, Shift, eCount, eSign;
 	U64 Exponent, Mantissa, BitSet, TempResult, Sign;
-	UTF16* pNextChar;
+	const UTF16* pNextChar;
 
 	if (ieee754_Double_Lookup_Table == 0)
 	{
@@ -4159,12 +4159,12 @@ exit_func:
 
 	*(U64*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF16*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleL(float* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos)
+CAPI_FUNC(I8) capi_ScanSingleL(float* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -4730,12 +4730,12 @@ exit_func:
 
 	*(U32*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF32*)pSource;
 
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanDoubleL(double* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos)
+CAPI_FUNC(I8) capi_ScanDoubleL(double* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos)
 {
 	size_t IntPart[1024 / CAPI_BIT_LENGTH];
 	size_t FracPart[3584 / CAPI_BIT_LENGTH];
@@ -5301,7 +5301,7 @@ exit_func:
 
 	*(U64*)pResult = Sign | TempResult;
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF32*)pSource;
 
 	return 0;
 }

@@ -12,7 +12,7 @@
 
 #include "CAPI.h"
 
-CAPI_FUNC(void) capi_mul64(U128* pResult, U64 A, U64 B)
+CAPI_FUNC(void) capi_mul64(CU128* pResult, U64 A, U64 B)
 {
 	U64 Temp;
 
@@ -39,9 +39,9 @@ CAPI_FUNC(void) capi_mul64(U128* pResult, U64 A, U64 B)
 	pResult->Hi += (Temp >> 32);
 }
 
-CAPI_FUNC(void) capi_imul64(I128* pResult, I64 A, I64 B)
+CAPI_FUNC(void) capi_imul64(CI128* pResult, I64 A, I64 B)
 {
-	capi_mul64((U128*)pResult, A, B);
+	capi_mul64((CU128*)pResult, A, B);
 
 	if (A < 0) pResult->Hi -= B;
 	if (B < 0) pResult->Hi -= A;

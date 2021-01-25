@@ -12,7 +12,7 @@
 
 #include "CAPI.h"
 
-CAPI_FUNC(I8) capi_ScanSignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanSignedA(void* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes)
 {
 	U32 Count, TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
@@ -57,7 +57,7 @@ CAPI_FUNC(I8) capi_ScanSignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII**
 		{
 			if ((pSource[1] == 0x78) || (pSource[1] == 0x58))
 			{
-				RetStatus = capi_ScanHexA(TempValue, pSource, Flags, &pSource, nBytes);
+				RetStatus = capi_ScanHexA(TempValue, pSource, Flags, (ASCII**)&pSource, nBytes);
 				if ((Flags & SCAN_MAX_HEX) && (IsNegative == FALSE)) goto exit_ScanSigned;
 
 				goto test_sign;
@@ -153,7 +153,7 @@ exit_ScanSigned:
 
 	if (RetStatus == 0)
 	{
-		if (ppNewPos != 0) *ppNewPos = pSource;
+		if (ppNewPos != 0) *ppNewPos = (ASCII*)pSource;
 	}
 
 	if (TempValue != LocalValue) capi_free(TempValue);
@@ -171,13 +171,13 @@ exit_range_error:
 	return -1;
 }
 
-CAPI_FUNC(I8) capi_ScanSignedU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanSignedU(void* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes)
 {
 	U8 CharUnits, NextCharUnits;
 	U32 Count, CodePoint, NextCodePoint, TpMarker, Fullwidth_TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
 	I8 IsNegative, RetStatus;
-	UTF8* pNextChar;
+	const UTF8* pNextChar;
 
 	if ((pResult == 0) || (pSource == 0) || (nBytes == 0)) return 2;
 
@@ -236,7 +236,7 @@ CAPI_FUNC(I8) capi_ScanSignedU(void* pResult, UTF8* pSource, U32 Flags, UTF8** p
 		{
 			if ((NextCodePoint == 0x78) || (NextCodePoint == 0x58) || (NextCodePoint == 0xFF58) || (NextCodePoint == 0xFF38))
 			{
-				RetStatus = capi_ScanHexU(TempValue, pSource, Flags, &pSource, nBytes);
+				RetStatus = capi_ScanHexU(TempValue, pSource, Flags, (UTF8**)&pSource, nBytes);
 				if ((Flags & SCAN_MAX_HEX) && (IsNegative == FALSE)) goto exit_ScanSigned;
 
 				goto test_sign;
@@ -409,7 +409,7 @@ exit_ScanSigned:
 
 	if (RetStatus == 0)
 	{
-		if (ppNewPos != 0) *ppNewPos = pSource;
+		if (ppNewPos != 0) *ppNewPos = (UTF8*)pSource;
 	}
 
 	if (TempValue != LocalValue) capi_free(TempValue);
@@ -427,13 +427,13 @@ exit_range_error:
 	return -1;
 }
 
-CAPI_FUNC(I8) capi_ScanSignedW(void* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanSignedW(void* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes)
 {
 	U8 CharUnits, NextCharUnits;
 	U32 Count, CodePoint, NextCodePoint, TpMarker, Fullwidth_TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
 	I8 IsNegative, RetStatus;
-	UTF16* pNextChar;
+	const UTF16* pNextChar;
 
 	if ((pResult == 0) || (pSource == 0) || (nBytes == 0)) return 2;
 
@@ -492,7 +492,7 @@ CAPI_FUNC(I8) capi_ScanSignedW(void* pResult, UTF16* pSource, U32 Flags, UTF16**
 		{
 			if ((NextCodePoint == 0x78) || (NextCodePoint == 0x58) || (NextCodePoint == 0xFF58) || (NextCodePoint == 0xFF38))
 			{
-				RetStatus = capi_ScanHexW(TempValue, pSource, Flags, &pSource, nBytes);
+				RetStatus = capi_ScanHexW(TempValue, pSource, Flags, (UTF16**)&pSource, nBytes);
 				if ((Flags & SCAN_MAX_HEX) && (IsNegative == FALSE)) goto exit_ScanSigned;
 
 				goto test_sign;
@@ -665,7 +665,7 @@ exit_ScanSigned:
 
 	if (RetStatus == 0)
 	{
-		if (ppNewPos != 0) *ppNewPos = pSource;
+		if (ppNewPos != 0) *ppNewPos = (UTF16*)pSource;
 	}
 
 	if (TempValue != LocalValue) capi_free(TempValue);
@@ -683,7 +683,7 @@ exit_range_error:
 	return -1;
 }
 
-CAPI_FUNC(I8) capi_ScanSignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanSignedL(void* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes)
 {
 	U32 Count, TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
@@ -728,7 +728,7 @@ CAPI_FUNC(I8) capi_ScanSignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32**
 		{
 			if ((pSource[1] == 0x78) || (pSource[1] == 0x58))
 			{
-				RetStatus = capi_ScanHexL(TempValue, pSource, Flags, &pSource, nBytes);
+				RetStatus = capi_ScanHexL(TempValue, pSource, Flags, (UTF32**)&pSource, nBytes);
 				if ((Flags & SCAN_MAX_HEX) && (IsNegative == FALSE)) goto exit_ScanSigned;
 
 				goto test_sign;
@@ -824,7 +824,7 @@ exit_ScanSigned:
 
 	if (RetStatus == 0)
 	{
-		if (ppNewPos != 0) *ppNewPos = pSource;
+		if (ppNewPos != 0) *ppNewPos = (UTF32*)pSource;
 	}
 
 	if (TempValue != LocalValue) capi_free(TempValue);
@@ -842,7 +842,7 @@ exit_range_error:
 	return -1;
 }
 
-CAPI_FUNC(I8) capi_ScanUnsignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanUnsignedA(void* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos, U32 nBytes)
 {
 	U32 Count, TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
@@ -948,7 +948,7 @@ CAPI_FUNC(I8) capi_ScanUnsignedA(void* pResult, ASCII* pSource, U32 Flags, ASCII
 	if (capi_CountLZ(TempValue, Count) < ((Count * CAPI_BIT_LENGTH) - (8 * nBytes))) goto exit_range_error;
 	capi_memcopy(pResult, TempValue, nBytes);
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (ASCII*)pSource;
 
 	if (TempValue != LocalValue) capi_free(TempValue);
 
@@ -965,12 +965,12 @@ exit_range_error:
 	return -1;
 }
 
-CAPI_FUNC(I8) capi_ScanUnsignedU(void* pResult, UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanUnsignedU(void* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos, U32 nBytes)
 {
 	U8 CharUnits, NextCharUnits;
 	U32 Count, CodePoint, NextCodePoint, TpMarker, Fullwidth_TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
-	UTF8* pNextChar;
+	const UTF8* pNextChar;
 
 	if ((pResult == 0) || (pSource == 0) || (nBytes == 0)) return 2;
 
@@ -1170,7 +1170,7 @@ result_done:
 	if (capi_CountLZ(TempValue, Count) < ((Count * CAPI_BIT_LENGTH) - (8 * nBytes))) goto exit_range_error;
 	capi_memcopy(pResult, TempValue, nBytes);
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF8*)pSource;
 
 	if (TempValue != LocalValue) capi_free(TempValue);
 
@@ -1187,12 +1187,12 @@ exit_range_error:
 	return -1;
 }
 
-CAPI_FUNC(I8) capi_ScanUnsignedW(void* pResult, UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanUnsignedW(void* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos, U32 nBytes)
 {
 	U8 CharUnits, NextCharUnits;
 	U32 Count, CodePoint, NextCodePoint, TpMarker, Fullwidth_TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
-	UTF16* pNextChar;
+	const UTF16* pNextChar;
 
 	if ((pResult == 0) || (pSource == 0) || (nBytes == 0)) return 2;
 
@@ -1392,7 +1392,7 @@ result_done:
 	if (capi_CountLZ(TempValue, Count) < ((Count * CAPI_BIT_LENGTH) - (8 * nBytes))) goto exit_range_error;
 	capi_memcopy(pResult, TempValue, nBytes);
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF16*)pSource;
 
 	if (TempValue != LocalValue) capi_free(TempValue);
 
@@ -1409,7 +1409,7 @@ exit_range_error:
 	return -1;
 }
 
-CAPI_FUNC(I8) capi_ScanUnsignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes)
+CAPI_FUNC(I8) capi_ScanUnsignedL(void* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes)
 {
 	U32 Count, TpMarker, I;
 	size_t LocalValue[8], * TempValue, nDigits;
@@ -1515,7 +1515,7 @@ CAPI_FUNC(I8) capi_ScanUnsignedL(void* pResult, UTF32* pSource, U32 Flags, UTF32
 	if (capi_CountLZ(TempValue, Count) < ((Count * CAPI_BIT_LENGTH) - (8 * nBytes))) goto exit_range_error;
 	capi_memcopy(pResult, TempValue, nBytes);
 
-	if (ppNewPos != 0) *ppNewPos = pSource;
+	if (ppNewPos != 0) *ppNewPos = (UTF32*)pSource;
 
 	if (TempValue != LocalValue) capi_free(TempValue);
 
