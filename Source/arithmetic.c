@@ -142,7 +142,7 @@ CAPI_FUNC(size_t) capi_MulReturnOverflow(size_t* pMultiplicand, size_t Multiplie
 }
 
 #elif CAPI_BIT_LENGTH == 64
-#define EXTENDED_SIZE U128
+#define EXTENDED_SIZE CU128
 
 CAPI_FUNC(size_t) capi_DivReturnRemainder(size_t* pDividend, size_t Divisor, size_t Count)
 {
