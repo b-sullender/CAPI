@@ -63,7 +63,8 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
 
 # Changelog for 3rd party source code:
   
-jpeg-9d  
+- jpeg-9d  
+  - jmorecfg.h
 ```
   changelog:
     change line # 248 of jmorecfg.h
@@ -73,7 +74,8 @@ jpeg-9d
     jpeg does not export its functions for dynamic libraries without a little modification to jmorecfg.h -
     the declaration for LIBJPEG_EXPORT_API is in Source/jconfig.h
 ```
-zlib-1.2.11
+- zlib-1.2.11
+  - gzguts.h
 ```
   changelog:
     add to line # 5 of gzguts.h
@@ -83,5 +85,35 @@ zlib-1.2.11
   notes:
     Including unistd.h in gzguts.h for the gcc compiler prevents "implicit function declaration" -
     warnings/errors for system IO functions like lopen or lseek.
+
 ```
-  
+  - gzread.c
+```
+@@ -316,7 +316,7 @@ local z_size_t gz_read(state, buf, len)
+         /* set n to the maximum amount of len that fits in an unsigned int */
+         n = -1;
+         if (n > len)
+-            n = len;
++            n = (unsigned int) len;
+
+         /* first just try copying data from the output buffer */
+         if (state->x.have) {
+@@ -397,7 +397,7 @@ int ZEXPORT gzread(file, buf, len)
+     }
+
+     /* read len or fewer bytes to buf */
+-    len = gz_read(state, buf, len);
++    len = (unsigned int) gz_read(state, buf, len);
+
+     /* check for an error */
+     if (len == 0 && state->err != Z_OK && state->err != Z_BUF_ERROR)
+@@ -469,7 +469,7 @@ int ZEXPORT gzgetc(file)
+     }
+
+     /* nothing there -- try gz_read() */
+-    ret = gz_read(state, buf, 1);
++    ret = (int) gz_read(state, buf, 1);
+     return ret < 1 ? -1 : buf[0];
+ }
+
+```

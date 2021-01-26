@@ -60,6 +60,7 @@
 #define STRUCT(StructName) typedef struct _##StructName StructName; struct _##StructName
 
 #ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Waddress-of-packed-member"
 #define PACK(__Declaration__) __Declaration__ __attribute__((packed))
 #ifdef CAPI_EXPORTS
 #define CAPI_EXPORT_API __attribute__((visibility("default")))
