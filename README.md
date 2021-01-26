@@ -87,6 +87,7 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
     warnings/errors for system IO functions like lopen or lseek.
 
 ```
+- zlib-1.2.11
   - gzread.c
 ```
 @@ -316,7 +316,7 @@ local z_size_t gz_read(state, buf, len)
@@ -114,6 +115,37 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
 -    ret = gz_read(state, buf, 1);
 +    ret = (int) gz_read(state, buf, 1);
      return ret < 1 ? -1 : buf[0];
+ }
+
+```
+- zlib-1.2.11
+  - gzwrite.c
+```
+@@ -209,7 +209,7 @@ local z_size_t gz_write(state, buf, len)
+                               state->in);
+             copy = state->size - have;
+             if (copy > len)
+-                copy = len;
++                copy = (unsigned int) len;
+             memcpy(state->in + have, buf, copy);
+             state->strm.avail_in += copy;
+             state->x.pos += copy;
+@@ -229,7 +229,7 @@ local z_size_t gz_write(state, buf, len)
+         do {
+             unsigned n = (unsigned)-1;
+             if (n > len)
+-                n = len;
++                n = (unsigned int) len;
+             state->strm.avail_in = n;
+             state->x.pos += n;
+             if (gz_comp(state, Z_NO_FLUSH) == -1)
+@@ -368,7 +368,7 @@ int ZEXPORT gzputs(file, str)
+
+     /* write string */
+     len = strlen(str);
+-    ret = gz_write(state, str, len);
++    ret = (int) gz_write(state, str, len);
+     return ret == 0 && len != 0 ? -1 : ret;
  }
 
 ```
