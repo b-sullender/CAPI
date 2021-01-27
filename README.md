@@ -64,15 +64,17 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
 # Changelog for 3rd party source code:
   
 - jpeg-9d  
-  - jmorecfg.h
-```
-  changelog:
-    change line # 248 of jmorecfg.h
-      -#define EXTERN(type)		extern type
-      +#define EXTERN(type)		extern LIBJPEG_EXPORT_API type
-  notes:
-    jpeg does not export its functions for dynamic libraries without a little modification to jmorecfg.h -
-    the declaration for LIBJPEG_EXPORT_API is in Source/jconfig.h
+  - jmorecfg.h **This lets us export jpeg-9d functions for dynamic libraries**, the declaration for LIBJPEG_EXPORT_API is in Source/jconfig.h
+```diff
+@@ -245,7 +245,7 @@ typedef unsigned int JDIMENSION;
+ /* a function referenced thru EXTERNs: */
+ #define GLOBAL(type)		type
+ /* a reference to a GLOBAL function: */
+-#define EXTERN(type)		extern type
++#define EXTERN(type)		extern LIBJPEG_EXPORT_API type
+
+
+ /* This macro is used to declare a "method", that is, a function pointer.
 ```
 - zlib-1.2.11
   - gzguts.h
