@@ -37,8 +37,8 @@ This project has been tested with the following:
 ```
   Visual Studio 2019 (Windows 10, x86, x86-64)
   Visual Studio 2010 (Windows XP, x86, x86-64)
-  CodeBlocks - Unix Makefiles (Fedora 32, x86-64)
-  CodeBlocks - Unix Makefiles (Ubuntu 20.04.1, x86-64)
+  CodeBlocks - Unix Makefiles (gcc/g++) (Fedora 32, x86-64)
+  CodeBlocks - Unix Makefiles (gcc/g++) (Ubuntu 20.04.1, x86-64)
 ```
 On Linux the included TestApp program uses X11 for creating windows with a frame buffer.  
 See the [HELP](https://github.com/b-sullender/CAPI/blob/main/HELP.md) file for details about installing the needed X11 dev package.  
@@ -64,7 +64,7 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
 # Changelog for 3rd party source code:
   
 - jpeg-9d  
-  - jmorecfg.h **Export jpeg-9d functions for dynamic libraries**, see Source/jconfig.h
+  - jmorecfg.h - **export jpeg-9d functions**, see Source/jconfig.h for LIBJPEG_EXPORT_API
 ```diff
 @@ -245,7 +245,7 @@ typedef unsigned int JDIMENSION;
  /* a function referenced thru EXTERNs: */
@@ -77,7 +77,7 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
  /* This macro is used to declare a "method", that is, a function pointer.
 ```
 - zlib-1.2.11
-  - gzguts.h **Fix for "implicit function declaration" errors for system IO functions**
+  - gzguts.h - **fix for "implicit function declaration" errors for system IO functions**
 ```diff
 @@ -3,6 +3,10 @@
   * For conditions of distribution and use, see copyright notice in zlib.h
@@ -92,7 +92,7 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
  #    define _LARGEFILE_SOURCE 1
 ```
 - zlib-1.2.11
-  - gzread.c **Compiler warning fix**
+  - gzread.c - **compiler warning fix**
 ```diff
 @@ -316,7 +316,7 @@ local z_size_t gz_read(state, buf, len)
          /* set n to the maximum amount of len that fits in an unsigned int */
@@ -123,7 +123,7 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
 
 ```
 - zlib-1.2.11
-  - gzwrite.c **Compiler warning fix**
+  - gzwrite.c - **compiler warning fix**
 ```diff
 @@ -209,7 +209,7 @@ local z_size_t gz_write(state, buf, len)
                                state->in);
