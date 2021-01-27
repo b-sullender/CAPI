@@ -42,6 +42,7 @@ Do not use normal C/C++ data types unless a library or function specifically ask
   - I16
   - I32
   - I64
+  - I128 **C++ only**
   - ptrdiff_t
 
 - Unsigned
@@ -49,17 +50,20 @@ Do not use normal C/C++ data types unless a library or function specifically ask
   - U16
   - U32
   - U64
+  - U128 **C++ only**
   - size_t
 
-- Strings
-  - ASCII
-  - UTF8
-  - UTF16
-  - UTF32
+- Character
+  - ASCII  **a 8-bit ascii character**
+  - UTF8   **a 8-bit unit of a UTF8 encoded character**
+  - UTF16  **a 16-bit unit of a UTF16 encoded character**
+  - UTF32  **a 32-bit unit of a UTF32 encoded character**
 
 - Other Types
   - float
   - double
+
+When one of character types is declared as an array, it is assumed to be a string and never a single character. The same is true for a pointer to a character type. To declare a complete character, use the U32 data type unless working specifically with ascii.
 
 **System Resources**
 
