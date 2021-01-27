@@ -64,7 +64,7 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
 # Changelog for 3rd party source code:
   
 - jpeg-9d  
-  - jmorecfg.h **This lets us export jpeg-9d functions for dynamic libraries**, the declaration for LIBJPEG_EXPORT_API is in Source/jconfig.h
+  - jmorecfg.h **Export jpeg-9d functions for dynamic libraries**, see Source/jconfig.h
 ```diff
 @@ -245,7 +245,7 @@ typedef unsigned int JDIMENSION;
  /* a function referenced thru EXTERNs: */
@@ -77,21 +77,23 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
  /* This macro is used to declare a "method", that is, a function pointer.
 ```
 - zlib-1.2.11
-  - gzguts.h
-```
-  changelog:
-    add to line # 5 of gzguts.h
-      +#ifdef __GNUC__
-      +#include <unistd.h>
-      +#endif
-  notes:
-    Including unistd.h in gzguts.h for the gcc compiler prevents "implicit function declaration" -
-    warnings/errors for system IO functions like lopen or lseek.
+  - gzguts.h **Fix for "implicit function declaration" errors for system IO functions**
+```diff
+@@ -3,6 +3,10 @@
+  * For conditions of distribution and use, see copyright notice in zlib.h
+  */
 
++#ifdef __GNUC__
++#include <unistd.h>
++#endif
++
+ #ifdef _LARGEFILE64_SOURCE
+ #  ifndef _LARGEFILE_SOURCE
+ #    define _LARGEFILE_SOURCE 1
 ```
 - zlib-1.2.11
-  - gzread.c
-```
+  - gzread.c **Compiler warning fix**
+```diff
 @@ -316,7 +316,7 @@ local z_size_t gz_read(state, buf, len)
          /* set n to the maximum amount of len that fits in an unsigned int */
          n = -1;
@@ -121,8 +123,8 @@ CAPI welcomes code contributions. You can request to be a collaborator at [Contr
 
 ```
 - zlib-1.2.11
-  - gzwrite.c
-```
+  - gzwrite.c **Compiler warning fix**
+```diff
 @@ -209,7 +209,7 @@ local z_size_t gz_write(state, buf, len)
                                state->in);
              copy = state->size - have;
