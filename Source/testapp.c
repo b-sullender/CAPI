@@ -1140,6 +1140,67 @@ void Window_Paint_Handler(THREAD_WINDOW* thisWindow, IMAGE* pDisplay)
 	}
 }
 
+void TestTypesSize()
+{
+	STRING text[128];
+
+	if (sizeof(U8) != 1)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(U8));
+		TestApp_OutMessage(text, TRUE);
+	}
+
+	if (sizeof(U16) != 2)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(U16));
+		TestApp_OutMessage(text, TRUE);
+	}
+
+	if (sizeof(U32) != 4)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(U32));
+		TestApp_OutMessage(text, TRUE);
+	}
+
+	if (sizeof(U64) != 8)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(U64));
+		TestApp_OutMessage(text, TRUE);
+	}
+
+	if (sizeof(ASCII) != 1)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(ASCII));
+		TestApp_OutMessage(text, TRUE);
+	}
+
+	if (sizeof(UTF8) != 1)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(UTF8));
+		TestApp_OutMessage(text, TRUE);
+	}
+
+	if (sizeof(UTF16) != 2)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(UTF16));
+		TestApp_OutMessage(text, TRUE);
+	}
+
+	if (sizeof(UTF32) != 4)
+	{
+		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
+		app_sprintf_s(text, 128, STR("%u"), sizeof(UTF32));
+		TestApp_OutMessage(text, TRUE);
+	}
+}
+
 void TestInt128()
 {
 	CU128 au128_1, au128_2, rm;
@@ -2015,14 +2076,14 @@ void* TestApp_ThreadWindowWorker(THREAD_WINDOW* thisWindow)
 			break;
 		default:
 			break;
+			}
 		}
-	}
 
 	XFreeGC(dpy, NormalGC);
 	XCloseDisplay(dpy);
 
 	return 0;
-}
+	}
 
 ConsoleEntryPoint()
 {
@@ -2036,6 +2097,7 @@ ConsoleEntryPoint()
 	TestApp_OutMessage(STR("welcome - CAPI ver "), FALSE);
 	TestApp_OutMessage(pVersion, TRUE);
 
+	TestTypesSize();
 	TestInt128();
 
 	capi_memset(app_windows, 0, sizeof(THREAD_WINDOW) * MAX_THREAD_WINDOWS);
@@ -2272,6 +2334,7 @@ ConsoleEntryPoint()
 	TestApp_OutMessage(STR("welcome - CAPI ver "), FALSE);
 	TestApp_OutMessage(pVersion, TRUE);
 
+	TestTypesSize();
 	TestInt128();
 
 	capi_memset(app_windows, 0, sizeof(THREAD_WINDOW) * MAX_THREAD_WINDOWS);

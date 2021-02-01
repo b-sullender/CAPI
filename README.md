@@ -37,8 +37,9 @@ This project has been tested with the following:
 ```
   Visual Studio 2019 (Windows 10, x86, x86-64)
   Visual Studio 2010 (Windows XP, x86, x86-64)
-  CodeBlocks - Unix Makefiles (gcc/g++) (Fedora 32, x86-64)
+  CodeBlocks - Unix Makefiles (gcc/g++, clang) (Fedora 32, x86-64)
   CodeBlocks - Unix Makefiles (gcc/g++) (Ubuntu 20.04.1, x86-64)
+  Xcode (macOS Big Sur)
 ```
 On Linux the included TestApp program uses X11 for creating windows with a frame buffer.  
 See the [HELP](https://github.com/b-sullender/CAPI/blob/main/HELP.md) file for details about installing the needed X11 dev package.  

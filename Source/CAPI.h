@@ -29,8 +29,10 @@
 #include <string.h>
 #endif
 
+#ifdef __linux__
 #ifndef _MALLOC_H
 #include <malloc.h>
+#endif
 #endif
 
 #include "zlib-1.2.11/zlib.h"
@@ -44,14 +46,16 @@
 #define capi_realloc(addr, newSize) realloc(addr, newSize)
 #define capi_free(addr) free(addr)
 
-#ifdef __GNUC__
-#define capi_aligned_malloc(size, alignment) memalign(alignment, size)
-#define capi_aligned_free(addr) free(addr)
-#endif
-
-#ifdef _MSC_VER
+#ifdef WIN32
 #define capi_aligned_malloc(size, alignment) _aligned_malloc(size, alignment)
 #define capi_aligned_free(addr) _aligned_free(addr)
+#elif __APPLE__
+CAPI_SUBFUNC(void*) capi_macOS_memalign(size_t alignment, size_t size);
+#define capi_aligned_malloc(size, alignment) capi_macOS_memalign(alignment, size)
+#define capi_aligned_free(addr) free(addr)
+#elif __linux__
+#define capi_aligned_malloc(size, alignment) memalign(alignment, size)
+#define capi_aligned_free(addr) free(addr)
 #endif
 
 #define capi_memcopy(dst, src, size) memcpy(dst, src, size)

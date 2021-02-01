@@ -36,7 +36,7 @@
 	stretch small all 768x432
 ```
 
-# Install command list for setting up a Linux workstation
+# Setting up a Linux workstation
 
 - Red Hat-based (Fedora)
   - **sudo yum install gcc** Install the GNU Compiler Collection
@@ -51,3 +51,11 @@
   - **sudo apt install libx11-dev** Install X11 dev libraries (TestApp uses X11)
   - **sudo apt install codeblocks** Install Code::Blocks (IDE)
   - **sudo apt install make**
+
+# Setting up a macOS workstation
+
+First install Xcode using the App Store, then use the following command list in the terminal
+
+- **xcode-select --install** Install command line developer tools
+- **/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"** Install Homebrew
+- **brew install --cask xquartz** Install X11 dev libraries (TestApp uses X11) *The terminal may appear frozen while installing, just wait!*

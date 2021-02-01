@@ -183,7 +183,7 @@ if (UNIX)
 	find_package(X11 REQUIRED)
 	include_directories(${X11_INCLUDE_DIR})
 	add_executable(TestApp "Source/testapp.h" "Source/testapp.c")
-	target_link_libraries(TestApp "-lX11")
+	target_link_libraries(TestApp ${X11_LIBRARIES})
 	target_link_libraries(TestApp "-lpthread")
 endif (UNIX)
 
