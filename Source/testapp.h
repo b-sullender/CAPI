@@ -36,35 +36,35 @@
 #define str_cmp wcscmp
 #define str_copy_s wcscpy_s
 #define str_append_s wcscat_s
+#define app_sscanf_s swscanf_s
+#define app_sprintf_s swprintf_s
 #define app_fgets fgetws
 #define app_scanf wscanf
-#define app_sscanf_s swscanf_s
 #define app_printf wprintf
-#define app_sprintf_s swprintf_s
 #define ConsoleEntryPoint() wmain(int argc, wchar_t* argv[], wchar_t* envp[])
 #define ApplicationEntryPoint() int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine, _In_ int nCmdShow)
 #else
 #define str_fopen fopen
 #define str_len strlen
 #define str_cmp strcmp
-#ifdef __GNUC__
-#define str_copy_s(dst, dst_size, src) strcpy(dst, src)
-#define str_append_s(dst, dst_size, src) strcat(dst, src)
-#define app_sscanf_s(src, format, dst) sscanf(src, format, dst)
-#define ConsoleEntryPoint() int main(int argc, char** argv)
-#define ApplicationEntryPoint() int main(int argc, char** argv)
-#endif
 #ifdef _MSC_VER
 #define str_copy_s strcpy_s
 #define str_append_s strcat_s
 #define app_sscanf_s sscanf_s
+#define app_sprintf_s sprintf_s
 #define ConsoleEntryPoint() main(int argc, char* argv[], char* envp[])
 #define ApplicationEntryPoint() int WINAPI WinMain (_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
+#elif __GNUC__
+#define str_copy_s(dst, dst_size, src) strcpy(dst, src)
+#define str_append_s(dst, dst_size, src) strcat(dst, src)
+#define app_sscanf_s(src, format, dst) sscanf(src, format, dst)
+#define app_sprintf_s(buffer, buffer_count, format, ...) sprintf(buffer, format, __VA_ARGS__)
+#define ConsoleEntryPoint() int main(int argc, char** argv)
+#define ApplicationEntryPoint() int main(int argc, char** argv)
 #endif
 #define app_fgets fgets
 #define app_scanf scanf
 #define app_printf printf
-#define app_sprintf_s sprintf_s
 #endif
 
 #ifndef TRUE
