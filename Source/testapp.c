@@ -68,7 +68,7 @@ static TEST_IMAGE_DATA STRETCH_TestImages[2];
 
 void TestApp_OutMessage(const STRING* Msg, BOOL NewLine)
 {
-	app_printf(Msg);
+	app_printf(STR("%s"), Msg);
 	if (NewLine == TRUE) app_printf(STR("\n\r"));
 	fflush(stdout);
 }
@@ -2076,14 +2076,14 @@ void* TestApp_ThreadWindowWorker(THREAD_WINDOW* thisWindow)
 			break;
 		default:
 			break;
-			}
 		}
+	}
 
 	XFreeGC(dpy, NormalGC);
 	XCloseDisplay(dpy);
 
 	return 0;
-	}
+}
 
 ConsoleEntryPoint()
 {

@@ -387,6 +387,11 @@ STRUCT(PNG_PARAMETERS)
 extern "C" {
 #endif
 
+#ifdef __APPLE__
+	//  Wrapper for posix_memalign
+	CAPI_SUBFUNC(void*) capi_macOS_memalign(size_t alignment, size_t size);
+#endif
+
 	//  capi_VersionA - Get CAPI Version (version.c)
 	//      ppVersion [A pointer to a const char* to receive a pointer to the MULTI-BYTE version string] This can be 0
 	//  returns the version as a U32 data type
