@@ -1812,7 +1812,7 @@ struct String
 	//      String [Null-terminated source string to search]
 	//      Delimit [Character to be located]
 	//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-	static STRING* Find(const STRING* String, STRING Delimit)
+	static STRING* Find(const STRING* String, U32 Delimit)
 	{
 		return capi_StrFind(String, Delimit);
 	}
@@ -1840,7 +1840,7 @@ struct String
 	//      Delimit [Character to be located and replaced]
 	//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
 	//      When Delimit is found its set to 0
-	static STRING* Split(STRING* String, STRING Delimit)
+	static STRING* Split(STRING* String, U32 Delimit)
 	{
 		return capi_StrSplit(String, Delimit);
 	}
@@ -1991,6 +1991,38 @@ struct String
 			{
 				capi_StrReverseA(String);
 			}
+
+			//  Get a character from a ASCII string
+			//      pString [Pointer to a null-terminated string]
+			//  returns the first character in the string
+			static U32 GetChar(const ASCII* pString)
+			{
+				U8 CharUnits;
+
+				if (pString == 0) return 0;
+
+				CharUnits = capi_StrCharUnits(*pString);
+				return capi_StrDecode(CharUnits, pString);
+			}
+
+			//  Get a character from a ASCII string and move the string pointer to the next character
+			//      ppString [Pointer to a string pointer]
+			//  returns the first character in the string
+			static U32 PullChar(ASCII** ppString)
+			{
+				ASCII* pString;
+				U8 CharUnits;
+				U32 CodePoint;
+
+				if (ppString == 0) return 0;
+
+				pString = *ppString;
+				CharUnits = capi_StrCharUnits(*pString);
+				CodePoint = capi_StrDecode(CharUnits, pString);
+				*ppString += CharUnits;
+
+				return CodePoint;
+			}
 		};
 		struct _UTF8_
 		{
@@ -2106,7 +2138,7 @@ struct String
 			//      String [Null-terminated source string to search]
 			//      Delimit [Character to be located]
 			//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-			static UTF8* Find(const UTF8* String, UTF8 Delimit)
+			static UTF8* Find(const UTF8* String, U32 Delimit)
 			{
 				return capi_StrFindU(String, Delimit);
 			}
@@ -2134,7 +2166,7 @@ struct String
 			//      Delimit [Character to be located and replaced]
 			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
 			//      When Delimit is found its set to 0
-			static UTF8* Split(UTF8* String, UTF8 Delimit)
+			static UTF8* Split(UTF8* String, U32 Delimit)
 			{
 				return capi_StrSplitU(String, Delimit);
 			}
@@ -2144,6 +2176,38 @@ struct String
 			static void Reverse(UTF8* String)
 			{
 				capi_StrReverseU(String);
+			}
+
+			//  Get a character from a UTF8 string
+			//      pString [Pointer to a null-terminated string]
+			//  returns the first character in the string
+			static U32 GetChar(const UTF8* pString)
+			{
+				U8 CharUnits;
+
+				if (pString == 0) return 0;
+
+				CharUnits = capi_UTF8_GetCharUnits(*pString);
+				return capi_UTF8_Decode(CharUnits, pString);
+			}
+
+			//  Get a character from a UTF8 string and move the string pointer to the next character
+			//      ppString [Pointer to a string pointer]
+			//  returns the first character in the string
+			static U32 PullChar(UTF8** ppString)
+			{
+				UTF8* pString;
+				U8 CharUnits;
+				U32 CodePoint;
+
+				if (ppString == 0) return 0;
+
+				pString = *ppString;
+				CharUnits = capi_UTF8_GetCharUnits(*pString);
+				CodePoint = capi_UTF8_Decode(CharUnits, pString);
+				*ppString += CharUnits;
+
+				return CodePoint;
 			}
 
 			//  Convert a UTF8 string to a UTF16 string
@@ -2285,7 +2349,7 @@ struct String
 			//      String [Null-terminated source string to search]
 			//      Delimit [Character to be located]
 			//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-			static UTF16* Find(const UTF16* String, UTF16 Delimit)
+			static UTF16* Find(const UTF16* String, U32 Delimit)
 			{
 				return capi_StrFindW(String, Delimit);
 			}
@@ -2313,7 +2377,7 @@ struct String
 			//      Delimit [Character to be located and replaced]
 			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
 			//      When Delimit is found its set to 0
-			static UTF16* Split(UTF16* String, UTF16 Delimit)
+			static UTF16* Split(UTF16* String, U32 Delimit)
 			{
 				return capi_StrSplitW(String, Delimit);
 			}
@@ -2323,6 +2387,38 @@ struct String
 			static void Reverse(UTF16* String)
 			{
 				capi_StrReverseW(String);
+			}
+
+			//  Get a character from a UTF16 string
+			//      pString [Pointer to a null-terminated string]
+			//  returns the first character in the string
+			static U32 GetChar(const UTF16* pString)
+			{
+				U8 CharUnits;
+
+				if (pString == 0) return 0;
+
+				CharUnits = capi_UTF16_GetCharUnits(*pString);
+				return capi_UTF16_Decode(CharUnits, pString);
+			}
+
+			//  Get a character from a UTF16 string and move the string pointer to the next character
+			//      ppString [Pointer to a string pointer]
+			//  returns the first character in the string
+			static U32 PullChar(UTF16** ppString)
+			{
+				UTF16* pString;
+				U8 CharUnits;
+				U32 CodePoint;
+
+				if (ppString == 0) return 0;
+
+				pString = *ppString;
+				CharUnits = capi_UTF16_GetCharUnits(*pString);
+				CodePoint = capi_UTF16_Decode(CharUnits, pString);
+				*ppString += CharUnits;
+
+				return CodePoint;
 			}
 
 			//  Convert a UTF16 string to a UTF8 string
@@ -2414,7 +2510,7 @@ struct String
 			//      String [Null-terminated source string to search]
 			//      Delimit [Character to be located]
 			//  returns a pointer to the first occurrence of Delimit in String, or 0 if Delimit is not found
-			static UTF32* Find(const UTF32* String, UTF32 Delimit)
+			static UTF32* Find(const UTF32* String, U32 Delimit)
 			{
 				return capi_StrFindL(String, Delimit);
 			}
@@ -2442,7 +2538,7 @@ struct String
 			//      Delimit [Character to be located and replaced]
 			//  returns a pointer to the string following the Delimit, or 0 if Delimit is not found
 			//      When Delimit is found its set to 0
-			static UTF32* Split(UTF32* String, UTF32 Delimit)
+			static UTF32* Split(UTF32* String, U32 Delimit)
 			{
 				return capi_StrSplitL(String, Delimit);
 			}
@@ -2452,6 +2548,33 @@ struct String
 			static void Reverse(UTF32* String)
 			{
 				capi_StrReverseL(String);
+			}
+
+			//  Get a character from a UTF32 string
+			//      pString [Pointer to a null-terminated string]
+			//  returns the first character in the string
+			static U32 GetChar(const UTF32* pString)
+			{
+				if (pString == 0) return 0;
+
+				return *pString;
+			}
+
+			//  Get a character from a UTF32 string and move the string pointer to the next character
+			//      ppString [Pointer to a string pointer]
+			//  returns the first character in the string
+			static U32 PullChar(UTF32** ppString)
+			{
+				UTF32* pString;
+				U32 CodePoint;
+
+				if (ppString == 0) return 0;
+
+				pString = *ppString;
+				CodePoint = *pString;
+				*ppString += 1;
+
+				return CodePoint;
 			}
 
 			//  Convert a UTF32 string to a UTF8 string
