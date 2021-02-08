@@ -71,13 +71,12 @@ CAPI_SUBFUNC(void*) capi_macOS_memalign(size_t alignment, size_t size);
 #else
 #define CAPI_EXPORT_API
 #endif
-#ifdef __i386__
-#define CAPI_BIT_LENGTH 32
-#define CAPI_PROC __attribute__ ((stdcall))
-#endif
-#ifdef __amd64__
+#ifdef   __amd64__  ||   __aarch64__
 #define CAPI_BIT_LENGTH 64
 #define CAPI_PROC __attribute__ ((sysv_abi))
+#elif    __i386__   ||   __arm__
+#define CAPI_BIT_LENGTH 32
+#define CAPI_PROC __attribute__ ((stdcall))
 #endif
 #endif
 

@@ -1,4 +1,57 @@
 
+# Setting up a Linux workstation
+
+- Red Hat-based (Fedora)
+```
+Install the GNU Compiler Collection
+	sudo yum install gcc
+Install the GNU optimising compiler for C++
+	sudo yum install g++
+Install MinGW dev package (for the debugger)
+	sudo yum install mingw32-gcc-c++
+Install X11 dev libraries (TestApp uses X11)
+	sudo yum install libX11-devel
+Install Code::Blocks (IDE)
+	sudo yum install codeblocks
+Install cmake (generates IDE files)
+	sudo yum install cmake
+Install cmake (gui version)
+	sudo yum install cmake-gui
+```
+- Debian-based (Ubuntu)
+```
+Install the GNU Compiler Collection
+	sudo apt install gcc
+Install the GNU optimising compiler for C++
+	sudo apt install g++
+Install MinGW dev package (for the debugger)
+	sudo apt install gcc-mingw-w64-base
+Install X11 dev libraries (TestApp uses X11)
+	sudo apt install libx11-dev
+Install make (utility for building and maintaining groups of programs)
+	sudo apt install make
+Install Code::Blocks (IDE)
+	sudo apt install codeblocks
+Install cmake (generates IDE files)
+	sudo apt install cmake
+Install cmake (gui version)
+	sudo apt install cmake-gui
+```
+
+# Setting up a macOS workstation
+
+First install Xcode using the App Store, then use the following command list in the terminal
+```
+Install command line developer tools
+	xcode-select --install
+Install Homebrew
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+Install X11 dev libraries (TestApp uses X11)
+	brew install --cask xquartz
+Install cmake (generates IDE files)
+	brew install cmake
+```
+
 # Using the TestApp console to test CAPI
 ```
 bmp - Display BMP test images
@@ -34,53 +87,4 @@ exit - Exit the test program
 ```
 stretch big all 480x270
 stretch small all 768x432
-```
-
-# Setting up a Linux workstation
-
-- Red Hat-based (Fedora)
-```
-Install the GNU Compiler Collection
-	sudo yum install gcc
-Install the GNU optimising compiler for C++
-	sudo yum install g++
-Install MinGW dev package (for the debugger)
-	sudo yum install mingw32-gcc-c++
-Install X11 dev libraries (TestApp uses X11)
-	sudo yum install libX11-devel
-Install Code::Blocks (IDE)
-	sudo yum install codeblocks
-Install cmake (generates IDE files)
-	sudo yum install cmake
-```
-- Debian-based (Ubuntu)
-```
-Install the GNU Compiler Collection
-	sudo apt install gcc
-Install the GNU optimising compiler for C++
-	sudo apt install g++
-Install MinGW dev package (for the debugger)
-	sudo apt install gcc-mingw-w64-base
-Install X11 dev libraries (TestApp uses X11)
-	sudo apt install libx11-dev
-Install make (utility for building and maintaining groups of programs)
-	sudo apt install make
-Install Code::Blocks (IDE)
-	sudo apt install codeblocks
-Install cmake (generates IDE files)
-	sudo apt install cmake
-```
-
-# Setting up a macOS workstation
-
-First install Xcode using the App Store, then use the following command list in the terminal
-```
-Install command line developer tools
-	xcode-select --install
-Install Homebrew
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-Install X11 dev libraries (TestApp uses X11)
-	brew install --cask xquartz
-Install cmake (generates IDE files)
-	brew install cmake
 ```
