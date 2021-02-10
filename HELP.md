@@ -48,8 +48,8 @@ Install Homebrew
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 Install X11 dev libraries (TestApp uses X11)
 	brew install --cask xquartz
-Install cmake (generates IDE files)
-	brew install cmake
+Install cmake (GUI version, generates IDE files)
+	brew install --cask cmake
 ```
 
 # Using the TestApp console to test CAPI
