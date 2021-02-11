@@ -13,7 +13,7 @@
 #include "CAPI.h"
 
 #ifdef __APPLE__
-CAPI_SUBFUNC(void*) capi_macOS_memalign(size_t alignment, size_t size)
+CAPI_FUNC(void*) capi_macOS_memalign(size_t alignment, size_t size)
 {
 	void* memptr;
 

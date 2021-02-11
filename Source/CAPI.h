@@ -50,7 +50,6 @@
 #define capi_aligned_malloc(size, alignment) _aligned_malloc(size, alignment)
 #define capi_aligned_free(addr) _aligned_free(addr)
 #elif __APPLE__
-CAPI_SUBFUNC(void*) capi_macOS_memalign(size_t alignment, size_t size);
 #define capi_aligned_malloc(size, alignment) capi_macOS_memalign(alignment, size)
 #define capi_aligned_free(addr) free(addr)
 #elif __linux__
@@ -71,12 +70,15 @@ CAPI_SUBFUNC(void*) capi_macOS_memalign(size_t alignment, size_t size);
 #else
 #define CAPI_EXPORT_API
 #endif
-#ifdef   __amd64__  ||   __aarch64__
+#if    defined(__amd64__)  ||   defined(__aarch64__)
 #define CAPI_BIT_LENGTH 64
 #define CAPI_PROC __attribute__ ((sysv_abi))
-#elif    __i386__   ||   __arm__
+#elif  defined(__i386__)
 #define CAPI_BIT_LENGTH 32
 #define CAPI_PROC __attribute__ ((stdcall))
+#elif  defined(__arm__)
+#define CAPI_BIT_LENGTH 32
+#define CAPI_PROC __attribute__ ((sysv_abi))
 #endif
 #endif
 
@@ -386,11 +388,6 @@ STRUCT(PNG_PARAMETERS)
 extern "C" {
 #endif
 
-#ifdef __APPLE__
-	//  Wrapper for posix_memalign
-	CAPI_SUBFUNC(void*) capi_macOS_memalign(size_t alignment, size_t size);
-#endif
-
 	//  capi_VersionA - Get CAPI Version (version.c)
 	//      ppVersion [A pointer to a const char* to receive a pointer to the MULTI-BYTE version string] This can be 0
 	//  returns the version as a U32 data type
@@ -442,6 +439,11 @@ extern "C" {
 	//      srcLen [The source file size in bytes]
 	//  returns Z_OK on success
 	CAPI_FUNC(int) z_inf_mem(void** dest, uLong* desLen, void* src, uLong srcLen);
+
+#ifdef __APPLE__
+	//  Wrapper for posix_memalign (memory.c)
+	CAPI_FUNC(void*) capi_macOS_memalign(size_t alignment, size_t size);
+#endif
 
 	//  memset32 - Sets a buffer to a specified value (memory.c)
 	//      pDestination [Pointer to destination]
