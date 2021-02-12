@@ -1147,56 +1147,56 @@ void TestTypesSize()
 	if (sizeof(U8) != 1)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(U8));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(U8));
 		TestApp_OutMessage(text, TRUE);
 	}
 
 	if (sizeof(U16) != 2)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(U16));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(U16));
 		TestApp_OutMessage(text, TRUE);
 	}
 
 	if (sizeof(U32) != 4)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(U32));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(U32));
 		TestApp_OutMessage(text, TRUE);
 	}
 
 	if (sizeof(U64) != 8)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(U64));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(U64));
 		TestApp_OutMessage(text, TRUE);
 	}
 
 	if (sizeof(ASCII) != 1)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(ASCII));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(ASCII));
 		TestApp_OutMessage(text, TRUE);
 	}
 
 	if (sizeof(UTF8) != 1)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(UTF8));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(UTF8));
 		TestApp_OutMessage(text, TRUE);
 	}
 
 	if (sizeof(UTF16) != 2)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(UTF16));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(UTF16));
 		TestApp_OutMessage(text, TRUE);
 	}
 
 	if (sizeof(UTF32) != 4)
 	{
 		TestApp_OutMessage(STR("ERROR! sizeof(U8) = "), FALSE);
-		app_sprintf_s(text, 128, STR("%lu"), sizeof(UTF32));
+		app_sprintf_s(text, 128, STR("%zu"), sizeof(UTF32));
 		TestApp_OutMessage(text, TRUE);
 	}
 }

@@ -168,26 +168,26 @@ target_compile_definitions(CAPI PRIVATE
 
 set_source_files_properties(zlib.def PROPERTIES HEADER_FILE_ONLY TRUE)
 
+add_executable(TestApp "Source/testapp.h" "Source/testapp.c")
+add_executable(ExampleApp "Source/example.cpp")
+
 if (WIN32)
-	add_executable(TestApp "Source/testapp.h" "Source/testapp.c")
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 		set_target_properties(TestApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 		set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT TestApp)
 	endif ()
-	add_executable(ExampleApp "Source/example.cpp")
-	set_target_properties(ExampleApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
-	target_link_libraries(ExampleApp CAPI)
+#	set_target_properties(ExampleApp PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 endif (WIN32)
 
 if (UNIX)
 	find_package(X11 REQUIRED)
 	include_directories(${X11_INCLUDE_DIR})
-	add_executable(TestApp "Source/testapp.h" "Source/testapp.c")
 	target_link_libraries(TestApp ${X11_LIBRARIES})
 	target_link_libraries(TestApp "-lpthread")
 endif (UNIX)
 
 target_link_libraries(TestApp CAPI)
+target_link_libraries(ExampleApp CAPI)
 
 set(test_images_path STR\(\"${CMAKE_SOURCE_DIR}/Images\"\))
 target_compile_definitions(TestApp PRIVATE

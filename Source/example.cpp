@@ -24,7 +24,7 @@
 
 void ExampleApp_OutMessage(const STRING* Msg, BOOL NewLine)
 {
-	app_printf(Msg);
+	app_printf(STR("%s"), Msg);
 	if (NewLine == TRUE) app_printf(STR("\n\r"));
 	fflush(stdout);
 }
