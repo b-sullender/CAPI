@@ -20,7 +20,7 @@ See the [CHANGELOG](https://github.com/b-sullender/CAPI/blob/main/CHANGELOG.md) 
 **Image support**
 
 - [BMP](https://wikipedia.org/wiki/BMP_file_format)
-- [JPEG](https://wikipedia.org/wiki/JPEG)
+- [JPG](https://wikipedia.org/wiki/JPEG)
 - [PNG](https://wikipedia.org/wiki/Portable_Network_Graphics)
 - [ICO](https://wikipedia.org/wiki/ICO_(file_format))
 
@@ -59,9 +59,10 @@ This project has been tested with the following:
 ```
   Visual Studio 2019 (Windows 10, x86, x86-64)
   Visual Studio 2010 (Windows XP, x86, x86-64)
+  Unix Makefiles (gcc/g++) (Ubuntu MATE, ARMv7-A ODROID-XU4)
   CodeBlocks - Unix Makefiles (gcc/g++, clang) (Fedora 32, x86-64)
   CodeBlocks - Unix Makefiles (gcc/g++) (Ubuntu 20.04.1, x86-64)
-  Xcode (macOS Big Sur)
+  Xcode (macOS Big Sur) (Graphics not tested, native graphical window will be added)
 ```
 On Linux and macOS the included TestApp program uses X11 for creating windows with a frame buffer.  
 See the [HELP](https://github.com/b-sullender/CAPI/blob/main/HELP.md) file for details about setting up a workstation & installing the needed X11 dev package.  
