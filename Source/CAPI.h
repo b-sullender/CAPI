@@ -145,7 +145,7 @@ typedef wchar_t UTF32;  // UTF32 Unit
 typedef U32 UTF32;    // UTF32 Unit
 #endif
 
-#define capi_PrintSingleU capi_PrintSingleA
+#define capi_PrintFloatU capi_PrintFloatA
 #define capi_PrintDoubleU capi_PrintDoubleA
 
 #ifdef UNICODE
@@ -169,12 +169,12 @@ typedef U32 UTF32;    // UTF32 Unit
 #define capi_PrintHex capi_PrintHexW
 #define capi_PrintSigned capi_PrintSignedW
 #define capi_PrintUnsigned capi_PrintUnsignedW
-#define capi_PrintSingle capi_PrintSingleW
+#define capi_PrintFloat capi_PrintFloatW
 #define capi_PrintDouble capi_PrintDoubleW
 #define capi_ScanHex capi_ScanHexW
 #define capi_ScanSigned capi_ScanSignedW
 #define capi_ScanUnsigned capi_ScanUnsignedW
-#define capi_ScanSingle capi_ScanSingleW
+#define capi_ScanFloat capi_ScanFloatW
 #define capi_ScanDouble capi_ScanDoubleW
 #else
 #define UNIT UTF8
@@ -197,12 +197,12 @@ typedef U32 UTF32;    // UTF32 Unit
 #define capi_PrintHex capi_PrintHexU
 #define capi_PrintSigned capi_PrintSignedU
 #define capi_PrintUnsigned capi_PrintUnsignedU
-#define capi_PrintSingle capi_PrintSingleU
+#define capi_PrintFloat capi_PrintFloatU
 #define capi_PrintDouble capi_PrintDoubleU
 #define capi_ScanHex capi_ScanHexU
 #define capi_ScanSigned capi_ScanSignedU
 #define capi_ScanUnsigned capi_ScanUnsignedU
-#define capi_ScanSingle capi_ScanSingleU
+#define capi_ScanFloat capi_ScanFloatU
 #define capi_ScanDouble capi_ScanDoubleU
 #endif
 
@@ -1497,7 +1497,7 @@ extern "C" {
 	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
 
-	//  capi_PrintSingleA - Convert a IEEE 754 32-bit binary data variable to a ASCII string representation (print.c)
+	//  capi_PrintFloatA - Convert a IEEE 754 32-bit binary data variable to a ASCII string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
 	//      Length [Length of the destination string buffer in ASCII units]
 	//      Value [The value to convert]
@@ -1505,7 +1505,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintSingleA(ASCII* pBuffer, size_t Length, float Value, U32 Format);
+	CAPI_FUNC(size_t) capi_PrintFloatA(ASCII* pBuffer, size_t Length, float Value, U32 Format);
 
 	//  capi_PrintDoubleA - Convert a IEEE 754 64-bit binary data variable to a ASCII string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1517,7 +1517,7 @@ extern "C" {
 	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintDoubleA(ASCII* pBuffer, size_t Length, double Value, U32 Format);
 
-	//  capi_PrintSingleW - Convert a IEEE 754 32-bit binary data variable to a UTF16 string representation (print.c)
+	//  capi_PrintFloatW - Convert a IEEE 754 32-bit binary data variable to a UTF16 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
 	//      Length [Length of the destination string buffer in UTF16 units]
 	//      Value [The value to convert]
@@ -1525,7 +1525,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintSingleW(UTF16* pBuffer, size_t Length, float Value, U32 Format);
+	CAPI_FUNC(size_t) capi_PrintFloatW(UTF16* pBuffer, size_t Length, float Value, U32 Format);
 
 	//  capi_PrintDoubleW - Convert a IEEE 754 64-bit binary data variable to a UTF16 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1537,7 +1537,7 @@ extern "C" {
 	//      -1 is returned for an invalid parameter
 	CAPI_FUNC(size_t) capi_PrintDoubleW(UTF16* pBuffer, size_t Length, double Value, U32 Format);
 
-	//  capi_PrintSingleL - Convert a IEEE 754 32-bit binary data variable to a UTF32 string representation (print.c)
+	//  capi_PrintFloatL - Convert a IEEE 754 32-bit binary data variable to a UTF32 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
 	//      Length [Length of the destination string buffer in UTF32 units]
 	//      Value [The value to convert]
@@ -1545,7 +1545,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintSingleL(UTF32* pBuffer, size_t Length, float Value, U32 Format);
+	CAPI_FUNC(size_t) capi_PrintFloatL(UTF32* pBuffer, size_t Length, float Value, U32 Format);
 
 	//  capi_PrintDoubleL - Convert a IEEE 754 64-bit binary data variable to a UTF32 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1645,7 +1645,7 @@ extern "C" {
 	//      ppNewPos is optional and is only set on success
 	CAPI_FUNC(I8) capi_ScanUnsignedL(void* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos, U32 nBytes);
 
-	//  capi_ScanSingleA - Convert a IEEE 754 32-bit binary number from a ASCII string representation into a data variable (ieee754.c)
+	//  capi_ScanFloatA - Convert a IEEE 754 32-bit binary number from a ASCII string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
 	//      pSource [The source string to convert]
 	//      Flags [A combination of the SCAN_xxx flags]
@@ -1653,7 +1653,7 @@ extern "C" {
 	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
 	//      2 is returned for an invalid parameter, or an error
 	//      ppNewPos is optional and is only set on success
-	CAPI_FUNC(I8) capi_ScanSingleA(float* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos);
+	CAPI_FUNC(I8) capi_ScanFloatA(float* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos);
 
 	//  capi_ScanDoubleA - Convert a IEEE 754 64-bit binary number from a ASCII string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
@@ -1665,7 +1665,7 @@ extern "C" {
 	//      ppNewPos is optional and is only set on success
 	CAPI_FUNC(I8) capi_ScanDoubleA(double* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos);
 
-	//  capi_ScanSingleU - Convert a IEEE 754 32-bit binary number from a UTF8 string representation into a data variable (ieee754.c)
+	//  capi_ScanFloatU - Convert a IEEE 754 32-bit binary number from a UTF8 string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
 	//      pSource [The source string to convert]
 	//      Flags [A combination of the SCAN_xxx flags]
@@ -1673,7 +1673,7 @@ extern "C" {
 	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
 	//      2 is returned for an invalid parameter, or an error
 	//      ppNewPos is optional and is only set on success
-	CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos);
+	CAPI_FUNC(I8) capi_ScanFloatU(float* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos);
 
 	//  capi_ScanDoubleU - Convert a IEEE 754 64-bit binary number from a UTF8 string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
@@ -1685,7 +1685,7 @@ extern "C" {
 	//      ppNewPos is optional and is only set on success
 	CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos);
 
-	//  capi_ScanSingleW - Convert a IEEE 754 32-bit binary number from a UTF16 string representation into a data variable (ieee754.c)
+	//  capi_ScanFloatW - Convert a IEEE 754 32-bit binary number from a UTF16 string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
 	//      pSource [The source string to convert]
 	//      Flags [A combination of the SCAN_xxx flags]
@@ -1693,7 +1693,7 @@ extern "C" {
 	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
 	//      2 is returned for an invalid parameter, or an error
 	//      ppNewPos is optional and is only set on success
-	CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos);
+	CAPI_FUNC(I8) capi_ScanFloatW(float* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos);
 
 	//  capi_ScanDoubleW - Convert a IEEE 754 64-bit binary number from a UTF16 string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
@@ -1705,7 +1705,7 @@ extern "C" {
 	//      ppNewPos is optional and is only set on success
 	CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos);
 
-	//  capi_ScanSingleL - Convert a IEEE 754 32-bit binary number from a UTF32 string representation into a data variable (ieee754.c)
+	//  capi_ScanFloatL - Convert a IEEE 754 32-bit binary number from a UTF32 string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
 	//      pSource [The source string to convert]
 	//      Flags [A combination of the SCAN_xxx flags]
@@ -1713,7 +1713,7 @@ extern "C" {
 	//  returns 0 on success, 1 for an invalid decimal number, -1 when the number exceeds the range of the variable
 	//      2 is returned for an invalid parameter, or an error
 	//      ppNewPos is optional and is only set on success
-	CAPI_FUNC(I8) capi_ScanSingleL(float* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos);
+	CAPI_FUNC(I8) capi_ScanFloatL(float* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos);
 
 	//  capi_ScanDoubleL - Convert a IEEE 754 64-bit binary number from a UTF32 string representation into a data variable (ieee754.c)
 	//      pResult [Pointer to the destination variable]
@@ -3873,7 +3873,7 @@ inline size_t ToString(UNIT* pBuffer, size_t Length, unsigned long long Value)
 }
 inline size_t ToString(UNIT* pBuffer, size_t Length, float Value)
 {
-	return capi_PrintSingle(pBuffer, Length, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(8));
+	return capi_PrintFloat(pBuffer, Length, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(8));
 }
 inline size_t ToString(UNIT* pBuffer, size_t Length, double Value)
 {
@@ -3940,7 +3940,7 @@ inline size_t ToString(UNIT* pBuffer, size_t Length, unsigned long long Value, U
 }
 inline size_t ToString(UNIT* pBuffer, size_t Length, float Value, U32 Format)
 {
-	return capi_PrintSingle(pBuffer, Length, Value, Format);
+	return capi_PrintFloat(pBuffer, Length, Value, Format);
 }
 inline size_t ToString(UNIT* pBuffer, size_t Length, double Value, U32 Format)
 {
@@ -4007,7 +4007,7 @@ inline I8 FromString(unsigned long long* pResult, const UNIT* pSource)
 }
 inline I8 FromString(float* pResult, const UNIT* pSource)
 {
-	return capi_ScanSingle(pResult, pSource, 0, 0);
+	return capi_ScanFloat(pResult, pSource, 0, 0);
 }
 inline I8 FromString(double* pResult, const UNIT* pSource)
 {
@@ -4074,7 +4074,7 @@ inline I8 FromString(unsigned long long* pResult, const UNIT* pSource, U32 Flags
 }
 inline I8 FromString(float* pResult, const UNIT* pSource, U32 Flags, UNIT** ppNewPos)
 {
-	return capi_ScanSingle(pResult, pSource, Flags, ppNewPos);
+	return capi_ScanFloat(pResult, pSource, Flags, ppNewPos);
 }
 inline I8 FromString(double* pResult, const UNIT* pSource, U32 Flags, UNIT** ppNewPos)
 {
@@ -4105,7 +4105,7 @@ long: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
 unsigned long: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
 long long: capi_PrintSigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
 unsigned long long: capi_PrintUnsigned(pBuffer, Length, &Var, 0, sizeof(Var)), \
-float: capi_PrintSingle(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(8)), \
+float: capi_PrintFloat(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(8)), \
 double: capi_PrintDouble(pBuffer, Length, Var, PRINT_FCAP|PRINT_PAYLOAD|PRINT_e_ENABLE|PRINT_ZEROF|PRINT_MAX(16)))
 
 #define FromString(Result, pSource) \
@@ -4120,7 +4120,7 @@ long: capi_ScanSigned(&Result, pSource, 0, 0, sizeof(Result)), \
 unsigned long: capi_ScanUnsigned(&Result, pSource, 0, 0, sizeof(Result)), \
 long long: capi_ScanSigned(&Result, pSource, 0, 0, sizeof(Result)), \
 unsigned long long: capi_ScanUnsigned(&Result, pSource, 0, 0, sizeof(Result)), \
-float: capi_ScanSingle(&Result, pSource, 0, 0), \
+float: capi_ScanFloat(&Result, pSource, 0, 0), \
 double: capi_ScanDouble(&Result, pSource, 0, 0))
 
 #endif /* >= C11 */

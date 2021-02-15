@@ -250,7 +250,7 @@ CAPI_SUBFUNC(void) ieee754_GetFixedFracFromDouble(size_t* pResult, U64 Value)
 	}
 }
 
-CAPI_FUNC(I8) capi_ScanSingleA(float* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatA(float* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -1392,7 +1392,7 @@ exit_func:
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatU(float* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -2778,7 +2778,7 @@ exit_func:
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatW(float* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -4164,7 +4164,7 @@ exit_func:
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleL(float* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatL(float* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];

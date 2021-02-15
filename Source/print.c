@@ -767,7 +767,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintSingleA(ASCII* pBuffer, size_t Length, float Value, U32 Format)
+CAPI_FUNC(size_t) capi_PrintFloatA(ASCII* pBuffer, size_t Length, float Value, U32 Format)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[192 / CAPI_BIT_LENGTH];
@@ -1735,7 +1735,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintSingleW(UTF16* pBuffer, size_t Length, float Value, U32 Format)
+CAPI_FUNC(size_t) capi_PrintFloatW(UTF16* pBuffer, size_t Length, float Value, U32 Format)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[192 / CAPI_BIT_LENGTH];
@@ -2703,7 +2703,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintSingleL(UTF32* pBuffer, size_t Length, float Value, U32 Format)
+CAPI_FUNC(size_t) capi_PrintFloatL(UTF32* pBuffer, size_t Length, float Value, U32 Format)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[192 / CAPI_BIT_LENGTH];
