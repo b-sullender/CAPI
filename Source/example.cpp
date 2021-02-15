@@ -22,7 +22,7 @@
 #define app_printf printf
 #endif
 
-void ExampleApp_OutMessage(const STRING* Msg, BOOL NewLine)
+void ExampleApp_OutMessage(const UNIT* Msg, BOOL NewLine)
 {
 	app_printf(STR("%s"), Msg);
 	if (NewLine == TRUE) app_printf(STR("\n\r"));
@@ -35,10 +35,10 @@ void ExampleApp_OutMessage(const STRING* Msg, BOOL NewLine)
 int main()
 {
 	I128 var1, var2;
-	STRING equation[] = STR("83628012 + 4289102");
-	STRING* pEqu = equation;
-	STRING myString[STR_OUTPUT_BUFFER];
-	STRING varBuffer[STR_VAR_BUFFER];
+	UNIT equation[] = STR("83628012 + 4289102");
+	UNIT* pEqu = equation;
+	UNIT myString[STR_OUTPUT_BUFFER];
+	UNIT varBuffer[STR_VAR_BUFFER];
 
 	// Do some string setup
 

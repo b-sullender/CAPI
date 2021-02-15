@@ -254,7 +254,7 @@ CAPI_FUNC(void) capi_StrReverseA(ASCII* String)
 // **                       ** //
 // *                         * //
 
-CAPI_FUNC(U8) capi_UTF8_GetCharUnits(UTF8 Code)
+CAPI_FUNC(U8) capi_UTF8_CharUnits(UTF8 Code)
 {
 	if ((Code & 0x80) == 0) return 1;
 	else if ((Code & 0xE0) == 0xC0) return 2;
@@ -373,7 +373,7 @@ CAPI_FUNC(size_t) capi_StrLenU(const UTF8* String)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF8_GetCharUnits(*String);
+		CharUnits = capi_UTF8_CharUnits(*String);
 		if (CharUnits == 0) return Len;
 		String += CharUnits;
 		Len++;
@@ -391,7 +391,7 @@ CAPI_FUNC(size_t) capi_StrUnitsU(const UTF8* String)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF8_GetCharUnits(*String);
+		CharUnits = capi_UTF8_CharUnits(*String);
 		if (CharUnits == 0) return TotalUnits;
 		String += CharUnits;
 		TotalUnits += CharUnits;
@@ -410,7 +410,7 @@ CAPI_FUNC(size_t) capi_StrCopyU(UTF8* Destination, size_t Length, const UTF8* So
 
 	while (*Source != 0)
 	{
-		CharUnits = capi_UTF8_GetCharUnits(*Source);
+		CharUnits = capi_UTF8_CharUnits(*Source);
 		if (CharUnits == 0) break;
 		Len += CharUnits;
 		if (Len >= Length)
@@ -460,7 +460,7 @@ CAPI_FUNC(size_t) capi_StrAppendU(UTF8* Destination, size_t Length, const UTF8* 
 	while (*Destination != 0)
 	{
 		if (Len >= Length) return Length;
-		CharUnits = capi_UTF8_GetCharUnits(*Destination);
+		CharUnits = capi_UTF8_CharUnits(*Destination);
 		if (CharUnits == 0) break;
 		Destination += CharUnits;
 		Len += CharUnits;
@@ -469,7 +469,7 @@ CAPI_FUNC(size_t) capi_StrAppendU(UTF8* Destination, size_t Length, const UTF8* 
 
 	while (*Source != 0)
 	{
-		CharUnits = capi_UTF8_GetCharUnits(*Source);
+		CharUnits = capi_UTF8_CharUnits(*Source);
 		if (CharUnits == 0) break;
 		Len += CharUnits;
 		if (Len >= Length)
@@ -517,8 +517,8 @@ CAPI_FUNC(I32) capi_StrCompareU(const UTF8* String1, const UTF8* String2)
 
 	while ((*String1 != 0) && (*String2 != 0))
 	{
-		CharUnits1 = capi_UTF8_GetCharUnits(*String1);
-		CharUnits2 = capi_UTF8_GetCharUnits(*String2);
+		CharUnits1 = capi_UTF8_CharUnits(*String1);
+		CharUnits2 = capi_UTF8_CharUnits(*String2);
 
 		if (CharUnits1 == 0) return 0x7FFFFFFF;
 		if (CharUnits2 == 0) return 0x7FFFFFFF;
@@ -551,8 +551,8 @@ CAPI_FUNC(I32) capi_StrCompareInsensitiveU(const UTF8* String1, const UTF8* Stri
 
 	while ((*String1 != 0) && (*String2 != 0))
 	{
-		CharUnits1 = capi_UTF8_GetCharUnits(*String1);
-		CharUnits2 = capi_UTF8_GetCharUnits(*String2);
+		CharUnits1 = capi_UTF8_CharUnits(*String1);
+		CharUnits2 = capi_UTF8_CharUnits(*String2);
 
 		if (CharUnits1 == 0) return 0x7FFFFFFF;
 		if (CharUnits2 == 0) return 0x7FFFFFFF;
@@ -593,7 +593,7 @@ CAPI_FUNC(UTF8*) capi_StrFindU(const UTF8* String, U32 Delimit)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF8_GetCharUnits(*String);
+		CharUnits = capi_UTF8_CharUnits(*String);
 		if (CharUnits == 0) break;
 		CodePoint = capi_UTF8_Decode(CharUnits, String);
 		if (CodePoint == Delimit) return (ASCII*)String;
@@ -622,11 +622,11 @@ CAPI_FUNC(UTF8*) capi_StrFindStrU(const UTF8* String, const UTF8* StrDelimit)
 
 		while ((*String2 != 0) && (*StrDelimit2 != 0))
 		{
-			CharUnits = capi_UTF8_GetCharUnits(*String2);
+			CharUnits = capi_UTF8_CharUnits(*String2);
 			CodePoint1 = capi_UTF8_Decode(CharUnits, String2);
 			String2 += CharUnits;
 
-			CharUnits = capi_UTF8_GetCharUnits(*StrDelimit2);
+			CharUnits = capi_UTF8_CharUnits(*StrDelimit2);
 			CodePoint2 = capi_UTF8_Decode(CharUnits, StrDelimit2);
 			StrDelimit2 += CharUnits;
 
@@ -636,7 +636,7 @@ CAPI_FUNC(UTF8*) capi_StrFindStrU(const UTF8* String, const UTF8* StrDelimit)
 
 		if (I == Length) return (UTF8*)String;
 
-		CharUnits = capi_UTF8_GetCharUnits(*String);
+		CharUnits = capi_UTF8_CharUnits(*String);
 		if (CharUnits == 0) break;
 		String += CharUnits;
 	}
@@ -663,11 +663,11 @@ CAPI_FUNC(UTF8*) capi_StrFindStrInsensitiveU(const UTF8* String, const UTF8* Str
 
 		while ((*String2 != 0) && (*StrDelimit2 != 0))
 		{
-			CharUnits = capi_UTF8_GetCharUnits(*String2);
+			CharUnits = capi_UTF8_CharUnits(*String2);
 			CodePoint1 = capi_UTF8_Decode(CharUnits, String2);
 			String2 += CharUnits;
 
-			CharUnits = capi_UTF8_GetCharUnits(*StrDelimit2);
+			CharUnits = capi_UTF8_CharUnits(*StrDelimit2);
 			CodePoint2 = capi_UTF8_Decode(CharUnits, StrDelimit2);
 			StrDelimit2 += CharUnits;
 
@@ -685,7 +685,7 @@ CAPI_FUNC(UTF8*) capi_StrFindStrInsensitiveU(const UTF8* String, const UTF8* Str
 
 		if (I == Length) return (UTF8*)String;
 
-		CharUnits = capi_UTF8_GetCharUnits(*String);
+		CharUnits = capi_UTF8_CharUnits(*String);
 		if (CharUnits == 0) break;
 		String += CharUnits;
 	}
@@ -702,7 +702,7 @@ CAPI_FUNC(UTF8*) capi_StrSplitU(UTF8* String, U32 Delimit)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF8_GetCharUnits(*String);
+		CharUnits = capi_UTF8_CharUnits(*String);
 		if (CharUnits == 0) break;
 		CodePoint = capi_UTF8_Decode(CharUnits, String);
 
@@ -733,12 +733,12 @@ CAPI_FUNC(void) capi_StrReverseU(UTF8* String)
 	{
 		ThisChar = String;
 
-		CharUnits = capi_UTF8_GetCharUnits(*ThisChar);
+		CharUnits = capi_UTF8_CharUnits(*ThisChar);
 		if (CharUnits == 0) return;
 		CodePoint1 = capi_UTF8_Decode(CharUnits, ThisChar);
 
 		NextChar = ThisChar + CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*NextChar);
+		CharUnits = capi_UTF8_CharUnits(*NextChar);
 
 		for (I = U; I != 1; I--)
 		{
@@ -746,7 +746,7 @@ CAPI_FUNC(void) capi_StrReverseU(UTF8* String)
 			ThisChar += capi_UTF8_Encode_Unsafe(ThisChar, CodePoint2);
 
 			NextChar += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*NextChar);
+			CharUnits = capi_UTF8_CharUnits(*NextChar);
 			if (CharUnits == 0) return;
 		}
 
@@ -760,7 +760,7 @@ CAPI_FUNC(void) capi_StrReverseU(UTF8* String)
 // **                       ** //
 // *                         * //
 
-CAPI_FUNC(U8) capi_UTF16_GetCharUnits(UTF16 Code)
+CAPI_FUNC(U8) capi_UTF16_CharUnits(UTF16 Code)
 {
 	if ((Code > 0xD7FF) && (Code < 0xE000)) return 2;
 
@@ -817,7 +817,7 @@ CAPI_FUNC(size_t) capi_StrLenW(const UTF16* String)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF16_GetCharUnits(*String);
+		CharUnits = capi_UTF16_CharUnits(*String);
 		if (CharUnits == 0) return Len;
 		String += CharUnits;
 		Len++;
@@ -835,7 +835,7 @@ CAPI_FUNC(size_t) capi_StrUnitsW(const UTF16* String)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF16_GetCharUnits(*String);
+		CharUnits = capi_UTF16_CharUnits(*String);
 		if (CharUnits == 0) return TotalUnits;
 		String += CharUnits;
 		TotalUnits += CharUnits;
@@ -854,7 +854,7 @@ CAPI_FUNC(size_t) capi_StrCopyW(UTF16* Destination, size_t Length, const UTF16* 
 
 	while (*Source != 0)
 	{
-		CharUnits = capi_UTF16_GetCharUnits(*Source);
+		CharUnits = capi_UTF16_CharUnits(*Source);
 		if (CharUnits == 0) break;
 		Len += CharUnits;
 		if (Len >= Length)
@@ -886,7 +886,7 @@ CAPI_FUNC(size_t) capi_StrAppendW(UTF16* Destination, size_t Length, const UTF16
 	while (*Destination != 0)
 	{
 		if (Len >= Length) return Length;
-		CharUnits = capi_UTF16_GetCharUnits(*Destination);
+		CharUnits = capi_UTF16_CharUnits(*Destination);
 		if (CharUnits == 0) break;
 		Destination += CharUnits;
 		Len += CharUnits;
@@ -895,7 +895,7 @@ CAPI_FUNC(size_t) capi_StrAppendW(UTF16* Destination, size_t Length, const UTF16
 
 	while (*Source != 0)
 	{
-		CharUnits = capi_UTF16_GetCharUnits(*Source);
+		CharUnits = capi_UTF16_CharUnits(*Source);
 		if (CharUnits == 0) break;
 		Len += CharUnits;
 		if (Len >= Length)
@@ -925,8 +925,8 @@ CAPI_FUNC(I32) capi_StrCompareW(const UTF16* String1, const UTF16* String2)
 
 	while ((*String1 != 0) && (*String2 != 0))
 	{
-		CharUnits1 = capi_UTF16_GetCharUnits(*String1);
-		CharUnits2 = capi_UTF16_GetCharUnits(*String2);
+		CharUnits1 = capi_UTF16_CharUnits(*String1);
+		CharUnits2 = capi_UTF16_CharUnits(*String2);
 
 		if (CharUnits1 == 0) return 0x7FFFFFFF;
 		if (CharUnits2 == 0) return 0x7FFFFFFF;
@@ -959,8 +959,8 @@ CAPI_FUNC(I32) capi_StrCompareInsensitiveW(const UTF16* String1, const UTF16* St
 
 	while ((*String1 != 0) && (*String2 != 0))
 	{
-		CharUnits1 = capi_UTF16_GetCharUnits(*String1);
-		CharUnits2 = capi_UTF16_GetCharUnits(*String2);
+		CharUnits1 = capi_UTF16_CharUnits(*String1);
+		CharUnits2 = capi_UTF16_CharUnits(*String2);
 
 		if (CharUnits1 == 0) return 0x7FFFFFFF;
 		if (CharUnits2 == 0) return 0x7FFFFFFF;
@@ -1001,7 +1001,7 @@ CAPI_FUNC(UTF16*) capi_StrFindW(const UTF16* String, U32 Delimit)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF16_GetCharUnits(*String);
+		CharUnits = capi_UTF16_CharUnits(*String);
 		if (CharUnits == 0) break;
 		CodePoint = capi_UTF16_Decode(CharUnits, String);
 		if (CodePoint == Delimit) return (UTF16*)String;
@@ -1030,11 +1030,11 @@ CAPI_FUNC(UTF16*) capi_StrFindStrW(const UTF16* String, const UTF16* StrDelimit)
 
 		while ((*String2 != 0) && (*StrDelimit2 != 0))
 		{
-			CharUnits = capi_UTF16_GetCharUnits(*String2);
+			CharUnits = capi_UTF16_CharUnits(*String2);
 			CodePoint1 = capi_UTF16_Decode(CharUnits, String2);
 			String2 += CharUnits;
 
-			CharUnits = capi_UTF16_GetCharUnits(*StrDelimit2);
+			CharUnits = capi_UTF16_CharUnits(*StrDelimit2);
 			CodePoint2 = capi_UTF16_Decode(CharUnits, StrDelimit2);
 			StrDelimit2 += CharUnits;
 
@@ -1044,7 +1044,7 @@ CAPI_FUNC(UTF16*) capi_StrFindStrW(const UTF16* String, const UTF16* StrDelimit)
 
 		if (I == Length) return (UTF16*)String;
 
-		CharUnits = capi_UTF16_GetCharUnits(*String);
+		CharUnits = capi_UTF16_CharUnits(*String);
 		if (CharUnits == 0) break;
 		String += CharUnits;
 	}
@@ -1071,11 +1071,11 @@ CAPI_FUNC(UTF16*) capi_StrFindStrInsensitiveW(const UTF16* String, const UTF16* 
 
 		while ((*String2 != 0) && (*StrDelimit2 != 0))
 		{
-			CharUnits = capi_UTF16_GetCharUnits(*String2);
+			CharUnits = capi_UTF16_CharUnits(*String2);
 			CodePoint1 = capi_UTF16_Decode(CharUnits, String2);
 			String2 += CharUnits;
 
-			CharUnits = capi_UTF16_GetCharUnits(*StrDelimit2);
+			CharUnits = capi_UTF16_CharUnits(*StrDelimit2);
 			CodePoint2 = capi_UTF16_Decode(CharUnits, StrDelimit2);
 			StrDelimit2 += CharUnits;
 
@@ -1093,7 +1093,7 @@ CAPI_FUNC(UTF16*) capi_StrFindStrInsensitiveW(const UTF16* String, const UTF16* 
 
 		if (I == Length) return (UTF16*)String;
 
-		CharUnits = capi_UTF16_GetCharUnits(*String);
+		CharUnits = capi_UTF16_CharUnits(*String);
 		if (CharUnits == 0) break;
 		String += CharUnits;
 	}
@@ -1110,7 +1110,7 @@ CAPI_FUNC(UTF16*) capi_StrSplitW(UTF16* String, U32 Delimit)
 
 	while (*String != 0)
 	{
-		CharUnits = capi_UTF16_GetCharUnits(*String);
+		CharUnits = capi_UTF16_CharUnits(*String);
 		if (CharUnits == 0) break;
 		CodePoint = capi_UTF16_Decode(CharUnits, String);
 
@@ -1141,12 +1141,12 @@ CAPI_FUNC(void) capi_StrReverseW(UTF16* String)
 	{
 		ThisChar = String;
 
-		CharUnits = capi_UTF16_GetCharUnits(*ThisChar);
+		CharUnits = capi_UTF16_CharUnits(*ThisChar);
 		if (CharUnits == 0) return;
 		CodePoint1 = capi_UTF16_Decode(CharUnits, ThisChar);
 
 		NextChar = ThisChar + CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*NextChar);
+		CharUnits = capi_UTF16_CharUnits(*NextChar);
 
 		for (I = U; I != 1; I--)
 		{
@@ -1154,7 +1154,7 @@ CAPI_FUNC(void) capi_StrReverseW(UTF16* String)
 			ThisChar += capi_UTF16_Encode_Unsafe(ThisChar, CodePoint2);
 
 			NextChar += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*NextChar);
+			CharUnits = capi_UTF16_CharUnits(*NextChar);
 			if (CharUnits == 0) return;
 		}
 		capi_UTF16_Encode_Unsafe(ThisChar, CodePoint1);
@@ -1425,7 +1425,7 @@ CAPI_FUNC(size_t) capi_UTF8_To_UTF16(UTF16* Destination, size_t Length, const UT
 	CharCnt = 0;
 	while (*Source != 0)
 	{
-		CharUnits1 = capi_UTF8_GetCharUnits(*Source);
+		CharUnits1 = capi_UTF8_CharUnits(*Source);
 		CodePoint = capi_UTF8_Decode(CharUnits1, Source);
 		CharUnits2 = capi_UTF16_Encode(Destination, Len, CodePoint);
 		if (CharUnits2 == 0) return Length;
@@ -1455,7 +1455,7 @@ CAPI_FUNC(size_t) capi_UTF8_To_UTF32(UTF32* Destination, size_t Length, const UT
 			*Destination = 0;
 			return Length;
 		}
-		CharUnits = capi_UTF8_GetCharUnits(*Source);
+		CharUnits = capi_UTF8_CharUnits(*Source);
 		*Destination = capi_UTF8_Decode(CharUnits, Source);
 		Len--;
 		Source += CharUnits;
@@ -1479,7 +1479,7 @@ CAPI_FUNC(size_t) capi_UTF16_To_UTF8(UTF8* Destination, size_t Length, const UTF
 	CharCnt = 0;
 	while (*Source != 0)
 	{
-		CharUnits1 = capi_UTF16_GetCharUnits(*Source);
+		CharUnits1 = capi_UTF16_CharUnits(*Source);
 		CodePoint = capi_UTF16_Decode(CharUnits1, Source);
 		CharUnits2 = capi_UTF8_Encode(Destination, Len, CodePoint);
 		if (CharUnits2 == 0) return Length;
@@ -1508,7 +1508,7 @@ CAPI_FUNC(size_t) capi_UTF16_To_UTF32(UTF32* Destination, size_t Length, const U
 			*Destination = 0;
 			return Length;
 		}
-		CharUnits = capi_UTF16_GetCharUnits(*Source);
+		CharUnits = capi_UTF16_CharUnits(*Source);
 		*Destination = capi_UTF16_Decode(CharUnits, Source);
 		Len--;
 		Source += CharUnits;
