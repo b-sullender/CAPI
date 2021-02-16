@@ -1998,12 +1998,9 @@ struct String
 			//  returns the first character in the string
 			static U32 GetChar(const ASCII* pString)
 			{
-				U8 CharUnits;
-
 				if (pString == 0) return 0;
 
-				CharUnits = capi_StrCharUnits(*pString);
-				return capi_StrDecode(CharUnits, pString);
+				return *pString;
 			}
 
 			//  Get a character from a ASCII string and move the string pointer to the next character
@@ -2012,15 +2009,13 @@ struct String
 			static U32 PullChar(ASCII** ppString)
 			{
 				ASCII* pString;
-				U8 CharUnits;
 				U32 CodePoint;
 
 				if (ppString == 0) return 0;
 
 				pString = *ppString;
-				CharUnits = capi_StrCharUnits(*pString);
-				CodePoint = capi_StrDecode(CharUnits, pString);
-				*ppString += CharUnits;
+				CodePoint = *pString;
+				*ppString += 1;
 
 				return CodePoint;
 			}
