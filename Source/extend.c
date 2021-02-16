@@ -12,13 +12,13 @@
 
 #include "CAPI.h"
 
-CAPI_FUNC(void) capi_ZeroExtend(size_t* pDestination, size_t Count, void* pSource, size_t nBytes)
+CAPI_FUNC(void) capi_ZeroExtend(size_t* pDestination, size_t Count, const void* pSource, size_t nBytes)
 {
 	capi_memcopy(pDestination, pSource, nBytes);
 	capi_memset(&((U8*)pDestination)[nBytes], 0, (Count * sizeof(size_t)) - nBytes);
 }
 
-CAPI_FUNC(void) capi_SignExtend(size_t* pDestination, size_t Count, void* pSource, size_t nBytes)
+CAPI_FUNC(void) capi_SignExtend(size_t* pDestination, size_t Count, const void* pSource, size_t nBytes)
 {
 	capi_memcopy(pDestination, pSource, nBytes);
 

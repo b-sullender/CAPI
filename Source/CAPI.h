@@ -553,14 +553,14 @@ extern "C" {
 	//      Count [Number of elements in the destination variable array] This is the size of the variable
 	//      pSource [Pointer to the source variable to extend]
 	//      nBytes [The size in bytes of the source variable]
-	CAPI_FUNC(void) capi_ZeroExtend(size_t* pDestination, size_t Count, void* pSource, size_t nBytes);
+	CAPI_FUNC(void) capi_ZeroExtend(size_t* pDestination, size_t Count, const void* pSource, size_t nBytes);
 
 	//  capi_SignExtend - Sign extend a variable to a variable of flexible length (extend.c)
 	//      pDestination [Pointer to the destination of the extended variable]
 	//      Count [Number of elements in the destination variable array] This is the size of the variable
 	//      pSource [Pointer to the source variable to extend]
 	//      nBytes [The size in bytes of the source variable]
-	CAPI_FUNC(void) capi_SignExtend(size_t* pDestination, size_t Count, void* pSource, size_t nBytes);
+	CAPI_FUNC(void) capi_SignExtend(size_t* pDestination, size_t Count, const void* pSource, size_t nBytes);
 
 	//  capi_mul64 - Perform a unsigned 64-bit multiply (int64.c)
 	//      pResult [Pointer to a CU128 variable to receive the result]
@@ -1418,7 +1418,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintUnsignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintUnsignedA(ASCII* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintSignedA - Convert a data variable to a signed ASCII string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1429,7 +1429,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintSignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintSignedA(ASCII* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintUnsignedU - Convert a data variable to a unsigned UTF8 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1440,7 +1440,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintUnsignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintUnsignedU(UTF8* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintSignedU - Convert a data variable to a signed UTF8 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1451,7 +1451,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintSignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintSignedU(UTF8* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintUnsignedW - Convert a data variable to a unsigned UTF16 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1462,7 +1462,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintUnsignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintUnsignedW(UTF16* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintSignedW - Convert a data variable to a signed UTF16 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1473,7 +1473,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintSignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintSignedW(UTF16* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintUnsignedL - Convert a data variable to a unsigned UTF32 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1484,7 +1484,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintUnsignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintUnsignedL(UTF32* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintSignedL - Convert a data variable to a signed UTF32 string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -1495,7 +1495,7 @@ extern "C" {
 	//  returns the number of characters written to the Destination buffer, not including the terminating null character
 	//      If there is no null terminator within Length, then Length is returned to indicate the error condition
 	//      -1 is returned for an invalid parameter
-	CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes);
+	CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes);
 
 	//  capi_PrintFloatA - Convert a IEEE 754 32-bit binary data variable to a ASCII string representation (print.c)
 	//      pBuffer [Pointer to the destination string buffer]
@@ -2598,6 +2598,793 @@ struct String
 			}
 		};
 	};
+};
+
+struct SMART
+{
+	size_t units;
+	UNIT* pString;
+
+	SMART()
+	{
+		this->units = 1024;
+		this->pString = (UNIT*)capi_malloc(this->units * sizeof(UNIT));
+		if (this->pString != 0) this->pString[0] = 0;
+		else this->units = 0;
+	}
+
+	~SMART()
+	{
+		capi_free(this->pString);
+	}
+
+	//  **********************  //
+	//                          //
+	//   assignment operators   //
+	//                          //
+	//  **********************  //
+
+	SMART& operator=(const SMART& pSource)
+	{
+		size_t needUnits;
+		UNIT* pNewString;
+
+		needUnits = String::Units(pSource.pString) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pSource.pString);
+
+		return *this;
+	}
+
+	SMART& operator=(const UNIT* pSource)
+	{
+		size_t needUnits;
+		UNIT* pNewString;
+
+		needUnits = String::Units(pSource) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pSource);
+
+		return *this;
+	}
+
+	SMART& operator=(const char Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[8];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(char));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const signed char Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[8];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(signed char));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const unsigned char Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[8];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 8, &Value, 0, sizeof(unsigned char));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const short Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[16];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 16, &Value, 0, sizeof(short));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const unsigned short Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[16];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 16, &Value, 0, sizeof(unsigned short));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const int Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(int));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const unsigned int Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned int));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(long));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const unsigned long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned long));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const long long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[64];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 64, &Value, 0, sizeof(long long));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const unsigned long long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[64];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 64, &Value, 0, sizeof(unsigned long long));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const float Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[1024];
+		UNIT* pNewString;
+
+		capi_PrintFloat(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(8));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const double Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[1024];
+		UNIT* pNewString;
+
+		capi_PrintDouble(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(16));
+		needUnits = String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	//  *********************************  //
+	//                                     //
+	//   assignment arithmetic operators   //
+	//                                     //
+	//  *********************************  //
+
+	SMART& operator+=(const SMART& pSource)
+	{
+		size_t needUnits;
+		UNIT* pNewString;
+
+		needUnits = String::Units(this->pString) + String::Units(pSource.pString) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pSource.pString);
+
+		return *this;
+	}
+
+	SMART& operator+=(const UNIT* pSource)
+	{
+		size_t needUnits;
+		UNIT* pNewString;
+
+		needUnits = String::Units(this->pString) + String::Units(pSource) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pSource);
+
+		return *this;
+	}
+
+	SMART& operator+=(const char Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[8];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(char));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const signed char Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[8];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(signed char));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const unsigned char Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[8];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 8, &Value, 0, sizeof(unsigned char));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const short Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[16];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 16, &Value, 0, sizeof(short));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const unsigned short Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[16];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 16, &Value, 0, sizeof(unsigned short));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const int Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(int));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const unsigned int Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned int));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(long));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const unsigned long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[32];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned long));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const long long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[64];
+		UNIT* pNewString;
+
+		capi_PrintSigned(pStrBuffer, 64, &Value, 0, sizeof(long long));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const unsigned long long Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[64];
+		UNIT* pNewString;
+
+		capi_PrintUnsigned(pStrBuffer, 64, &Value, 0, sizeof(unsigned long long));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const float Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[1024];
+		UNIT* pNewString;
+
+		capi_PrintFloat(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(8));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const double Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[1024];
+		UNIT* pNewString;
+
+		capi_PrintDouble(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(16));
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	//  **********************  //
+	//                          //
+	//   relational operators   //
+	//                          //
+	//  **********************  //
+
+	bool operator==(const SMART& a) const
+	{
+		if (String::Compare(this->pString, a.pString) == 0) return true;
+		return false;
+	}
+
+	bool operator!=(const SMART& a) const
+	{
+		if (String::Compare(this->pString, a.pString) != 0) return true;
+		return false;
+	}
+
+	bool operator>(const SMART& a) const
+	{
+		if (String::Compare(this->pString, a.pString) > 0) return true;
+		return false;
+	}
+
+	bool operator<(const SMART& a) const
+	{
+		if (String::Compare(this->pString, a.pString) < 0) return true;
+		return false;
+	}
+
+	bool operator>=(const SMART& a) const
+	{
+		if (String::Compare(this->pString, a.pString) >= 0) return true;
+		return false;
+	}
+
+	bool operator<=(const SMART& a) const
+	{
+		if (String::Compare(this->pString, a.pString) <= 0) return true;
+		return false;
+	}
+
+	operator UNIT* () const { return this->pString; }
 };
 
 struct U128

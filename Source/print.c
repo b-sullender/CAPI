@@ -13,7 +13,7 @@
 #include "CAPI.h"
 #include "ieee754.h"
 
-CAPI_FUNC(size_t) capi_PrintUnsignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintUnsignedA(ASCII* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	size_t LocalValue[8], * TempValue, I, Count, nChars, Len, Result;
 	ASCII TpMarker;
@@ -130,7 +130,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintSignedA(ASCII* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintSignedA(ASCII* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	size_t LocalValue[8], * TempValue, I, Count, nChars, Len, Result;
 	ASCII TpMarker;
@@ -261,17 +261,17 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintUnsignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintUnsignedU(UTF8* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	return capi_PrintUnsignedA(pBuffer, Length, pValue, Format, nBytes);
 }
 
-CAPI_FUNC(size_t) capi_PrintSignedU(UTF8* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintSignedU(UTF8* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	return capi_PrintSignedA(pBuffer, Length, pValue, Format, nBytes);
 }
 
-CAPI_FUNC(size_t) capi_PrintUnsignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintUnsignedW(UTF16* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	size_t LocalValue[8], * TempValue, I, Count, nChars, Len, Result;
 	UTF16 TpMarker;
@@ -388,7 +388,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintSignedW(UTF16* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintSignedW(UTF16* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	size_t LocalValue[8], * TempValue, I, Count, nChars, Len, Result;
 	UTF16 TpMarker;
@@ -519,7 +519,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintUnsignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintUnsignedL(UTF32* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	size_t LocalValue[8], * TempValue, I, Count, nChars, Len, Result;
 	UTF32 TpMarker;
@@ -636,7 +636,7 @@ length_error:
 	return Length;
 }
 
-CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, void* pValue, U32 Format, size_t nBytes)
+CAPI_FUNC(size_t) capi_PrintSignedL(UTF32* pBuffer, size_t Length, const void* pValue, U32 Format, size_t nBytes)
 {
 	size_t LocalValue[8], * TempValue, I, Count, nChars, Len, Result;
 	UTF32 TpMarker;
