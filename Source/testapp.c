@@ -55,8 +55,8 @@ static int is_STRETCH_images_loaded = FALSE;
 
 STRUCT(TEST_IMAGE_DATA)
 {
-	STRING FilePath[PATH_BUFFER_SIZE];
-	STRING Description[IMAGE_DESCRIPTION_SIZE];
+	UNIT FilePath[PATH_BUFFER_SIZE];
+	UNIT Description[IMAGE_DESCRIPTION_SIZE];
 	IMAGE TestImage;
 };
 
@@ -66,7 +66,7 @@ static TEST_IMAGE_DATA PNG_TestImages[59];
 static TEST_IMAGE_DATA ICO_TestImages[11];
 static TEST_IMAGE_DATA STRETCH_TestImages[2];
 
-void TestApp_OutMessage(const STRING* Msg, BOOL NewLine)
+void TestApp_OutMessage(const UNIT* Msg, BOOL NewLine)
 {
 	app_printf(STR("%s"), Msg);
 	if (NewLine == TRUE) app_printf(STR("\n\r"));
@@ -85,7 +85,7 @@ THREAD_WINDOW* TestApp_GetOpenThreadWindowSlot()
 	return 0;
 }
 
-void* LoadFile(const STRING* FilePath, U64* pFileSize)
+void* LoadFile(const UNIT* FilePath, U64* pFileSize)
 {
 	FILE* Stream;
 	size_t BufferSize;
@@ -124,7 +124,7 @@ void* LoadFile(const STRING* FilePath, U64* pFileSize)
 	return pThisFile;
 }
 
-I32 SaveFile(const STRING* FilePath, void* pFilePointer, U64 FileSize)
+I32 SaveFile(const UNIT* FilePath, void* pFilePointer, U64 FileSize)
 {
 	FILE* Stream;
 	size_t nBytesWrite;
@@ -150,7 +150,7 @@ exit_func:
 	return ErrorCode;
 }
 
-void SetupFilePath(STRING* pFilePath, const STRING* pDirectory, const STRING* pFile)
+void SetupFilePath(UNIT* pFilePath, const UNIT* pDirectory, const UNIT* pFile)
 {
 	str_copy_s(pFilePath, PATH_BUFFER_SIZE, pDirectory);
 	str_append_s(pFilePath, PATH_BUFFER_SIZE, pFile);
@@ -192,7 +192,7 @@ void Load_TestImage(TEST_IMAGE_DATA* TestImage, BOOL FailTest)
 	capi_free(pFileData);
 }
 
-void Load_BMP_TestImages(const STRING* pDirectory)
+void Load_BMP_TestImages(const UNIT* pDirectory)
 {
 	if (is_BMP_images_loaded == TRUE)
 	{
@@ -370,7 +370,7 @@ void Load_BMP_TestImages(const STRING* pDirectory)
 	is_BMP_images_loaded = TRUE;
 }
 
-void Load_JPG_TestImages(const STRING* pDirectory)
+void Load_JPG_TestImages(const UNIT* pDirectory)
 {
 	if (is_JPG_images_loaded == TRUE)
 	{
@@ -394,7 +394,7 @@ void Load_JPG_TestImages(const STRING* pDirectory)
 	is_JPG_images_loaded = TRUE;
 }
 
-void Load_PNG_TestImages(const STRING* pDirectory)
+void Load_PNG_TestImages(const UNIT* pDirectory)
 {
 	TEST_IMAGE_DATA FailTestImage;
 
@@ -580,7 +580,7 @@ void Load_PNG_TestImages(const STRING* pDirectory)
 	is_PNG_images_loaded = TRUE;
 }
 
-void Load_ICO_TestImages(const STRING* pDirectory)
+void Load_ICO_TestImages(const UNIT* pDirectory)
 {
 	if (is_ICO_images_loaded == TRUE)
 	{
@@ -624,7 +624,7 @@ void Load_ICO_TestImages(const STRING* pDirectory)
 	is_ICO_images_loaded = TRUE;
 }
 
-void Load_STRETCH_TestImages(const STRING* pDirectory)
+void Load_STRETCH_TestImages(const UNIT* pDirectory)
 {
 	if (is_STRETCH_images_loaded == TRUE)
 	{
@@ -1142,7 +1142,7 @@ void Window_Paint_Handler(THREAD_WINDOW* thisWindow, IMAGE* pDisplay)
 
 void TestTypesSize()
 {
-	STRING text[128];
+	UNIT text[128];
 
 	if (sizeof(U8) != 1)
 	{
@@ -1706,10 +1706,10 @@ void TestInt128()
 	}
 }
 
-I32 ReadResolution(STRING* input, U32* pWidth, U32* pHeight)
+I32 ReadResolution(UNIT* input, U32* pWidth, U32* pHeight)
 {
 	U32 I, charCnt;
-	STRING strBuffer[64];
+	UNIT strBuffer[64];
 
 	// read Width:
 
@@ -1750,7 +1750,7 @@ I32 ReadResolution(STRING* input, U32* pWidth, U32* pHeight)
 	return TRUE;
 }
 
-U32 ReadParameter(STRING* input, U32 startIndex, STRING* pParameterBuffer, U32 MaxChars)
+U32 ReadParameter(UNIT* input, U32 startIndex, UNIT* pParameterBuffer, U32 MaxChars)
 {
 	U32 I, charCnt;
 
@@ -1775,8 +1775,8 @@ U32 ReadParameter(STRING* input, U32 startIndex, STRING* pParameterBuffer, U32 M
 THREAD_WINDOW* TestApp_EnterInputLoop()
 {
 	THREAD_WINDOW* thisWindow;
-	STRING input[128];
-	STRING parameter[64];
+	UNIT input[128];
+	UNIT parameter[64];
 	U32 Index;
 
 	while (TRUE)
@@ -2087,7 +2087,7 @@ void* TestApp_ThreadWindowWorker(THREAD_WINDOW* thisWindow)
 
 ConsoleEntryPoint()
 {
-	const STRING* pVersion;
+	const UNIT* pVersion;
 	THREAD_WINDOW* thisWindow;
 	pthread_t tId;
 
@@ -2325,7 +2325,7 @@ DWORD WINAPI TestApp_ThreadWindowWorker(THREAD_WINDOW* thisWindow)
 
 ConsoleEntryPoint()
 {
-	STRING* pVersion;
+	UNIT* pVersion;
 	THREAD_WINDOW* thisWindow;
 
 	SetConsoleTitle(STR("Test App Input/Output"));

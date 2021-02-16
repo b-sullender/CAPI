@@ -250,7 +250,7 @@ CAPI_SUBFUNC(void) ieee754_GetFixedFracFromDouble(size_t* pResult, U64 Value)
 	}
 }
 
-CAPI_FUNC(I8) capi_ScanSingleA(float* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatA(float* pResult, const ASCII* pSource, U32 Flags, ASCII** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -1392,7 +1392,7 @@ exit_func:
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatU(float* pResult, const UTF8* pSource, U32 Flags, UTF8** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -1443,13 +1443,13 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		Fullwidth_TpMarker = 0xFF0E;
 	}
 
-	CharUnits = capi_UTF8_GetCharUnits(*pSource);
+	CharUnits = capi_UTF8_CharUnits(*pSource);
 	CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 	while (CodePoint == 0x20)
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
@@ -1458,7 +1458,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		Sign = BIT(31);
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
@@ -1467,14 +1467,14 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		if (Sign != 0) return 1;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
 	if ((CodePoint == 0x53) || (CodePoint == 0x73) || (CodePoint == 0xFF33) || (CodePoint == 0xFF53)) // S
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		Mantissa = 1;
@@ -1487,7 +1487,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 	if ((CodePoint == 0x51) || (CodePoint == 0x71) || (CodePoint == 0xFF31) || (CodePoint == 0xFF51)) // Q
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		MaxPayLoad = 0x3FFFFF;
@@ -1510,7 +1510,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1524,7 +1524,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF41:
 		case 0xFF21:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1538,7 +1538,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1551,7 +1551,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 
 		get_NaN_payload:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 			if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -1580,7 +1580,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 
@@ -1594,7 +1594,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 	if ((CodePoint == 0x49) || (CodePoint == 0x69) || (CodePoint == 0xFF29) || (CodePoint == 0xFF49)) // I
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		switch (CodePoint) // N
@@ -1604,7 +1604,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1618,7 +1618,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF26:
 		case 0xFF46:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1632,7 +1632,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1646,7 +1646,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF4E:
 		case 0xFF2E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1660,7 +1660,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1674,7 +1674,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF54:
 		case 0xFF34:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1688,7 +1688,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		case 0xFF59:
 		case 0xFF39:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -1700,7 +1700,7 @@ CAPI_FUNC(I8) capi_ScanSingleU(float* pResult, const UTF8* pSource, U32 Flags, U
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 
@@ -1722,7 +1722,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -1735,7 +1735,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -1744,7 +1744,7 @@ get_integer:
 	if ((Flags & SCAN_SPACE) && (CodePoint == 0x20))
 	{
 		pNextChar = pSource + CharUnits;
-		NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+		NextCharUnits = capi_UTF8_CharUnits(*pNextChar);
 		NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
 
 		if (((NextCodePoint >= 0x30) && (NextCodePoint <= 0x39)) || ((NextCodePoint >= 0xFF10) && (NextCodePoint <= 0xFF19)))
@@ -1754,7 +1754,7 @@ get_integer:
 			while (CodePoint == 0x20)
 			{
 				pNextChar = pSource + CharUnits;
-				NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+				NextCharUnits = capi_UTF8_CharUnits(*pNextChar);
 				NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
 
 				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
@@ -1776,7 +1776,7 @@ get_integer:
 					U++;
 
 					pSource += CharUnits;
-					CharUnits = capi_UTF8_GetCharUnits(*pSource);
+					CharUnits = capi_UTF8_CharUnits(*pSource);
 					CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 				}
 
@@ -1795,7 +1795,7 @@ get_integer:
 		while ((CodePoint == TpMarker) || (CodePoint == Fullwidth_TpMarker))
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 			for (I = 0; I < 3; I++)
@@ -1810,7 +1810,7 @@ get_integer:
 				U++;
 
 				pSource += CharUnits;
-				CharUnits = capi_UTF8_GetCharUnits(*pSource);
+				CharUnits = capi_UTF8_CharUnits(*pSource);
 				CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			}
 
@@ -1825,7 +1825,7 @@ get_integer:
 	{
 	get_FracPart:
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -1866,7 +1866,7 @@ skip_frac_scale:
 	if ((CodePoint == 0x65) || (CodePoint == 0x45) || (CodePoint == 0xFF45) || (CodePoint == 0xFF25))
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		eSign = capi_UTF8_Decode(CharUnits, pSource);
 		if (eSign == 0) return 1;
 
@@ -1874,7 +1874,7 @@ skip_frac_scale:
 
 	get_notation:
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -1951,7 +1951,7 @@ skip_frac_scale:
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 
@@ -2136,13 +2136,13 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		Fullwidth_TpMarker = 0xFF0E;
 	}
 
-	CharUnits = capi_UTF8_GetCharUnits(*pSource);
+	CharUnits = capi_UTF8_CharUnits(*pSource);
 	CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 	while (CodePoint == 0x20)
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
@@ -2151,7 +2151,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		Sign = BIT(63);
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
@@ -2160,14 +2160,14 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		if (Sign != 0) return 1;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
 	if ((CodePoint == 0x53) || (CodePoint == 0x73) || (CodePoint == 0xFF33) || (CodePoint == 0xFF53)) // S
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		Mantissa = 1;
@@ -2180,7 +2180,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 	if ((CodePoint == 0x51) || (CodePoint == 0x71) || (CodePoint == 0xFF31) || (CodePoint == 0xFF51)) // Q
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		MaxPayLoad = 0x7FFFFFFFFFFFF;
@@ -2203,7 +2203,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2217,7 +2217,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF41:
 		case 0xFF21:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2231,7 +2231,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2244,7 +2244,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 
 		get_NaN_payload:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 			if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -2273,7 +2273,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 
@@ -2287,7 +2287,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 	if ((CodePoint == 0x49) || (CodePoint == 0x69) || (CodePoint == 0xFF29) || (CodePoint == 0xFF49)) // I
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		switch (CodePoint) // N
@@ -2297,7 +2297,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2311,7 +2311,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF26:
 		case 0xFF46:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2325,7 +2325,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2339,7 +2339,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF4E:
 		case 0xFF2E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2353,7 +2353,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2367,7 +2367,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF54:
 		case 0xFF34:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2381,7 +2381,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		case 0xFF59:
 		case 0xFF39:
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2393,7 +2393,7 @@ CAPI_FUNC(I8) capi_ScanDoubleU(double* pResult, const UTF8* pSource, U32 Flags, 
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 
@@ -2415,7 +2415,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -2428,7 +2428,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -2437,7 +2437,7 @@ get_integer:
 	if ((Flags & SCAN_SPACE) && (CodePoint == 0x20))
 	{
 		pNextChar = pSource + CharUnits;
-		NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+		NextCharUnits = capi_UTF8_CharUnits(*pNextChar);
 		NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
 
 		if (((NextCodePoint >= 0x30) && (NextCodePoint <= 0x39)) || ((NextCodePoint >= 0xFF10) && (NextCodePoint <= 0xFF19)))
@@ -2447,7 +2447,7 @@ get_integer:
 			while (CodePoint == 0x20)
 			{
 				pNextChar = pSource + CharUnits;
-				NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+				NextCharUnits = capi_UTF8_CharUnits(*pNextChar);
 				NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
 
 				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
@@ -2469,7 +2469,7 @@ get_integer:
 					U++;
 
 					pSource += CharUnits;
-					CharUnits = capi_UTF8_GetCharUnits(*pSource);
+					CharUnits = capi_UTF8_CharUnits(*pSource);
 					CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 				}
 
@@ -2488,7 +2488,7 @@ get_integer:
 		while ((CodePoint == TpMarker) || (CodePoint == Fullwidth_TpMarker))
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 			for (I = 0; I < 3; I++)
@@ -2503,7 +2503,7 @@ get_integer:
 				U++;
 
 				pSource += CharUnits;
-				CharUnits = capi_UTF8_GetCharUnits(*pSource);
+				CharUnits = capi_UTF8_CharUnits(*pSource);
 				CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 			}
 
@@ -2518,7 +2518,7 @@ get_integer:
 	{
 	get_FracPart:
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -2559,7 +2559,7 @@ skip_frac_scale:
 	if ((CodePoint == 0x65) || (CodePoint == 0x45) || (CodePoint == 0xFF45) || (CodePoint == 0xFF25))
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		eSign = capi_UTF8_Decode(CharUnits, pSource);
 		if (eSign == 0) return 1;
 
@@ -2567,7 +2567,7 @@ skip_frac_scale:
 
 	get_notation:
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -2644,7 +2644,7 @@ skip_frac_scale:
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 
@@ -2778,7 +2778,7 @@ exit_func:
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatW(float* pResult, const UTF16* pSource, U32 Flags, UTF16** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];
@@ -2829,13 +2829,13 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		Fullwidth_TpMarker = 0xFF0E;
 	}
 
-	CharUnits = capi_UTF16_GetCharUnits(*pSource);
+	CharUnits = capi_UTF16_CharUnits(*pSource);
 	CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 	while (CodePoint == 0x20)
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
@@ -2844,7 +2844,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		Sign = BIT(31);
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
@@ -2853,14 +2853,14 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		if (Sign != 0) return 1;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
 	if ((CodePoint == 0x53) || (CodePoint == 0x73) || (CodePoint == 0xFF33) || (CodePoint == 0xFF53)) // S
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		Mantissa = 1;
@@ -2873,7 +2873,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 	if ((CodePoint == 0x51) || (CodePoint == 0x71) || (CodePoint == 0xFF31) || (CodePoint == 0xFF51)) // Q
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		MaxPayLoad = 0x3FFFFF;
@@ -2896,7 +2896,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2910,7 +2910,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF41:
 		case 0xFF21:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2924,7 +2924,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -2937,7 +2937,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 
 		get_NaN_payload:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 			if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -2966,7 +2966,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 
@@ -2980,7 +2980,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 	if ((CodePoint == 0x49) || (CodePoint == 0x69) || (CodePoint == 0xFF29) || (CodePoint == 0xFF49)) // I
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		switch (CodePoint) // N
@@ -2990,7 +2990,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3004,7 +3004,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF26:
 		case 0xFF46:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3018,7 +3018,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3032,7 +3032,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF4E:
 		case 0xFF2E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3046,7 +3046,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3060,7 +3060,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF54:
 		case 0xFF34:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3074,7 +3074,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		case 0xFF59:
 		case 0xFF39:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3086,7 +3086,7 @@ CAPI_FUNC(I8) capi_ScanSingleW(float* pResult, const UTF16* pSource, U32 Flags, 
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 
@@ -3108,7 +3108,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -3121,7 +3121,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -3130,7 +3130,7 @@ get_integer:
 	if ((Flags & SCAN_SPACE) && (CodePoint == 0x20))
 	{
 		pNextChar = pSource + CharUnits;
-		NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+		NextCharUnits = capi_UTF16_CharUnits(*pNextChar);
 		NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
 
 		if (((NextCodePoint >= 0x30) && (NextCodePoint <= 0x39)) || ((NextCodePoint >= 0xFF10) && (NextCodePoint <= 0xFF19)))
@@ -3140,7 +3140,7 @@ get_integer:
 			while (CodePoint == 0x20)
 			{
 				pNextChar = pSource + CharUnits;
-				NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+				NextCharUnits = capi_UTF16_CharUnits(*pNextChar);
 				NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
 
 				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
@@ -3162,7 +3162,7 @@ get_integer:
 					U++;
 
 					pSource += CharUnits;
-					CharUnits = capi_UTF16_GetCharUnits(*pSource);
+					CharUnits = capi_UTF16_CharUnits(*pSource);
 					CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 				}
 
@@ -3181,7 +3181,7 @@ get_integer:
 		while ((CodePoint == TpMarker) || (CodePoint == Fullwidth_TpMarker))
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 			for (I = 0; I < 3; I++)
@@ -3196,7 +3196,7 @@ get_integer:
 				U++;
 
 				pSource += CharUnits;
-				CharUnits = capi_UTF16_GetCharUnits(*pSource);
+				CharUnits = capi_UTF16_CharUnits(*pSource);
 				CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			}
 
@@ -3211,7 +3211,7 @@ get_integer:
 	{
 	get_FracPart:
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -3252,7 +3252,7 @@ skip_frac_scale:
 	if ((CodePoint == 0x65) || (CodePoint == 0x45) || (CodePoint == 0xFF45) || (CodePoint == 0xFF25))
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		eSign = capi_UTF16_Decode(CharUnits, pSource);
 		if (eSign == 0) return 1;
 
@@ -3260,7 +3260,7 @@ skip_frac_scale:
 
 	get_notation:
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -3337,7 +3337,7 @@ skip_frac_scale:
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 
@@ -3522,13 +3522,13 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		Fullwidth_TpMarker = 0xFF0E;
 	}
 
-	CharUnits = capi_UTF16_GetCharUnits(*pSource);
+	CharUnits = capi_UTF16_CharUnits(*pSource);
 	CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 	while (CodePoint == 0x20)
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
@@ -3537,7 +3537,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		Sign = BIT(63);
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
@@ -3546,14 +3546,14 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		if (Sign != 0) return 1;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
 	if ((CodePoint == 0x53) || (CodePoint == 0x73) || (CodePoint == 0xFF33) || (CodePoint == 0xFF53)) // S
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		Mantissa = 1;
@@ -3566,7 +3566,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 	if ((CodePoint == 0x51) || (CodePoint == 0x71) || (CodePoint == 0xFF31) || (CodePoint == 0xFF51)) // Q
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		MaxPayLoad = 0x7FFFFFFFFFFFF;
@@ -3589,7 +3589,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3603,7 +3603,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF41:
 		case 0xFF21:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3617,7 +3617,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3630,7 +3630,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 
 		get_NaN_payload:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 			if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -3659,7 +3659,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 
@@ -3673,7 +3673,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 	if ((CodePoint == 0x49) || (CodePoint == 0x69) || (CodePoint == 0xFF29) || (CodePoint == 0xFF49)) // I
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		switch (CodePoint) // N
@@ -3683,7 +3683,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF2E:
 		case 0xFF4E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3697,7 +3697,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF26:
 		case 0xFF46:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3711,7 +3711,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3725,7 +3725,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF4E:
 		case 0xFF2E:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3739,7 +3739,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF49:
 		case 0xFF29:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3753,7 +3753,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF54:
 		case 0xFF34:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3767,7 +3767,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		case 0xFF59:
 		case 0xFF39:
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			break;
 		default:
@@ -3779,7 +3779,7 @@ CAPI_FUNC(I8) capi_ScanDoubleW(double* pResult, const UTF16* pSource, U32 Flags,
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 
@@ -3801,7 +3801,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -3814,7 +3814,7 @@ get_integer:
 		U++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		goto get_integer;
@@ -3823,7 +3823,7 @@ get_integer:
 	if ((Flags & SCAN_SPACE) && (CodePoint == 0x20))
 	{
 		pNextChar = pSource + CharUnits;
-		NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+		NextCharUnits = capi_UTF16_CharUnits(*pNextChar);
 		NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
 
 		if (((NextCodePoint >= 0x30) && (NextCodePoint <= 0x39)) || ((NextCodePoint >= 0xFF10) && (NextCodePoint <= 0xFF19)))
@@ -3833,7 +3833,7 @@ get_integer:
 			while (CodePoint == 0x20)
 			{
 				pNextChar = pSource + CharUnits;
-				NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+				NextCharUnits = capi_UTF16_CharUnits(*pNextChar);
 				NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
 
 				if ((NextCodePoint < 0x30) || (NextCodePoint > 0xFF19)) break;
@@ -3855,7 +3855,7 @@ get_integer:
 					U++;
 
 					pSource += CharUnits;
-					CharUnits = capi_UTF16_GetCharUnits(*pSource);
+					CharUnits = capi_UTF16_CharUnits(*pSource);
 					CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 				}
 
@@ -3874,7 +3874,7 @@ get_integer:
 		while ((CodePoint == TpMarker) || (CodePoint == Fullwidth_TpMarker))
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 			for (I = 0; I < 3; I++)
@@ -3889,7 +3889,7 @@ get_integer:
 				U++;
 
 				pSource += CharUnits;
-				CharUnits = capi_UTF16_GetCharUnits(*pSource);
+				CharUnits = capi_UTF16_CharUnits(*pSource);
 				CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 			}
 
@@ -3904,7 +3904,7 @@ get_integer:
 	{
 	get_FracPart:
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -3945,7 +3945,7 @@ skip_frac_scale:
 	if ((CodePoint == 0x65) || (CodePoint == 0x45) || (CodePoint == 0xFF45) || (CodePoint == 0xFF25))
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		eSign = capi_UTF16_Decode(CharUnits, pSource);
 		if (eSign == 0) return 1;
 
@@ -3953,7 +3953,7 @@ skip_frac_scale:
 
 	get_notation:
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 		if ((CodePoint >= 0x30) && (CodePoint <= 0x39))
@@ -4030,7 +4030,7 @@ skip_frac_scale:
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 
@@ -4164,7 +4164,7 @@ exit_func:
 	return 0;
 }
 
-CAPI_FUNC(I8) capi_ScanSingleL(float* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos)
+CAPI_FUNC(I8) capi_ScanFloatL(float* pResult, const UTF32* pSource, U32 Flags, UTF32** ppNewPos)
 {
 	size_t IntPart[128 / CAPI_BIT_LENGTH];
 	size_t FracPart[512 / CAPI_BIT_LENGTH];

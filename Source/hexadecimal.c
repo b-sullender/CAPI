@@ -562,26 +562,26 @@ CAPI_FUNC(I8) capi_ScanHexU(void* pResult, const UTF8* pSource, U32 Flags, UTF8*
 
 	capi_memset(pResult, 0, nBytes);
 
-	CharUnits = capi_UTF8_GetCharUnits(*pSource);
+	CharUnits = capi_UTF8_CharUnits(*pSource);
 	CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 
 	while (CodePoint == 0x20)
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
 	if ((CodePoint == 0x30) || (CodePoint == 0xFF10))
 	{
 		pNextChar = pSource + CharUnits;
-		NextCharUnits = capi_UTF8_GetCharUnits(*pNextChar);
+		NextCharUnits = capi_UTF8_CharUnits(*pNextChar);
 		NextCodePoint = capi_UTF8_Decode(NextCharUnits, pNextChar);
 
 		if ((NextCodePoint == 0x78) || (NextCodePoint == 0x58) || (NextCodePoint == 0xFF58) || (NextCodePoint == 0xFF38))
 		{
 			pSource += CharUnits + NextCharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 	}
@@ -589,7 +589,7 @@ CAPI_FUNC(I8) capi_ScanHexU(void* pResult, const UTF8* pSource, U32 Flags, UTF8*
 	while ((CodePoint == 0x30) || (CodePoint == 0xFF10))
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		LeadingZeros++;
 	}
@@ -621,7 +621,7 @@ CAPI_FUNC(I8) capi_ScanHexU(void* pResult, const UTF8* pSource, U32 Flags, UTF8*
 		nDigitsRead++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF8_GetCharUnits(*pSource);
+		CharUnits = capi_UTF8_CharUnits(*pSource);
 		CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 	}
 
@@ -633,7 +633,7 @@ CAPI_FUNC(I8) capi_ScanHexU(void* pResult, const UTF8* pSource, U32 Flags, UTF8*
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF8_GetCharUnits(*pSource);
+			CharUnits = capi_UTF8_CharUnits(*pSource);
 			CodePoint = capi_UTF8_Decode(CharUnits, pSource);
 		}
 		if (CodePoint != 0) return 1;
@@ -658,26 +658,26 @@ CAPI_FUNC(I8) capi_ScanHexW(void* pResult, const UTF16* pSource, U32 Flags, UTF1
 
 	capi_memset(pResult, 0, nBytes);
 
-	CharUnits = capi_UTF16_GetCharUnits(*pSource);
+	CharUnits = capi_UTF16_CharUnits(*pSource);
 	CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 
 	while (CodePoint == 0x20)
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
 	if ((CodePoint == 0x30) || (CodePoint == 0xFF10))
 	{
 		pNextChar = pSource + CharUnits;
-		NextCharUnits = capi_UTF16_GetCharUnits(*pNextChar);
+		NextCharUnits = capi_UTF16_CharUnits(*pNextChar);
 		NextCodePoint = capi_UTF16_Decode(NextCharUnits, pNextChar);
 
 		if ((NextCodePoint == 0x78) || (NextCodePoint == 0x58) || (NextCodePoint == 0xFF58) || (NextCodePoint == 0xFF38))
 		{
-			pSource += CharUnits + NextCharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			pSource += (CharUnits + NextCharUnits);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 	}
@@ -685,7 +685,7 @@ CAPI_FUNC(I8) capi_ScanHexW(void* pResult, const UTF16* pSource, U32 Flags, UTF1
 	while ((CodePoint == 0x30) || (CodePoint == 0xFF10))
 	{
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		LeadingZeros++;
 	}
@@ -717,7 +717,7 @@ CAPI_FUNC(I8) capi_ScanHexW(void* pResult, const UTF16* pSource, U32 Flags, UTF1
 		nDigitsRead++;
 
 		pSource += CharUnits;
-		CharUnits = capi_UTF16_GetCharUnits(*pSource);
+		CharUnits = capi_UTF16_CharUnits(*pSource);
 		CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 	}
 
@@ -729,7 +729,7 @@ CAPI_FUNC(I8) capi_ScanHexW(void* pResult, const UTF16* pSource, U32 Flags, UTF1
 		while (CodePoint == 0x20)
 		{
 			pSource += CharUnits;
-			CharUnits = capi_UTF16_GetCharUnits(*pSource);
+			CharUnits = capi_UTF16_CharUnits(*pSource);
 			CodePoint = capi_UTF16_Decode(CharUnits, pSource);
 		}
 		if (CodePoint != 0) return 1;
