@@ -2604,18 +2604,105 @@ struct SMART
 {
 	size_t units;
 	UNIT* pString;
+	SMART* Temp;
+	SMART* self;
 
 	SMART()
 	{
+		this->self = this;
 		this->units = 1024;
+
 		this->pString = (UNIT*)capi_malloc(this->units * sizeof(UNIT));
 		if (this->pString != 0) this->pString[0] = 0;
 		else this->units = 0;
+
+		this->Temp = new SMART(true);
 	}
 
-	~SMART()
+	SMART(bool temp)
 	{
-		capi_free(this->pString);
+		this->self = this;
+		this->units = 1024;
+
+		this->pString = (UNIT*)capi_malloc(this->units * sizeof(UNIT));
+		if (this->pString != 0) this->pString[0] = 0;
+		else this->units = 0;
+
+		//  Temp's dont get a Temp unless the compiler passes Temp's to operators, -
+		//    because operators are used multiple times in a code line
+
+		if (temp) this->Temp = 0;
+		else this->Temp = new SMART(true);
+	}
+
+	inline bool isOriginal()
+	{
+		if (this->self == this) return true;
+		else return false;
+	}
+
+	void makeOriginal()
+	{
+		UNIT* pNewString;
+
+		if (isOriginal() == false)
+		{
+			this->self = this;
+
+			pNewString = (UNIT*)capi_malloc(this->units * sizeof(UNIT));
+
+			if (pNewString == 0)
+			{
+				this->units = 0;
+				this->pString = 0;
+			}
+			else
+			{
+				String::Copy(pNewString, this->units, this->pString);
+				this->pString = pNewString;
+			}
+
+			this->Temp = new SMART(true);
+		}
+	}
+
+	~SMART() // Clean up
+	{
+		if (isOriginal())
+		{
+			delete this->Temp;
+			capi_free(this->pString);
+		}
+	}
+
+	void adjustBuffer(size_t needUnits)
+	{
+		UNIT* pNewString;
+
+		if (needUnits > this->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->units = needUnits;
+				this->pString = pNewString;
+			}
+		}
+	}
+
+	void adjustTempBuffer(size_t needUnits)
+	{
+		UNIT* pNewString;
+
+		if (needUnits > this->Temp->units)
+		{
+			pNewString = (UNIT*)capi_realloc(this->Temp->pString, needUnits * sizeof(UNIT));
+			if (pNewString != 0)
+			{
+				this->Temp->units = needUnits;
+				this->Temp->pString = pNewString;
+			}
+		}
 	}
 
 	//  **********************  //
@@ -2627,19 +2714,11 @@ struct SMART
 	SMART& operator=(const SMART& pSource)
 	{
 		size_t needUnits;
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		needUnits = String::Units(pSource.pString) + 1;
-
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pSource.pString);
 
@@ -2649,19 +2728,11 @@ struct SMART
 	SMART& operator=(const UNIT* pSource)
 	{
 		size_t needUnits;
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		needUnits = String::Units(pSource) + 1;
-
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pSource);
 
@@ -2672,20 +2743,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[8];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(char));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2696,20 +2760,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[8];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(signed char));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2720,20 +2777,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[8];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 8, &Value, 0, sizeof(unsigned char));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2744,20 +2794,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[16];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 16, &Value, 0, sizeof(short));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2768,20 +2811,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[16];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 16, &Value, 0, sizeof(unsigned short));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2792,20 +2828,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(int));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2816,20 +2845,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned int));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2840,20 +2862,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(long));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2864,20 +2879,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned long));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2888,20 +2896,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[64];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 64, &Value, 0, sizeof(long long));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2912,20 +2913,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[64];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 64, &Value, 0, sizeof(unsigned long long));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2936,20 +2930,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[1024];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintFloat(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(8));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2960,20 +2947,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[1024];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintDouble(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(16));
-		needUnits = String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Copy(this->pString, this->units, pStrBuffer);
 
@@ -2989,19 +2969,11 @@ struct SMART
 	SMART& operator+=(const SMART& pSource)
 	{
 		size_t needUnits;
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		needUnits = String::Units(this->pString) + String::Units(pSource.pString) + 1;
-
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pSource.pString);
 
@@ -3011,19 +2983,11 @@ struct SMART
 	SMART& operator+=(const UNIT* pSource)
 	{
 		size_t needUnits;
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		needUnits = String::Units(this->pString) + String::Units(pSource) + 1;
-
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pSource);
 
@@ -3034,20 +2998,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[8];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(char));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3058,20 +3015,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[8];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 8, &Value, 0, sizeof(signed char));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3082,20 +3032,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[8];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 8, &Value, 0, sizeof(unsigned char));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3106,20 +3049,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[16];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 16, &Value, 0, sizeof(short));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3130,20 +3066,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[16];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 16, &Value, 0, sizeof(unsigned short));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3154,20 +3083,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(int));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3178,20 +3100,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned int));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3202,20 +3117,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 32, &Value, 0, sizeof(long));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3226,20 +3134,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[32];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 32, &Value, 0, sizeof(unsigned long));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3250,20 +3151,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[64];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintSigned(pStrBuffer, 64, &Value, 0, sizeof(long long));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3274,20 +3168,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[64];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintUnsigned(pStrBuffer, 64, &Value, 0, sizeof(unsigned long long));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3298,20 +3185,13 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[1024];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintFloat(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(8));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
@@ -3322,24 +3202,57 @@ struct SMART
 	{
 		size_t needUnits;
 		UNIT pStrBuffer[1024];
-		UNIT* pNewString;
+
+		makeOriginal();
 
 		capi_PrintDouble(pStrBuffer, 1024, Value, PRINT_FCAP | PRINT_PAYLOAD | PRINT_e_ENABLE | PRINT_ZEROF | PRINT_MAX(16));
-		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
 
-		if (needUnits > this->units)
-		{
-			pNewString = (UNIT*)capi_realloc(this->pString, needUnits * sizeof(UNIT));
-			if (pNewString != 0)
-			{
-				this->units = needUnits;
-				this->pString = pNewString;
-			}
-		}
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
 
 		String::Append(this->pString, this->units, pStrBuffer);
 
 		return *this;
+	}
+
+	//  **********************  //
+	//                          //
+	//   arithmetic operators   //
+	//                          //
+	//  **********************  //
+
+	SMART& operator+(const SMART& pSource)
+	{
+		size_t needUnits;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new SMART(true);
+
+		needUnits = String::Units(this->pString) + String::Units(pSource.pString) + 1;
+		adjustTempBuffer(needUnits);
+
+		String::Copy(this->Temp->pString, this->Temp->units, this->pString);
+		String::Append(this->Temp->pString, this->Temp->units, pSource.pString);
+
+		return *this->Temp;
+	}
+
+	SMART& operator+(const UNIT* pSource)
+	{
+		size_t needUnits;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new SMART(true);
+
+		needUnits = String::Units(this->pString) + String::Units(pSource) + 1;
+		adjustTempBuffer(needUnits);
+
+		String::Copy(this->Temp->pString, this->Temp->units, this->pString);
+		String::Append(this->Temp->pString, this->Temp->units, pSource);
+
+		return *this->Temp;
 	}
 
 	//  **********************  //

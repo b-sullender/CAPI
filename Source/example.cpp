@@ -12,10 +12,6 @@
 
 #include "CAPI.h"
 
-#ifndef BOOL
-#define BOOL int
-#endif
-
 #ifdef UNICODE
 #define app_fgets fgetws
 #define app_printf wprintf
@@ -24,7 +20,7 @@
 #define app_printf printf
 #endif
 
-void ExampleApp_OutMessage(const UNIT* Msg, BOOL NewLine)
+void ExampleApp_OutMessage(const UNIT* Msg, bool NewLine)
 {
 	app_printf(STR("%s"), Msg);
 	if (NewLine == TRUE) app_printf(STR("\n\r"));
@@ -37,13 +33,16 @@ void ExampleApp_OutMessage(const UNIT* Msg, BOOL NewLine)
 // *                                       * //
 // ***************************************** //
 
-void Run_SMART_example()
+// Be sure to use the STR macro for string constants for cross-platform compatibility
+
+void Run_SMART_example(SMART equ1, SMART equ2)
 {
 	SMART string, comp1, comp2;
 	float Fvar;
 
 	Fvar = (float)1.3;
-	string = STR("SMART type example: 1.3 + 6.4 = ");
+	string = STR("SMART type example: ");
+	string += equ1 + STR(" + ") + equ2 + STR(" = ");
 
 	// Variables are automatically converted into string
 	string += Fvar + 6.4;
@@ -65,6 +64,8 @@ void Run_SMART_example()
 // *  Example Using the String class  * //
 // *                                  * //
 // ************************************ //
+
+// Again, be sure to use the STR macro for string constants for cross-platform compatibility!
 
 #define STR_VAR_BUFFER 128
 #define STR_OUTPUT_BUFFER 512
@@ -108,7 +109,12 @@ int main()
 	UNIT input[128];
 
 	Run_String_Class_example();
-	Run_SMART_example();
+
+	SMART equ1, equ2;
+
+	equ1 = STR("1.3");
+	equ2 = STR("6.4");
+	Run_SMART_example(equ1, equ2);
 
 	ExampleApp_OutMessage(STR(""), TRUE);
 	ExampleApp_OutMessage(STR("Press the return key to exit..."), TRUE);
