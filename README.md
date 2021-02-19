@@ -26,7 +26,7 @@ See the [CHANGELOG](https://github.com/b-sullender/CAPI/blob/main/CHANGELOG.md) 
 
 **String support**
 
-*(Coming soon!)* A string type that automatically handles string manipulation, conversion with data variables, and its buffer size.
+A string type that automatically handles string manipulation, conversion with data variables, and its buffer size.
 
 Simple interface for manipulating strings of encoding types *ASCII*, *UTF8*, *UTF16* and *UTF32*. **ToString** and **FromString** functions for conversion between data variables and strings, with IEEE 754 support and customization of formatting.
 
