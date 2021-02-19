@@ -2600,6 +2600,1334 @@ struct String
 	};
 };
 
+struct U128
+{
+	CU128 Value;
+	U128* Temp;
+	U128* self;
+
+	U128()
+	{
+		this->self = this;
+
+		this->Value.Lo = 0;
+		this->Value.Hi = 0;
+
+		this->Temp = new U128(true);
+	}
+
+	U128(bool temp)
+	{
+		this->self = this;
+
+		this->Value.Lo = 0;
+		this->Value.Hi = 0;
+
+		//  Temp's dont get a Temp unless the compiler passes Temp's to operators, -
+		//    because operators are used multiple times in a code line
+
+		if (temp) this->Temp = 0;
+		else this->Temp = new U128(true);
+	}
+
+	inline bool isOriginal()
+	{
+		if (this->self == this) return true;
+		else return false;
+	}
+
+	void makeOriginal()
+	{
+		if (isOriginal() == false)
+		{
+			this->self = this;
+			this->Temp = new U128(true);
+		}
+	}
+
+	~U128() // Clean up
+	{
+		if (isOriginal())
+		{
+			delete this->Temp;
+		}
+	}
+
+	void operator=(const U128& newVal) // Prevent this->Temp from being written
+	{
+		this->Value = newVal.Value;
+	}
+
+	U128& operator=(const UNIT* pString) // Scan constant into the variable
+	{
+		capi_ScanUnsigned(&this->Value, pString, SCAN_HEX, 0, sizeof(CU128));
+		return *this;
+	}
+
+	//  *********************************  //
+	//                                     //
+	//   U128, U128 arithmetic operators   //
+	//                                     //
+	//  *********************************  //
+
+	U128& operator+(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value = this->Value;
+		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	U128& operator-(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value = this->Value;
+		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	U128& operator*(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_llmul128(&this->Temp->Value, &this->Value, &a.Value);
+		return *this->Temp;
+	}
+
+	U128& operator/(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_div128(&this->Temp->Value, &this->Value, &a.Value);
+		return *this->Temp;
+	}
+
+	U128& operator%(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_rem128(&this->Temp->Value, &this->Value, &a.Value);
+		return *this->Temp;
+	}
+
+	//  ********************************  //
+	//                                    //
+	//   U128, NUM arithmetic operators   //
+	//                                    //
+	//  ********************************  //
+
+	U128& operator+(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value = this->Value;
+		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	U128& operator-(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value = this->Value;
+		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	U128& operator*(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_llmul128(&this->Temp->Value, &this->Value, &a);
+		return *this->Temp;
+	}
+
+	U128& operator/(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_div128(&this->Temp->Value, &this->Value, &a);
+		return *this->Temp;
+	}
+
+	U128& operator%(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_rem128(&this->Temp->Value, &this->Value, &a);
+		return *this->Temp;
+	}
+
+	//  ********************************************  //
+	//                                                //
+	//   U128, U128 assignment arithmetic operators   //
+	//                                                //
+	//  ********************************************  //
+
+	U128& operator+=(const U128& a)
+	{
+		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	U128& operator-=(const U128& a)
+	{
+		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	U128& operator*=(const U128& a)
+	{
+		CU128 Temp;
+
+		capi_llmul128(&Temp, &this->Value, &a.Value);
+		this->Value = Temp;
+		return *this;
+	}
+
+	U128& operator/=(const U128& a)
+	{
+		CU128 Temp;
+
+		capi_div128(&Temp, &this->Value, &a.Value);
+		this->Value = Temp;
+		return *this;
+	}
+
+	U128& operator%=(const U128& a)
+	{
+		CU128 Temp;
+
+		capi_rem128(&Temp, &this->Value, &a.Value);
+		this->Value = Temp;
+		return *this;
+	}
+
+	//  *******************************************  //
+	//                                               //
+	//   U128, NUM assignment arithmetic operators   //
+	//                                               //
+	//  *******************************************  //
+
+	U128& operator+=(const UNIT* pString)
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	U128& operator-=(const UNIT* pString)
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	U128& operator*=(const UNIT* pString)
+	{
+		CU128 a, Temp;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		capi_llmul128(&Temp, &this->Value, &a);
+		this->Value = Temp;
+		return *this;
+	}
+
+	U128& operator/=(const UNIT* pString)
+	{
+		CU128 a, Temp;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		capi_div128(&Temp, &this->Value, &a);
+		this->Value = Temp;
+		return *this;
+	}
+
+	U128& operator%=(const UNIT* pString)
+	{
+		CU128 a, Temp;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		capi_rem128(&Temp, &this->Value, &a);
+		this->Value = Temp;
+		return *this;
+	}
+
+	//  *********************************  //
+	//                                     //
+	//   U128, U128 relational operators   //
+	//                                     //
+	//  *********************************  //
+
+	bool operator==(const U128& a) const
+	{
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) == 0) return true;
+		return false;
+	}
+
+	bool operator!=(const U128& a) const
+	{
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) != 0) return true;
+		return false;
+	}
+
+	bool operator>(const U128& a) const
+	{
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) > 0) return true;
+		return false;
+	}
+
+	bool operator<(const U128& a) const
+	{
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) < 0) return true;
+		return false;
+	}
+
+	bool operator>=(const U128& a) const
+	{
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) >= 0) return true;
+		return false;
+	}
+
+	bool operator<=(const U128& a) const
+	{
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) <= 0) return true;
+		return false;
+	}
+
+	//  ********************************  //
+	//                                    //
+	//   U128, NUM relational operators   //
+	//                                    //
+	//  ********************************  //
+
+	bool operator==(const UNIT* pString) const
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) == 0) return true;
+		return false;
+	}
+
+	bool operator!=(const UNIT* pString) const
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) != 0) return true;
+		return false;
+	}
+
+	bool operator>(const UNIT* pString) const
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) > 0) return true;
+		return false;
+	}
+
+	bool operator<(const UNIT* pString) const
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) < 0) return true;
+		return false;
+	}
+
+	bool operator>=(const UNIT* pString) const
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) >= 0) return true;
+		return false;
+	}
+
+	bool operator<=(const UNIT* pString) const
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) <= 0) return true;
+		return false;
+	}
+
+	//  ******************************  //
+	//                                  //
+	//   U128, U128 bitwise operators   //
+	//                                  //
+	//  ******************************  //
+
+	U128& operator&(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value.Lo = this->Value.Lo & a.Value.Lo;
+		this->Temp->Value.Hi = this->Value.Hi & a.Value.Hi;
+		return *this->Temp;
+	}
+
+	U128& operator|(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value.Lo = this->Value.Lo | a.Value.Lo;
+		this->Temp->Value.Hi = this->Value.Hi | a.Value.Hi;
+		return *this->Temp;
+	}
+
+	U128& operator^(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value.Lo = this->Value.Lo ^ a.Value.Lo;
+		this->Temp->Value.Hi = this->Value.Hi ^ a.Value.Hi;
+		return *this->Temp;
+	}
+
+	U128& operator~()
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value.Lo = ~this->Value.Lo;
+		this->Temp->Value.Hi = ~this->Value.Hi;
+		return *this->Temp;
+	}
+
+	U128& operator<<(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value = this->Value;
+		capi_shl128(&this->Temp->Value, (U32)a.Value.Lo);
+		return *this->Temp;
+	}
+
+	U128& operator>>(const U128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		this->Temp->Value = this->Value;
+		capi_shr128(&this->Temp->Value, (U32)a.Value.Lo);
+		return *this->Temp;
+	}
+
+	//  *****************************************  //
+	//                                             //
+	//   U128, U128 assignment bitwise operators   //
+	//                                             //
+	//  *****************************************  //
+
+	U128& operator&=(const U128& a)
+	{
+		this->Value.Lo &= a.Value.Lo;
+		this->Value.Hi &= a.Value.Hi;
+		return *this;
+	}
+
+	U128& operator|=(const U128& a)
+	{
+		this->Value.Lo |= a.Value.Lo;
+		this->Value.Hi |= a.Value.Hi;
+		return *this;
+	}
+
+	U128& operator^=(const U128& a)
+	{
+		this->Value.Lo ^= a.Value.Lo;
+		this->Value.Hi ^= a.Value.Hi;
+		return *this;
+	}
+
+	U128& operator<<=(const U128& a)
+	{
+		capi_shl128(&this->Value, (U32)a.Value.Lo);
+		return *this;
+	}
+
+	U128& operator>>=(const U128& a)
+	{
+		capi_shr128(&this->Value, (U32)a.Value.Lo);
+		return *this;
+	}
+
+	//  *****************************  //
+	//                                 //
+	//   U128, NUM bitwise operators   //
+	//                                 //
+	//  *****************************  //
+
+	U128& operator&(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Temp->Value.Lo = this->Value.Lo & a.Lo;
+		this->Temp->Value.Hi = this->Value.Hi & a.Hi;
+		return *this->Temp;
+	}
+
+	U128& operator|(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Temp->Value.Lo = this->Value.Lo | a.Lo;
+		this->Temp->Value.Hi = this->Value.Hi | a.Hi;
+		return *this->Temp;
+	}
+
+	U128& operator^(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Temp->Value.Lo = this->Value.Lo ^ a.Lo;
+		this->Temp->Value.Hi = this->Value.Hi ^ a.Hi;
+		return *this->Temp;
+	}
+
+	U128& operator<<(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Temp->Value = this->Value;
+		capi_shl128(&this->Temp->Value, (U32)a.Lo);
+		return *this->Temp;
+	}
+
+	U128& operator>>(const UNIT* pString)
+	{
+		CU128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new U128(true);
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Temp->Value = this->Value;
+		capi_shr128(&this->Temp->Value, (U32)a.Lo);
+		return *this->Temp;
+	}
+
+	//  ****************************************  //
+	//                                            //
+	//   U128, NUM assignment bitwise operators   //
+	//                                            //
+	//  ****************************************  //
+
+	U128& operator&=(const UNIT* pString)
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Value.Lo &= a.Lo;
+		this->Value.Hi &= a.Hi;
+		return *this;
+	}
+
+	U128& operator|=(const UNIT* pString)
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Value.Lo |= a.Lo;
+		this->Value.Hi |= a.Hi;
+		return *this;
+	}
+
+	U128& operator^=(const UNIT* pString)
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		this->Value.Lo ^= a.Lo;
+		this->Value.Hi ^= a.Hi;
+		return *this;
+	}
+
+	U128& operator<<=(const UNIT* pString)
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		capi_shl128(&this->Value, (U32)a.Lo);
+		return *this;
+	}
+
+	U128& operator>>=(const UNIT* pString)
+	{
+		CU128 a;
+
+		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
+
+		capi_shr128(&this->Value, (U32)a.Lo);
+		return *this;
+	}
+};
+
+struct I128
+{
+	CI128 Value;
+	I128* Temp;
+	I128* self;
+
+	I128()
+	{
+		this->self = this;
+
+		this->Value.Lo = 0;
+		this->Value.Hi = 0;
+
+		this->Temp = new I128(true);
+	}
+
+	I128(bool temp)
+	{
+		this->self = this;
+
+		this->Value.Lo = 0;
+		this->Value.Hi = 0;
+
+		//  Temp's dont get a Temp unless the compiler passes Temp's to operators, -
+		//    because operators are used multiple times in a code line
+
+		if (temp) this->Temp = 0;
+		else this->Temp = new I128(true);
+	}
+
+	inline bool isOriginal()
+	{
+		if (this->self == this) return true;
+		else return false;
+	}
+
+	void makeOriginal()
+	{
+		if (isOriginal() == false)
+		{
+			this->self = this;
+			this->Temp = new I128(true);
+		}
+	}
+
+	~I128() // Clean up
+	{
+		if (isOriginal())
+		{
+			delete this->Temp;
+		}
+	}
+
+	void operator=(const I128& newVal) // Prevent this->Temp from being written
+	{
+		this->Value = newVal.Value;
+	}
+
+	I128& operator=(const UNIT* pString) // Scan constant into the variable
+	{
+		capi_ScanSigned(&this->Value, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+		return *this;
+	}
+
+	//  *********************************  //
+	//                                     //
+	//   I128, I128 arithmetic operators   //
+	//                                     //
+	//  *********************************  //
+
+	I128& operator+(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value = this->Value;
+		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	I128& operator-(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value = this->Value;
+		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	I128& operator*(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_llmul128((CU128*)&this->Temp->Value, (const CU128*)&this->Value, (const CU128*)&a.Value);
+		return *this->Temp;
+	}
+
+	I128& operator/(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_idiv128(&this->Temp->Value, &this->Value, &a.Value);
+		return *this->Temp;
+	}
+
+	I128& operator%(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_irem128(&this->Temp->Value, &this->Value, &a.Value);
+		return *this->Temp;
+	}
+
+	//  ********************************  //
+	//                                    //
+	//   I128, NUM arithmetic operators   //
+	//                                    //
+	//  ********************************  //
+
+	I128& operator+(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value = this->Value;
+		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	I128& operator-(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value = this->Value;
+		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this->Temp;
+	}
+
+	I128& operator*(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_llmul128((CU128*)&this->Temp->Value, (const CU128*)&this->Value, (const CU128*)&a);
+		return *this->Temp;
+	}
+
+	I128& operator/(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_idiv128(&this->Temp->Value, &this->Value, &a);
+		return *this->Temp;
+	}
+
+	I128& operator%(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_irem128(&this->Temp->Value, &this->Value, &a);
+		return *this->Temp;
+	}
+
+	//  ********************************************  //
+	//                                                //
+	//   I128, I128 assignment arithmetic operators   //
+	//                                                //
+	//  ********************************************  //
+
+	I128& operator+=(const I128& a)
+	{
+		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	I128& operator-=(const I128& a)
+	{
+		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	I128& operator*=(const I128& a)
+	{
+		CI128 Temp;
+
+		capi_llmul128((CU128*)&Temp, (const CU128*)&this->Value, (const CU128*)&a.Value);
+		this->Value = Temp;
+		return *this;
+	}
+
+	I128& operator/=(const I128& a)
+	{
+		CI128 Temp;
+
+		capi_idiv128(&Temp, &this->Value, &a.Value);
+		this->Value = Temp;
+		return *this;
+	}
+
+	I128& operator%=(const I128& a)
+	{
+		CI128 Temp;
+
+		capi_irem128(&Temp, &this->Value, &a.Value);
+		this->Value = Temp;
+		return *this;
+	}
+
+	//  *******************************************  //
+	//                                               //
+	//   I128, NUM assignment arithmetic operators   //
+	//                                               //
+	//  *******************************************  //
+
+	I128& operator+=(const UNIT* pString)
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	I128& operator-=(const UNIT* pString)
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
+		return *this;
+	}
+
+	I128& operator*=(const UNIT* pString)
+	{
+		CI128 a, Temp;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		capi_llmul128((CU128*)&Temp, (const CU128*)&this->Value, (const CU128*)&a);
+		this->Value = Temp;
+		return *this;
+	}
+
+	I128& operator/=(const UNIT* pString)
+	{
+		CI128 a, Temp;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		capi_idiv128(&Temp, &this->Value, &a);
+		this->Value = Temp;
+		return *this;
+	}
+
+	I128& operator%=(const UNIT* pString)
+	{
+		CI128 a, Temp;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		capi_irem128(&Temp, &this->Value, &a);
+		this->Value = Temp;
+		return *this;
+	}
+
+	//  *********************************  //
+	//                                     //
+	//   I128, I128 relational operators   //
+	//                                     //
+	//  *********************************  //
+
+	bool operator==(const I128& a) const
+	{
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) == 0) return true;
+		return false;
+	}
+
+	bool operator!=(const I128& a) const
+	{
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) != 0) return true;
+		return false;
+	}
+
+	bool operator>(const I128& a) const
+	{
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) > 0) return true;
+		return false;
+	}
+
+	bool operator<(const I128& a) const
+	{
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) < 0) return true;
+		return false;
+	}
+
+	bool operator>=(const I128& a) const
+	{
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) >= 0) return true;
+		return false;
+	}
+
+	bool operator<=(const I128& a) const
+	{
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) <= 0) return true;
+		return false;
+	}
+
+	//  ********************************  //
+	//                                    //
+	//   I128, NUM relational operators   //
+	//                                    //
+	//  ********************************  //
+
+	bool operator==(const UNIT* pString) const
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) == 0) return true;
+		return false;
+	}
+
+	bool operator!=(const UNIT* pString) const
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) != 0) return true;
+		return false;
+	}
+
+	bool operator>(const UNIT* pString) const
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) > 0) return true;
+		return false;
+	}
+
+	bool operator<(const UNIT* pString) const
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) < 0) return true;
+		return false;
+	}
+
+	bool operator>=(const UNIT* pString) const
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) >= 0) return true;
+		return false;
+	}
+
+	bool operator<=(const UNIT* pString) const
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) <= 0) return true;
+		return false;
+	}
+
+	//  ******************************  //
+	//                                  //
+	//   I128, I128 bitwise operators   //
+	//                                  //
+	//  ******************************  //
+
+	I128& operator&(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value.Lo = this->Value.Lo & a.Value.Lo;
+		this->Temp->Value.Hi = this->Value.Hi & a.Value.Hi;
+		return *this->Temp;
+	}
+
+	I128& operator|(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value.Lo = this->Value.Lo | a.Value.Lo;
+		this->Temp->Value.Hi = this->Value.Hi | a.Value.Hi;
+		return *this->Temp;
+	}
+
+	I128& operator^(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value.Lo = this->Value.Lo ^ a.Value.Lo;
+		this->Temp->Value.Hi = this->Value.Hi ^ a.Value.Hi;
+		return *this->Temp;
+	}
+
+	I128& operator~()
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value.Lo = ~this->Value.Lo;
+		this->Temp->Value.Hi = ~this->Value.Hi;
+		return *this->Temp;
+	}
+
+	I128& operator<<(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value = this->Value;
+		capi_shl128((CU128*)&this->Temp->Value, (U32)a.Value.Lo);
+		return *this->Temp;
+	}
+
+	I128& operator>>(const I128& a)
+	{
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		this->Temp->Value = this->Value;
+		capi_sar128(&this->Temp->Value, (U32)a.Value.Lo);
+		return *this->Temp;
+	}
+
+	//  *****************************************  //
+	//                                             //
+	//   I128, I128 assignment bitwise operators   //
+	//                                             //
+	//  *****************************************  //
+
+	I128& operator&=(const I128& a)
+	{
+		this->Value.Lo &= a.Value.Lo;
+		this->Value.Hi &= a.Value.Hi;
+		return *this;
+	}
+
+	I128& operator|=(const I128& a)
+	{
+		this->Value.Lo |= a.Value.Lo;
+		this->Value.Hi |= a.Value.Hi;
+		return *this;
+	}
+
+	I128& operator^=(const I128& a)
+	{
+		this->Value.Lo ^= a.Value.Lo;
+		this->Value.Hi ^= a.Value.Hi;
+		return *this;
+	}
+
+	I128& operator<<=(const I128& a)
+	{
+		capi_shl128((CU128*)&this->Value, (U32)a.Value.Lo);
+		return *this;
+	}
+
+	I128& operator>>=(const I128& a)
+	{
+		capi_sar128(&this->Value, (U32)a.Value.Lo);
+		return *this;
+	}
+
+	//  *****************************  //
+	//                                 //
+	//   I128, NUM bitwise operators   //
+	//                                 //
+	//  *****************************  //
+
+	I128& operator&(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Temp->Value.Lo = this->Value.Lo & a.Lo;
+		this->Temp->Value.Hi = this->Value.Hi & a.Hi;
+		return *this->Temp;
+	}
+
+	I128& operator|(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Temp->Value.Lo = this->Value.Lo | a.Lo;
+		this->Temp->Value.Hi = this->Value.Hi | a.Hi;
+		return *this->Temp;
+	}
+
+	I128& operator^(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Temp->Value.Lo = this->Value.Lo ^ a.Lo;
+		this->Temp->Value.Hi = this->Value.Hi ^ a.Hi;
+		return *this->Temp;
+	}
+
+	I128& operator<<(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Temp->Value = this->Value;
+		capi_shl128((CU128*)&this->Temp->Value, (U32)a.Lo);
+		return *this->Temp;
+	}
+
+	I128& operator>>(const UNIT* pString)
+	{
+		CI128 a;
+
+		makeOriginal();
+
+		if (this->Temp == 0) this->Temp = new I128(true);
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Temp->Value = this->Value;
+		capi_sar128(&this->Temp->Value, (U32)a.Lo);
+		return *this->Temp;
+	}
+
+	//  ****************************************  //
+	//                                            //
+	//   I128, NUM assignment bitwise operators   //
+	//                                            //
+	//  ****************************************  //
+
+	I128& operator&=(const UNIT* pString)
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Value.Lo &= a.Lo;
+		this->Value.Hi &= a.Hi;
+		return *this;
+	}
+
+	I128& operator|=(const UNIT* pString)
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Value.Lo |= a.Lo;
+		this->Value.Hi |= a.Hi;
+		return *this;
+	}
+
+	I128& operator^=(const UNIT* pString)
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		this->Value.Lo ^= a.Lo;
+		this->Value.Hi ^= a.Hi;
+		return *this;
+	}
+
+	I128& operator<<=(const UNIT* pString)
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		capi_shl128((CU128*)&this->Value, (U32)a.Lo);
+		return *this;
+	}
+
+	I128& operator>>=(const UNIT* pString)
+	{
+		CI128 a;
+
+		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
+
+		capi_sar128(&this->Value, (U32)a.Lo);
+		return *this;
+	}
+};
+
 struct SMART
 {
 	size_t units;
@@ -2960,6 +4288,40 @@ struct SMART
 		return *this;
 	}
 
+	SMART& operator=(const I128 Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[128];
+
+		makeOriginal();
+
+		capi_PrintSigned(pStrBuffer, 128, &Value.Value, 0, sizeof(CI128));
+
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator=(const U128 Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[128];
+
+		makeOriginal();
+
+		capi_PrintUnsigned(pStrBuffer, 128, &Value.Value, 0, sizeof(CU128));
+
+		needUnits = String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
+
+		String::Copy(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
 	//  *********************************  //
 	//                                     //
 	//   assignment arithmetic operators   //
@@ -3215,6 +4577,40 @@ struct SMART
 		return *this;
 	}
 
+	SMART& operator+=(const I128 Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[128];
+
+		makeOriginal();
+
+		capi_PrintSigned(pStrBuffer, 128, &Value.Value, 0, sizeof(CI128));
+
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
+	SMART& operator+=(const U128 Value)
+	{
+		size_t needUnits;
+		UNIT pStrBuffer[128];
+
+		makeOriginal();
+
+		capi_PrintSigned(pStrBuffer, 128, &Value.Value, 0, sizeof(CU128));
+
+		needUnits = String::Units(this->pString) + String::Units(pStrBuffer) + 1;
+		adjustBuffer(needUnits);
+
+		String::Append(this->pString, this->units, pStrBuffer);
+
+		return *this;
+	}
+
 	//  **********************  //
 	//                          //
 	//   arithmetic operators   //
@@ -3298,1222 +4694,6 @@ struct SMART
 	}
 
 	operator UNIT* () const { return this->pString; }
-};
-
-struct U128
-{
-	CU128 Value;
-	U128* Temp;
-
-	U128()
-	{
-		this->Value.Lo = 0;
-		this->Value.Hi = 0;
-
-		this->Temp = new U128(true);
-	}
-
-	U128(bool temp)
-	{
-		if (temp)
-		{
-			this->Value.Lo = 0;
-			this->Value.Hi = 0;
-
-			//  Temp's dont get a Temp unless the compiler passes Temp's to operators, -
-			//    because operators are used multiple times in a code line
-
-			this->Temp = 0;
-		}
-		else
-		{
-			this->Value.Lo = 0;
-			this->Value.Hi = 0;
-
-			this->Temp = new U128(true);
-		}
-	}
-
-	~U128() // Clean up
-	{
-		delete this->Temp;
-	}
-
-	void operator=(const U128& newVal) // Prevent this->Temp from being written
-	{
-		this->Value = newVal.Value;
-	}
-
-	U128& operator=(const UNIT* pString) // Scan constant into the variable
-	{
-		capi_ScanUnsigned(&this->Value, pString, SCAN_HEX, 0, sizeof(CU128));
-		return *this;
-	}
-
-	//  *********************************  //
-	//                                     //
-	//   U128, U128 arithmetic operators   //
-	//                                     //
-	//  *********************************  //
-
-	U128& operator+(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value = this->Value;
-		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	U128& operator-(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value = this->Value;
-		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	U128& operator*(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_llmul128(&this->Temp->Value, &this->Value, &a.Value);
-		return *this->Temp;
-	}
-
-	U128& operator/(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_div128(&this->Temp->Value, &this->Value, &a.Value);
-		return *this->Temp;
-	}
-
-	U128& operator%(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_rem128(&this->Temp->Value, &this->Value, &a.Value);
-		return *this->Temp;
-	}
-
-	//  ********************************  //
-	//                                    //
-	//   U128, NUM arithmetic operators   //
-	//                                    //
-	//  ********************************  //
-
-	U128& operator+(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value = this->Value;
-		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	U128& operator-(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value = this->Value;
-		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	U128& operator*(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_llmul128(&this->Temp->Value, &this->Value, &a);
-		return *this->Temp;
-	}
-
-	U128& operator/(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_div128(&this->Temp->Value, &this->Value, &a);
-		return *this->Temp;
-	}
-
-	U128& operator%(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_rem128(&this->Temp->Value, &this->Value, &a);
-		return *this->Temp;
-	}
-
-	//  ********************************************  //
-	//                                                //
-	//   U128, U128 assignment arithmetic operators   //
-	//                                                //
-	//  ********************************************  //
-
-	U128& operator+=(const U128& a)
-	{
-		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	U128& operator-=(const U128& a)
-	{
-		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	U128& operator*=(const U128& a)
-	{
-		CU128 Temp;
-
-		capi_llmul128(&Temp, &this->Value, &a.Value);
-		this->Value = Temp;
-		return *this;
-	}
-
-	U128& operator/=(const U128& a)
-	{
-		CU128 Temp;
-
-		capi_div128(&Temp, &this->Value, &a.Value);
-		this->Value = Temp;
-		return *this;
-	}
-
-	U128& operator%=(const U128& a)
-	{
-		CU128 Temp;
-
-		capi_rem128(&Temp, &this->Value, &a.Value);
-		this->Value = Temp;
-		return *this;
-	}
-
-	//  *******************************************  //
-	//                                               //
-	//   U128, NUM assignment arithmetic operators   //
-	//                                               //
-	//  *******************************************  //
-
-	U128& operator+=(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	U128& operator-=(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	U128& operator*=(const UNIT* pString)
-	{
-		CU128 a, Temp;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		capi_llmul128(&Temp, &this->Value, &a);
-		this->Value = Temp;
-		return *this;
-	}
-
-	U128& operator/=(const UNIT* pString)
-	{
-		CU128 a, Temp;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		capi_div128(&Temp, &this->Value, &a);
-		this->Value = Temp;
-		return *this;
-	}
-
-	U128& operator%=(const UNIT* pString)
-	{
-		CU128 a, Temp;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		capi_rem128(&Temp, &this->Value, &a);
-		this->Value = Temp;
-		return *this;
-	}
-
-	//  *********************************  //
-	//                                     //
-	//   U128, U128 relational operators   //
-	//                                     //
-	//  *********************************  //
-
-	bool operator==(const U128& a) const
-	{
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) == 0) return true;
-		return false;
-	}
-
-	bool operator!=(const U128& a) const
-	{
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) != 0) return true;
-		return false;
-	}
-
-	bool operator>(const U128& a) const
-	{
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) > 0) return true;
-		return false;
-	}
-
-	bool operator<(const U128& a) const
-	{
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) < 0) return true;
-		return false;
-	}
-
-	bool operator>=(const U128& a) const
-	{
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) >= 0) return true;
-		return false;
-	}
-
-	bool operator<=(const U128& a) const
-	{
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) <= 0) return true;
-		return false;
-	}
-
-	//  ********************************  //
-	//                                    //
-	//   U128, NUM relational operators   //
-	//                                    //
-	//  ********************************  //
-
-	bool operator==(const UNIT* pString) const
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) == 0) return true;
-		return false;
-	}
-
-	bool operator!=(const UNIT* pString) const
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) != 0) return true;
-		return false;
-	}
-
-	bool operator>(const UNIT* pString) const
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) > 0) return true;
-		return false;
-	}
-
-	bool operator<(const UNIT* pString) const
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) < 0) return true;
-		return false;
-	}
-
-	bool operator>=(const UNIT* pString) const
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) >= 0) return true;
-		return false;
-	}
-
-	bool operator<=(const UNIT* pString) const
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		if (capi_Compare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) <= 0) return true;
-		return false;
-	}
-
-	//  ******************************  //
-	//                                  //
-	//   U128, U128 bitwise operators   //
-	//                                  //
-	//  ******************************  //
-
-	U128& operator&(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value.Lo = this->Value.Lo & a.Value.Lo;
-		this->Temp->Value.Hi = this->Value.Hi & a.Value.Hi;
-		return *this->Temp;
-	}
-
-	U128& operator|(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value.Lo = this->Value.Lo | a.Value.Lo;
-		this->Temp->Value.Hi = this->Value.Hi | a.Value.Hi;
-		return *this->Temp;
-	}
-
-	U128& operator^(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value.Lo = this->Value.Lo ^ a.Value.Lo;
-		this->Temp->Value.Hi = this->Value.Hi ^ a.Value.Hi;
-		return *this->Temp;
-	}
-
-	U128& operator~()
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value.Lo = ~this->Value.Lo;
-		this->Temp->Value.Hi = ~this->Value.Hi;
-		return *this->Temp;
-	}
-
-	U128& operator<<(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value = this->Value;
-		capi_shl128(&this->Temp->Value, (U32)a.Value.Lo);
-		return *this->Temp;
-	}
-
-	U128& operator>>(const U128& a)
-	{
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		this->Temp->Value = this->Value;
-		capi_shr128(&this->Temp->Value, (U32)a.Value.Lo);
-		return *this->Temp;
-	}
-
-	//  *****************************************  //
-	//                                             //
-	//   U128, U128 assignment bitwise operators   //
-	//                                             //
-	//  *****************************************  //
-
-	U128& operator&=(const U128& a)
-	{
-		this->Value.Lo &= a.Value.Lo;
-		this->Value.Hi &= a.Value.Hi;
-		return *this;
-	}
-
-	U128& operator|=(const U128& a)
-	{
-		this->Value.Lo |= a.Value.Lo;
-		this->Value.Hi |= a.Value.Hi;
-		return *this;
-	}
-
-	U128& operator^=(const U128& a)
-	{
-		this->Value.Lo ^= a.Value.Lo;
-		this->Value.Hi ^= a.Value.Hi;
-		return *this;
-	}
-
-	U128& operator<<=(const U128& a)
-	{
-		capi_shl128(&this->Value, (U32)a.Value.Lo);
-		return *this;
-	}
-
-	U128& operator>>=(const U128& a)
-	{
-		capi_shr128(&this->Value, (U32)a.Value.Lo);
-		return *this;
-	}
-
-	//  *****************************  //
-	//                                 //
-	//   U128, NUM bitwise operators   //
-	//                                 //
-	//  *****************************  //
-
-	U128& operator&(const UNIT* pString)
-	{
-		CU128 a;
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Temp->Value.Lo = this->Value.Lo & a.Lo;
-		this->Temp->Value.Hi = this->Value.Hi & a.Hi;
-		return *this->Temp;
-	}
-
-	U128& operator|(const UNIT* pString)
-	{
-		CU128 a;
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Temp->Value.Lo = this->Value.Lo | a.Lo;
-		this->Temp->Value.Hi = this->Value.Hi | a.Hi;
-		return *this->Temp;
-	}
-
-	U128& operator^(const UNIT* pString)
-	{
-		CU128 a;
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Temp->Value.Lo = this->Value.Lo ^ a.Lo;
-		this->Temp->Value.Hi = this->Value.Hi ^ a.Hi;
-		return *this->Temp;
-	}
-
-	U128& operator<<(const UNIT* pString)
-	{
-		CU128 a;
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Temp->Value = this->Value;
-		capi_shl128(&this->Temp->Value, (U32)a.Lo);
-		return *this->Temp;
-	}
-
-	U128& operator>>(const UNIT* pString)
-	{
-		CU128 a;
-
-		if (this->Temp == 0) this->Temp = new U128(true);
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Temp->Value = this->Value;
-		capi_shr128(&this->Temp->Value, (U32)a.Lo);
-		return *this->Temp;
-	}
-
-	//  ****************************************  //
-	//                                            //
-	//   U128, NUM assignment bitwise operators   //
-	//                                            //
-	//  ****************************************  //
-
-	U128& operator&=(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Value.Lo &= a.Lo;
-		this->Value.Hi &= a.Hi;
-		return *this;
-	}
-
-	U128& operator|=(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Value.Lo |= a.Lo;
-		this->Value.Hi |= a.Hi;
-		return *this;
-	}
-
-	U128& operator^=(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		this->Value.Lo ^= a.Lo;
-		this->Value.Hi ^= a.Hi;
-		return *this;
-	}
-
-	U128& operator<<=(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		capi_shl128(&this->Value, (U32)a.Lo);
-		return *this;
-	}
-
-	U128& operator>>=(const UNIT* pString)
-	{
-		CU128 a;
-
-		capi_ScanUnsigned(&a, pString, SCAN_HEX, 0, sizeof(CU128));
-
-		capi_shr128(&this->Value, (U32)a.Lo);
-		return *this;
-	}
-};
-
-struct I128
-{
-	CI128 Value;
-	I128* Temp;
-
-	I128()
-	{
-		this->Value.Lo = 0;
-		this->Value.Hi = 0;
-
-		this->Temp = new I128(true);
-	}
-
-	I128(bool temp)
-	{
-		if (temp)
-		{
-			this->Value.Lo = 0;
-			this->Value.Hi = 0;
-
-			//  Temp's dont get a Temp unless the compiler passes Temp's to operators, -
-			//    because operators are used multiple times in a code line
-
-			this->Temp = 0;
-		}
-		else
-		{
-			this->Value.Lo = 0;
-			this->Value.Hi = 0;
-
-			this->Temp = new I128(true);
-		}
-	}
-
-	~I128() // Clean up
-	{
-		delete this->Temp;
-	}
-
-	void operator=(const I128& newVal) // Prevent this->Temp from being written
-	{
-		this->Value = newVal.Value;
-	}
-
-	I128& operator=(const UNIT* pString) // Scan constant into the variable
-	{
-		capi_ScanSigned(&this->Value, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-		return *this;
-	}
-
-	//  *********************************  //
-	//                                     //
-	//   I128, I128 arithmetic operators   //
-	//                                     //
-	//  *********************************  //
-
-	I128& operator+(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value = this->Value;
-		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	I128& operator-(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value = this->Value;
-		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	I128& operator*(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_llmul128((CU128*)&this->Temp->Value, (const CU128*)&this->Value, (const CU128*)&a.Value);
-		return *this->Temp;
-	}
-
-	I128& operator/(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_idiv128(&this->Temp->Value, &this->Value, &a.Value);
-		return *this->Temp;
-	}
-
-	I128& operator%(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_irem128(&this->Temp->Value, &this->Value, &a.Value);
-		return *this->Temp;
-	}
-
-	//  ********************************  //
-	//                                    //
-	//   I128, NUM arithmetic operators   //
-	//                                    //
-	//  ********************************  //
-
-	I128& operator+(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value = this->Value;
-		capi_AddReturnCarryEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	I128& operator-(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value = this->Value;
-		capi_SubReturnBorrowEx((size_t*)&this->Temp->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this->Temp;
-	}
-
-	I128& operator*(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_llmul128((CU128*)&this->Temp->Value, (const CU128*)&this->Value, (const CU128*)&a);
-		return *this->Temp;
-	}
-
-	I128& operator/(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_idiv128(&this->Temp->Value, &this->Value, &a);
-		return *this->Temp;
-	}
-
-	I128& operator%(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_irem128(&this->Temp->Value, &this->Value, &a);
-		return *this->Temp;
-	}
-
-	//  ********************************************  //
-	//                                                //
-	//   I128, I128 assignment arithmetic operators   //
-	//                                                //
-	//  ********************************************  //
-
-	I128& operator+=(const I128& a)
-	{
-		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	I128& operator-=(const I128& a)
-	{
-		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	I128& operator*=(const I128& a)
-	{
-		CI128 Temp;
-
-		capi_llmul128((CU128*)&Temp, (const CU128*)&this->Value, (const CU128*)&a.Value);
-		this->Value = Temp;
-		return *this;
-	}
-
-	I128& operator/=(const I128& a)
-	{
-		CI128 Temp;
-
-		capi_idiv128(&Temp, &this->Value, &a.Value);
-		this->Value = Temp;
-		return *this;
-	}
-
-	I128& operator%=(const I128& a)
-	{
-		CI128 Temp;
-
-		capi_irem128(&Temp, &this->Value, &a.Value);
-		this->Value = Temp;
-		return *this;
-	}
-
-	//  *******************************************  //
-	//                                               //
-	//   I128, NUM assignment arithmetic operators   //
-	//                                               //
-	//  *******************************************  //
-
-	I128& operator+=(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		capi_AddReturnCarryEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	I128& operator-=(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		capi_SubReturnBorrowEx((size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH);
-		return *this;
-	}
-
-	I128& operator*=(const UNIT* pString)
-	{
-		CI128 a, Temp;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		capi_llmul128((CU128*)&Temp, (const CU128*)&this->Value, (const CU128*)&a);
-		this->Value = Temp;
-		return *this;
-	}
-
-	I128& operator/=(const UNIT* pString)
-	{
-		CI128 a, Temp;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		capi_idiv128(&Temp, &this->Value, &a);
-		this->Value = Temp;
-		return *this;
-	}
-
-	I128& operator%=(const UNIT* pString)
-	{
-		CI128 a, Temp;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		capi_irem128(&Temp, &this->Value, &a);
-		this->Value = Temp;
-		return *this;
-	}
-
-	//  *********************************  //
-	//                                     //
-	//   I128, I128 relational operators   //
-	//                                     //
-	//  *********************************  //
-
-	bool operator==(const I128& a) const
-	{
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) == 0) return true;
-		return false;
-	}
-
-	bool operator!=(const I128& a) const
-	{
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) != 0) return true;
-		return false;
-	}
-
-	bool operator>(const I128& a) const
-	{
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) > 0) return true;
-		return false;
-	}
-
-	bool operator<(const I128& a) const
-	{
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) < 0) return true;
-		return false;
-	}
-
-	bool operator>=(const I128& a) const
-	{
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) >= 0) return true;
-		return false;
-	}
-
-	bool operator<=(const I128& a) const
-	{
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a.Value, 128 / CAPI_BIT_LENGTH) <= 0) return true;
-		return false;
-	}
-
-	//  ********************************  //
-	//                                    //
-	//   I128, NUM relational operators   //
-	//                                    //
-	//  ********************************  //
-
-	bool operator==(const UNIT* pString) const
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) == 0) return true;
-		return false;
-	}
-
-	bool operator!=(const UNIT* pString) const
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) != 0) return true;
-		return false;
-	}
-
-	bool operator>(const UNIT* pString) const
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) > 0) return true;
-		return false;
-	}
-
-	bool operator<(const UNIT* pString) const
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) < 0) return true;
-		return false;
-	}
-
-	bool operator>=(const UNIT* pString) const
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) >= 0) return true;
-		return false;
-	}
-
-	bool operator<=(const UNIT* pString) const
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		if (capi_iCompare((const size_t*)&this->Value, (const size_t*)&a, 128 / CAPI_BIT_LENGTH) <= 0) return true;
-		return false;
-	}
-
-	//  ******************************  //
-	//                                  //
-	//   I128, I128 bitwise operators   //
-	//                                  //
-	//  ******************************  //
-
-	I128& operator&(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value.Lo = this->Value.Lo & a.Value.Lo;
-		this->Temp->Value.Hi = this->Value.Hi & a.Value.Hi;
-		return *this->Temp;
-	}
-
-	I128& operator|(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value.Lo = this->Value.Lo | a.Value.Lo;
-		this->Temp->Value.Hi = this->Value.Hi | a.Value.Hi;
-		return *this->Temp;
-	}
-
-	I128& operator^(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value.Lo = this->Value.Lo ^ a.Value.Lo;
-		this->Temp->Value.Hi = this->Value.Hi ^ a.Value.Hi;
-		return *this->Temp;
-	}
-
-	I128& operator~()
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value.Lo = ~this->Value.Lo;
-		this->Temp->Value.Hi = ~this->Value.Hi;
-		return *this->Temp;
-	}
-
-	I128& operator<<(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value = this->Value;
-		capi_shl128((CU128*)&this->Temp->Value, (U32)a.Value.Lo);
-		return *this->Temp;
-	}
-
-	I128& operator>>(const I128& a)
-	{
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		this->Temp->Value = this->Value;
-		capi_sar128(&this->Temp->Value, (U32)a.Value.Lo);
-		return *this->Temp;
-	}
-
-	//  *****************************************  //
-	//                                             //
-	//   I128, I128 assignment bitwise operators   //
-	//                                             //
-	//  *****************************************  //
-
-	I128& operator&=(const I128& a)
-	{
-		this->Value.Lo &= a.Value.Lo;
-		this->Value.Hi &= a.Value.Hi;
-		return *this;
-	}
-
-	I128& operator|=(const I128& a)
-	{
-		this->Value.Lo |= a.Value.Lo;
-		this->Value.Hi |= a.Value.Hi;
-		return *this;
-	}
-
-	I128& operator^=(const I128& a)
-	{
-		this->Value.Lo ^= a.Value.Lo;
-		this->Value.Hi ^= a.Value.Hi;
-		return *this;
-	}
-
-	I128& operator<<=(const I128& a)
-	{
-		capi_shl128((CU128*)&this->Value, (U32)a.Value.Lo);
-		return *this;
-	}
-
-	I128& operator>>=(const I128& a)
-	{
-		capi_sar128(&this->Value, (U32)a.Value.Lo);
-		return *this;
-	}
-
-	//  *****************************  //
-	//                                 //
-	//   I128, NUM bitwise operators   //
-	//                                 //
-	//  *****************************  //
-
-	I128& operator&(const UNIT* pString)
-	{
-		CI128 a;
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Temp->Value.Lo = this->Value.Lo & a.Lo;
-		this->Temp->Value.Hi = this->Value.Hi & a.Hi;
-		return *this->Temp;
-	}
-
-	I128& operator|(const UNIT* pString)
-	{
-		CI128 a;
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Temp->Value.Lo = this->Value.Lo | a.Lo;
-		this->Temp->Value.Hi = this->Value.Hi | a.Hi;
-		return *this->Temp;
-	}
-
-	I128& operator^(const UNIT* pString)
-	{
-		CI128 a;
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Temp->Value.Lo = this->Value.Lo ^ a.Lo;
-		this->Temp->Value.Hi = this->Value.Hi ^ a.Hi;
-		return *this->Temp;
-	}
-
-	I128& operator<<(const UNIT* pString)
-	{
-		CI128 a;
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Temp->Value = this->Value;
-		capi_shl128((CU128*)&this->Temp->Value, (U32)a.Lo);
-		return *this->Temp;
-	}
-
-	I128& operator>>(const UNIT* pString)
-	{
-		CI128 a;
-
-		if (this->Temp == 0) this->Temp = new I128(true);
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Temp->Value = this->Value;
-		capi_sar128(&this->Temp->Value, (U32)a.Lo);
-		return *this->Temp;
-	}
-
-	//  ****************************************  //
-	//                                            //
-	//   I128, NUM assignment bitwise operators   //
-	//                                            //
-	//  ****************************************  //
-
-	I128& operator&=(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Value.Lo &= a.Lo;
-		this->Value.Hi &= a.Hi;
-		return *this;
-	}
-
-	I128& operator|=(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Value.Lo |= a.Lo;
-		this->Value.Hi |= a.Hi;
-		return *this;
-	}
-
-	I128& operator^=(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		this->Value.Lo ^= a.Lo;
-		this->Value.Hi ^= a.Hi;
-		return *this;
-	}
-
-	I128& operator<<=(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		capi_shl128((CU128*)&this->Value, (U32)a.Lo);
-		return *this;
-	}
-
-	I128& operator>>=(const UNIT* pString)
-	{
-		CI128 a;
-
-		capi_ScanSigned(&a, pString, SCAN_HEX | SCAN_MAX_HEX, 0, sizeof(CI128));
-
-		capi_sar128(&this->Value, (U32)a.Lo);
-		return *this;
-	}
 };
 
 // *                * //

@@ -98,6 +98,26 @@ void Run_String_Class_example()
 	ExampleApp_OutMessage(myString, TRUE);
 }
 
+// *********************************** //
+// *                                 * //
+// *  Example Using U128/I128 types  * //
+// *                                 * //
+// *********************************** //
+
+// Be sure to use the NUM macro for U128 and I128 constants, this allows the full range of the type constants to be read
+
+void Run_U128_type_example(U128 var1, U128 var2)
+{
+	SMART string;
+
+	string = STR("U128 / I128 example: 7e+24 + 4e+24 + 3e+24 / 8e+23 = ");
+
+	var1 = var1 + NUM(4000000000000000000000000) + var2 / NUM(800000000000000000000000);
+	string += var1;
+
+	ExampleApp_OutMessage(string, TRUE);
+}
+
 // *********************** //
 // *                     * //
 // *  Application Entry  * //
@@ -115,6 +135,12 @@ int main()
 	equ1 = STR("1.3");
 	equ2 = STR("6.4");
 	Run_SMART_example(equ1, equ2);
+
+	U128 num1, num2;
+
+	num1 = NUM(7000000000000000000000000);
+	num2 = NUM(3000000000000000000000000);
+	Run_U128_type_example(num1, num2);
 
 	ExampleApp_OutMessage(STR(""), TRUE);
 	ExampleApp_OutMessage(STR("Press the return key to exit..."), TRUE);
